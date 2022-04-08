@@ -40,4 +40,16 @@ plane_dict[(-1, 1, 4)] = 70
 plane_dict[( 0, 1, 4)] = 71
 plane_dict[( 1, 1, 4)] = 72
 
+def mask_moves(legal_moves):
+    out = tf.zeros(BOARD_SIZE*N_PLANES, dtype=tf.dtypes.bool)
+    for move in legal_moves:
+        init_square = move.from_square
+        end_square = move.to_square
+        x = (end_square - init_square) / 8
+        y = (end_square - init_square) % 8
 
+        promotion = move.promotion
+        if promotion == None or promotion == chess.QUEEN:
+            out[ plane_dict[(x,y)]*BOARD_SIZE + init_square ] = True
+        else:
+            out[ plane_dict[(x,y,promotion)]*BOARD_SIZE + init_square ] = True
