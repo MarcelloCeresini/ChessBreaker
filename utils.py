@@ -53,3 +53,15 @@ def mask_moves(legal_moves):
             out[ plane_dict[(x,y)]*BOARD_SIZE + init_square ] = True
         else:
             out[ plane_dict[(x,y,promotion)]*BOARD_SIZE + init_square ] = True
+
+            
+ def outcome(res):
+    if res is "1/2-1/2":
+        return 0
+    elif res is "1-0":
+        return 1
+    elif res is "0-1":
+        return -1
+    else:
+        return None
+    
