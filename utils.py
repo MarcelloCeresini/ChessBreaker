@@ -1,3 +1,7 @@
+from config import Config
+
+conf = Config()
+
 # queen moves of distance 1, planes from 0 to 7
 plane_dict = {
     ( 1,  1): 0, # NE (North-East)
@@ -41,7 +45,7 @@ plane_dict[( 0, 1, 4)] = 71
 plane_dict[( 1, 1, 4)] = 72
 
 def mask_moves(legal_moves):
-    out = tf.zeros(BOARD_SIZE*N_PLANES, dtype=tf.dtypes.bool)
+    out = tf.zeros(conf.BOARD_SIZE*conf.N_PLANES, dtype=tf.dtypes.bool)
     for move in legal_moves:
         init_square = move.from_square
         end_square = move.to_square
@@ -50,9 +54,9 @@ def mask_moves(legal_moves):
 
         promotion = move.promotion
         if promotion == None or promotion == chess.QUEEN:
-            out[ plane_dict[(x,y)]*BOARD_SIZE + init_square ] = True
+            out[ plane_dict[(x,y)]*conf.BOARD_SIZE + init_square ] = True
         else:
-            out[ plane_dict[(x,y,promotion)]*BOARD_SIZE + init_square ] = True
+            out[ plane_dict[(x,y,promotion)]*conf.BOARD_SIZE + init_square ] = True
 
             
  def outcome(res):
