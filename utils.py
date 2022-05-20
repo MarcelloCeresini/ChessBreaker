@@ -1,7 +1,3 @@
-from config import Config
-
-conf = Config()
-
 # queen moves of distance 1, planes from 0 to 7
 plane_dict = {
     ( 1,  1): 0, # NE (North-East)
@@ -44,6 +40,19 @@ plane_dict[(-1, 1, 4)] = 70
 plane_dict[( 0, 1, 4)] = 71
 plane_dict[( 1, 1, 4)] = 72
 
+class Config:
+    
+    def __init__(self):
+        self.N_PLANES = len(plane_dict)
+        self.BOARD_SHAPE = (8, 8)
+        self.BOARD_SIZE = self.BOARD_SHAPE[0] * self.BOARD_SHAPE[1]
+        self.MAX_MOVE_COUNT = 255
+        
+        self.N_PIECE_TYPES = 6
+        self.PAST_TIMESTEPS = 8
+
+conf = Config()
+
 def mask_moves(legal_moves):
     out = tf.zeros(conf.BOARD_SIZE*conf.N_PLANES, dtype=tf.dtypes.bool)
     for move in legal_moves:
@@ -58,8 +67,8 @@ def mask_moves(legal_moves):
         else:
             out[ plane_dict[(x,y,promotion)]*conf.BOARD_SIZE + init_square ] = True
 
-            
- def outcome(res):
+
+def outcome(res):
     if res is "1/2-1/2":
         return 0
     elif res is "1-0":
@@ -68,4 +77,3 @@ def mask_moves(legal_moves):
         return -1
     else:
         return None
-    
