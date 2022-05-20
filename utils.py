@@ -51,15 +51,19 @@ class Config:
         self.N_PIECE_TYPES = 6
         self.PAST_TIMESTEPS = 8
 
+        self.PLANES_DTYPE = tf.dtypes.uint8 # OSS: MAX 255 MOVES
+
 conf = Config()
+
+def x_y_from_position(position):
+    return (position//8, position%8)
 
 def mask_moves(legal_moves):
     out = tf.zeros(conf.BOARD_SIZE*conf.N_PLANES, dtype=tf.dtypes.bool)
     for move in legal_moves:
         init_square = move.from_square
         end_square = move.to_square
-        x = (end_square - init_square) / 8
-        y = (end_square - init_square) % 8
+        x, y = x_y_from_position(end_square - init_square)
 
         promotion = move.promotion
         if promotion == None or promotion == chess.QUEEN:
