@@ -1,3 +1,7 @@
+import tensorflow as tf
+import numpy as np
+import chess
+
 # queen moves of distance 1, planes from 0 to 7
 plane_dict = {
     ( 1,  1): 0, # NE (North-East)
@@ -50,8 +54,12 @@ class Config:
         
         self.N_PIECE_TYPES = 6
         self.PAST_TIMESTEPS = 8
+        self.REPEATED_PLANES = 6+6+2
 
         self.PLANES_DTYPE = tf.dtypes.uint8 # OSS: MAX 255 MOVES
+        self.PLANES_DTYPE_NP = np.uint8 # OSS: MAX 255 MOVES
+
+
 
 conf = Config()
 
@@ -73,11 +81,11 @@ def mask_moves(legal_moves):
 
 
 def outcome(res):
-    if res is "1/2-1/2":
+    if res == "1/2-1/2":
         return 0
-    elif res is "1-0":
+    elif res == "1-0":
         return 1
-    elif res is "0-1":
+    elif res == "0-1":
         return -1
     else:
         return None
