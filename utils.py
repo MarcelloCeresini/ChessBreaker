@@ -58,22 +58,26 @@ class Config:
         self.REPEATED_PLANES = 6+6+2
         self.TOTAL_PLANES = self.PAST_TIMESTEPS*self.REPEATED_PLANES + 7
         # tensor dtype
-        self.PLANES_DTYPE = tf.dtypes.uint8 # OSS: MAX 255 MOVES
-        self.PLANES_DTYPE_NP = np.uint8 # OSS: MAX 255 MOVES
+        self.PLANES_DTYPE = tf.dtypes.float16 # OSS: MAX 255 MOVES
+        self.PLANES_DTYPE_NP = np.float16 # OSS: MAX 255 MOVES
 
-        # TODO: remember to implement max move count
-        self.MAX_MOVE_COUNT = 255
+        # to limit the length of games
+        self.MAX_MOVE_COUNT = 100
 
         # MCTS parameters
-        self.MAX_DEPTH = 8
-        self.NUM_RESTARTS = 1600
+        self.MAX_DEPTH = 2
+        self.NUM_RESTARTS = 10
 
-    def expl_param(iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
-        pass
+        # Model stuff
+        self.DUMMY_INPUT = tf.expand_dims(tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES]), axis = 0)
+        self.INPUT_SHAPE = (*self.BOARD_SHAPE, self.TOTAL_PLANES)
+
+
+    def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
+        return 1 # TODO: implement it
     
-    def temp_param(iter):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
-        pass
-
+    def temp_param(self, iter):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
+        return 1 # TODO: implement it
 
 
 conf = Config()
@@ -82,18 +86,20 @@ def x_y_from_position(position):
     return (position//8, position%8)
 
 def mask_moves(legal_moves):
-    out = tf.zeros(conf.BOARD_SIZE*conf.N_PLANES, dtype=tf.dtypes.bool)
+    indices = []
     for move in legal_moves:
         init_square = move.from_square
         end_square = move.to_square
-        x, y = x_y_from_position(end_square - init_square)
+        x_i, y_i = x_y_from_position(init_square)
+        x_f, y_f = x_y_from_position(end_square)
+        x, y = (x_f - x_i, y_f - y_i)
 
         promotion = move.promotion
         if promotion == None or promotion == chess.QUEEN:
-            out[ plane_dict[(x,y)]*conf.BOARD_SIZE + init_square ] = True
+            indices.append((*(x_y_from_position(init_square)), plane_dict[(x,y)]))
         else:
-            out[ plane_dict[(x,y,promotion)]*conf.BOARD_SIZE + init_square ] = True
-
+            indices.append((*(x_y_from_position(init_square)), plane_dict[(x,y,promotion)]))
+    return tf.sparse.to_dense(tf.sparse.reorder(tf.SparseTensor(indices=indices, values=[True]*len(indices), dense_shape=(*conf.BOARD_SHAPE, conf.N_PLANES))))
 
 def outcome(res):
     if res == "1/2-1/2":
