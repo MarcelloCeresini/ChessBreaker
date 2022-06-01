@@ -47,17 +47,32 @@ plane_dict[( 1, 1, 4)] = 72
 class Config:
     
     def __init__(self):
+        # model output planes
         self.N_PLANES = len(plane_dict)
+        
+        # needed for tensor dimensions
         self.BOARD_SHAPE = (8, 8)
         self.BOARD_SIZE = self.BOARD_SHAPE[0] * self.BOARD_SHAPE[1]
-        self.MAX_MOVE_COUNT = 255
-        
         self.N_PIECE_TYPES = 6
         self.PAST_TIMESTEPS = 8
         self.REPEATED_PLANES = 6+6+2
-
+        self.TOTAL_PLANES = self.PAST_TIMESTEPS*self.REPEATED_PLANES + 7
+        # tensor dtype
         self.PLANES_DTYPE = tf.dtypes.uint8 # OSS: MAX 255 MOVES
         self.PLANES_DTYPE_NP = np.uint8 # OSS: MAX 255 MOVES
+
+        # TODO: remember to implement max move count
+        self.MAX_MOVE_COUNT = 255
+
+        # MCTS parameters
+        self.MAX_DEPTH = 8
+        self.NUM_RESTARTS = 1600
+
+    def expl_param(iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
+        pass
+    
+    def temp_param(iter):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
+        pass
 
 
 
