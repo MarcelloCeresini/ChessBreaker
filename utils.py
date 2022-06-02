@@ -65,8 +65,8 @@ class Config:
         self.MAX_MOVE_COUNT = 100
 
         # MCTS parameters
-        self.MAX_DEPTH = 2
-        self.NUM_RESTARTS = 10
+        self.MAX_DEPTH = 1
+        self.NUM_RESTARTS = 1
 
         # Model stuff
         self.DUMMY_INPUT = tf.expand_dims(tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES]), axis = 0)
@@ -100,13 +100,3 @@ def mask_moves(legal_moves):
         else:
             indices.append((*(x_y_from_position(init_square)), plane_dict[(x,y,promotion)]))
     return tf.sparse.to_dense(tf.sparse.reorder(tf.SparseTensor(indices=indices, values=[True]*len(indices), dense_shape=(*conf.BOARD_SHAPE, conf.N_PLANES))))
-
-def outcome(res):
-    if res == "1/2-1/2":
-        return 0
-    elif res == "1-0":
-        return 1
-    elif res == "0-1":
-        return -1
-    else:
-        return None
