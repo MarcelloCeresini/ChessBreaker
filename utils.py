@@ -71,7 +71,7 @@ class Config:
         self.BATCH_DIM = 8
 
         # Model stuff
-        self.DUMMY_INPUT = tf.stack[(tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
+        self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
         self.INPUT_SHAPE = (*self.BOARD_SHAPE, self.TOTAL_PLANES)
 
 
