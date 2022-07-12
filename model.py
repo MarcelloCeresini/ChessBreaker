@@ -62,8 +62,9 @@ class ResNet(tf.keras.Model):
         
         state_value = layers.Lambda(lambda x: x[:,:,:,-1:], name="state_values_init")(x)              # keep only last
         state_value = self.pooling(state_value)
-        state_value = layers.Lambda(lambda x: tf.clip_by_value(x, -1, 1))(state_value)        # clip to [-1, 1]
-
+        state_value = layers.Lambda(lambda x: tf.clip_by_value(x, -1, 1), name="clip_layer")(state_value)        # clip to [-1, 1]
+        state_value = layers.Flatten()(state_value)
+        
         return action_values, state_value
 
     def summary(self):
