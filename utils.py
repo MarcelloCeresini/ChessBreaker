@@ -67,9 +67,11 @@ class Config:
         # MCTS parameters
         self.MAX_DEPTH = 2
         self.NUM_RESTARTS = 10
+        
+        self.BATCH_DIM = 8
 
         # Model stuff
-        self.DUMMY_INPUT = tf.expand_dims(tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES]), axis = 0)
+        self.DUMMY_INPUT = tf.stack[(tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
         self.INPUT_SHAPE = (*self.BOARD_SHAPE, self.TOTAL_PLANES)
 
 
