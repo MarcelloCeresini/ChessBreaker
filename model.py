@@ -39,14 +39,14 @@ class ResNet(tf.keras.Model):
 
     def __init__(self):
         super(ResNet, self).__init__()
-
-        self.block_1 = ResNetBlock(channels = 128)  
-        self.block_2 = ResNetBlock(channels = 256)  
-        self.block_3 = ResNetBlock(channels = 512)
+        
+        self.block_1 = ResNetBlock(channels = 128, name="ResB1")  
+        self.block_2 = ResNetBlock(channels = 256, name="ResB2")  
+        self.block_3 = ResNetBlock(channels = 512, name="ResB3")
         # self.block_4 = ResNetBlock(channels = 4673, only_conv = True) # batch x 2 x 2 x 4673 --> NUMBER OF POSSIBLE MOVES + VALUE OF STATE  
         self.conv_1 = layers.Conv2D(74, 1)
         
-        self.pooling = layers.GlobalMaxPooling2D()
+        self.pooling = layers.GlobalMaxPooling3D()
 
         
     def call(self, inputs):
@@ -57,15 +57,16 @@ class ResNet(tf.keras.Model):
         # x = self.block_4(x)
         x = self.conv_1(x)
 
-        action_values = layers.Lambda(lambda x: x[0,:,:,:-1])(x)            # remove last
+        action_values = layers.Lambda(lambda x: x[:,:,:,:-1], name="action_values")(x)            # remove last
         # action_values = layers.Reshape((8,8,-1))(action_values)
         
-        state_value = layers.Lambda(lambda x: x[:,:,:,-1:])(x)              # keep only last
+        state_value = layers.Lambda(lambda x: x[:,:,:,-1:], name="state_values_init")(x)              # keep only last
         state_value = self.pooling(state_value)
         state_value = layers.Lambda(lambda x: tf.clip_by_value(x, -1, 1))(state_value)        # clip to [-1, 1]
 
         return action_values, state_value
 
-    def model(self):
-        x = layers.Input(shape=(8,8,119))
-        return tf.keras.Model(inputs=[x], outputs=self.call(x))
+    def summary(self):
+        x = layers.Input(shape=[8,8,119])
+        model = tf.keras.Model(inputs=[x], outputs=self.call(x))
+        return model.summary()
