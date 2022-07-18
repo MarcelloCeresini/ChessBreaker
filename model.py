@@ -46,7 +46,7 @@ class ResNet(tf.keras.Model):
         # self.block_4 = ResNetBlock(channels = 4673, only_conv = True) # batch x 2 x 2 x 4673 --> NUMBER OF POSSIBLE MOVES + VALUE OF STATE  
         self.conv_1 = layers.Conv2D(74, 1)
         
-        self.pooling = layers.GlobalMaxPooling3D()
+        self.pooling = layers.GlobalMaxPooling2D()
 
         
     def call(self, inputs):
