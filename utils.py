@@ -56,6 +56,8 @@ class Config:
         self.N_PIECE_TYPES = 6
         self.PAST_TIMESTEPS = 8
         self.REPEATED_PLANES = 6+6+2
+        self.OLD_PLANES_TO_KEEP = (self.PAST_TIMESTEPS-1)*self.REPEATED_PLANES
+        self.SPECIAL_PLANES = 7
         self.TOTAL_PLANES = self.PAST_TIMESTEPS*self.REPEATED_PLANES + 7
         # tensor dtype
         self.PLANES_DTYPE = tf.dtypes.float16 # OSS: MAX 255 MOVES
@@ -65,8 +67,8 @@ class Config:
         self.MAX_MOVE_COUNT = 100
 
         # MCTS parameters
-        self.MAX_DEPTH = 2
-        self.NUM_RESTARTS = 10
+        self.MAX_DEPTH = 10
+        self.NUM_RESTARTS = 10000
         
         self.BATCH_DIM = 8
 
@@ -88,7 +90,7 @@ def x_y_from_position(position):
     return (position//8, position%8)
 
 def mask_moves(legal_moves):
-    indices = []
+    idx = []
     for move in legal_moves:
         init_square = move.from_square
         end_square = move.to_square
@@ -98,10 +100,11 @@ def mask_moves(legal_moves):
 
         promotion = move.promotion
         if promotion == None or promotion == chess.QUEEN:
-            indices.append((*(x_y_from_position(init_square)), plane_dict[(x,y)]))
+            idx.append((x_i, y_i, plane_dict[(x,y)]))
         else:
-            indices.append((*(x_y_from_position(init_square)), plane_dict[(x,y,promotion)]))
-    return tf.sparse.to_dense(tf.sparse.reorder(tf.SparseTensor(indices=indices, values=[True]*len(indices), dense_shape=(*conf.BOARD_SHAPE, conf.N_PLANES))))
+            idx.append((x_i, y_i, plane_dict[(x,y,promotion)]))
+            
+    return idx
 
 def outcome(res):
     if res == "1/2-1/2":
