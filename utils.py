@@ -1,4 +1,4 @@
-import tensorflow as tf
+# import tensorflow as tf
 import numpy as np
 import chess
 
@@ -60,7 +60,7 @@ class Config:
         self.SPECIAL_PLANES = 7
         self.TOTAL_PLANES = self.PAST_TIMESTEPS*self.REPEATED_PLANES + 7
         # tensor dtype
-        self.PLANES_DTYPE = tf.dtypes.float16 # OSS: MAX 255 MOVES
+        # self.PLANES_DTYPE = tf.dtypes.float16 # OSS: MAX 255 MOVES
         self.PLANES_DTYPE_NP = np.float16 # OSS: MAX 255 MOVES
 
         # to limit the length of games
@@ -73,7 +73,7 @@ class Config:
         self.BATCH_DIM = 8
 
         # Model stuff
-        self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
+        # self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
         self.INPUT_SHAPE = (*self.BOARD_SHAPE, self.TOTAL_PLANES)
 
 
