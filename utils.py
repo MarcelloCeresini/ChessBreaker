@@ -115,3 +115,54 @@ def outcome(res):
         return -1
     else:
         return None
+
+def reduce_repetitions(leaf_node_batch, legal_moves_batch):
+                    new_leaf = []
+                    new_legal = []
+                    for leaf_node, legal in zip(leaf_node_batch, legal_moves_batch):
+                        if leaf_node not in new_leaf:
+                            new_leaf.append(leaf_node)
+                            new_legal.append(legal)
+                    
+                    return new_leaf, new_legal
+
+
+def special_input_planes(board):                                    # not repeated planes
+    
+    special_planes = np.zeros([*conf.BOARD_SHAPE, conf.SPECIAL_PLANES], conf.PLANES_DTYPE_NP)
+    special_planes[:,:,0] = board.turn                                 
+    special_planes[:,:,1] = board.fullmove_number-1                    
+    special_planes[:,:,2] = board.has_kingside_castling_rights(True)   
+    special_planes[:,:,3] = board.has_queenside_castling_rights(True)  
+    special_planes[:,:,4] = board.has_kingside_castling_rights(False)  
+    special_planes[:,:,5] = board.has_queenside_castling_rights(False) 
+    special_planes[:,:,6] = board.halfmove_clock                       
+
+    return special_planes                                            # transpose to have plane number last --> in order to concat them
+
+
+def update_planes(old, board, board_history):
+
+    if type(old) != np.ndarray: # root, initialize to zero
+        old = np.zeros([*conf.BOARD_SHAPE, conf.TOTAL_PLANES], dtype=conf.PLANES_DTYPE_NP)
+    
+    total_planes = np.zeros([*conf.BOARD_SHAPE, conf.TOTAL_PLANES], dtype=conf.PLANES_DTYPE_NP) # since we cannot "change" a tensor after creating it, we create them one by one in a list and then stack them
+    plane = -1
+    
+    repetition_counter = board_history.count(board_history[-1])
+    for color in range(2):                                                                                                  # for each color
+        for piece_type in range(1, conf.N_PIECE_TYPES+1):                                                                   # for each piece type
+            plane += 1
+            indices = map(x_y_from_position, list(board.pieces(piece_type, color)))        # for each piece of that type                                                                                            # --> we save the position on the board in a list
+            # the function transforms a number (1-64) into a tuple (1-8, 1-8)
+            for idx in indices:
+                total_planes[idx[0], idx[1], plane] = 1
+        plane += 1
+        total_planes[:, :, plane] = repetition_counter    # adding a "repetition plane" for each color (simply count how many times the current (last) position has been encountered)
+   
+    # 7 stacks (total 8 repetitions)
+
+    total_planes[:, :, conf.REPEATED_PLANES:(conf.REPEATED_PLANES+conf.OLD_PLANES_TO_KEEP)] = old[:, :, :conf.OLD_PLANES_TO_KEEP]
+    total_planes[:, :, conf.REPEATED_PLANES+conf.OLD_PLANES_TO_KEEP:] = special_input_planes(board)
+    
+    return total_planes
