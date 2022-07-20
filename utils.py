@@ -67,8 +67,8 @@ class Config:
         self.MAX_MOVE_COUNT = 100
 
         # MCTS parameters
-        self.MAX_DEPTH = 10
-        self.NUM_RESTARTS = 10000
+        self.MAX_DEPTH = 7
+        self.NUM_RESTARTS = 100
         
         self.BATCH_DIM = 8
 
@@ -87,7 +87,7 @@ class Config:
 conf = Config()
 
 def x_y_from_position(position):
-    return (position//8, position%8)
+    return (position%8, position//8)
 
 def mask_moves(legal_moves):
     idx = []
@@ -102,7 +102,7 @@ def mask_moves(legal_moves):
         if promotion == None or promotion == chess.QUEEN:
             idx.append((x_i, y_i, plane_dict[(x,y)]))
         else:
-            idx.append((x_i, y_i, plane_dict[(x,y,promotion)]))
+            idx.append((x_i, y_i, plane_dict[(x,abs(y),promotion)])) # if black promotes y is -1
             
     return idx
 
