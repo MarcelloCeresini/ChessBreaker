@@ -114,11 +114,11 @@ def mask_moves(legal_moves):
 
 def outcome(res):
     if res == "1/2-1/2":
-        return 0
+        return np.array([0], dtype=np.float32)
     elif res == "1-0":
-        return 1
+        return np.array([1], dtype=np.float32)
     elif res == "0-1":
-        return -1
+        return np.array([-1],dtype=np.float32)
     else:
         return None
 

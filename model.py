@@ -71,3 +71,73 @@ class ResNet(tf.keras.Model):
         x = layers.Input(shape=[8,8,119])
         model = tf.keras.Model(inputs=[x], outputs=self.call(x))
         return model.summary()
+
+
+def create_model():
+    
+    l2_reg = 0.01
+    ch_RNB1 = 128
+    ch_RNB2 = 256
+    ch_RNB3 = 512
+    ###### USING FUNCTIONAL MODEL because the other one was giving an error ########
+    input = layers.Input(shape=(8, 8, 119))
+
+    x = layers.Conv2D(ch_RNB1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(input)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("gelu")(x)
+
+    x = layers.Conv2D(ch_RNB1*2, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("gelu")(x)
+
+    x = layers.Conv2D(ch_RNB1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+
+    x_skip = layers.Conv2D(128, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(input)
+
+    x = layers.Add()([x, x_skip])
+    x = layers.BatchNormalization()(x)
+
+    x_end_ResNetBlock1 = layers.Activation("gelu")(x)
+    #######################
+    x = layers.Conv2D(ch_RNB2, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock1)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("gelu")(x)
+
+    x = layers.Conv2D(ch_RNB2*2, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("gelu")(x)
+
+    x = layers.Conv2D(ch_RNB2, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+
+    x_skip = layers.Conv2D(ch_RNB2, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock1)
+
+    x = layers.Add()([x, x_skip])
+    x = layers.BatchNormalization()(x)
+
+    x_end_ResNetBlock2 = layers.Activation("gelu")(x)
+    #######################
+    x = layers.Conv2D(ch_RNB3, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock2)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("gelu")(x)
+
+    x = layers.Conv2D(ch_RNB3*2, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("gelu")(x)
+
+    x = layers.Conv2D(ch_RNB3, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+
+    x_skip = layers.Conv2D(ch_RNB3, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock2)
+
+    x = layers.Add()([x, x_skip])
+    x = layers.BatchNormalization()(x)
+
+    x_end_ResNetBlock3 = layers.Activation("gelu")(x)
+    ########################
+
+    action_values = layers.Conv2D(73, 1, name="action_values", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock3) # 73 planes for the moves
+
+    state_value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock3)                          # only one plane for the state value
+    state_value = layers.GlobalMaxPooling2D()(state_value)                                                                              # and then only one value
+    state_value = layers.Lambda(lambda x: tf.clip_by_value(x, -1, 1), name="state_value")(state_value)                                  # and then clip to [-1, 1]
+
+    return tf.keras.Model(inputs=input, outputs=[action_values, state_value])
