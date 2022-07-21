@@ -64,7 +64,7 @@ class Config:
         self.PLANES_DTYPE_NP = np.float16 # OSS: MAX 255 MOVES
 
         # to limit the length of games
-        self.MAX_MOVE_COUNT = 100
+        self.MAX_MOVE_COUNT = 200
 
         # MCTS parameters
         self.MAX_DEPTH = 7
@@ -76,12 +76,18 @@ class Config:
         # self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
         self.INPUT_SHAPE = (*self.BOARD_SHAPE, self.TOTAL_PLANES)
 
+        self.ALPHA_DIRICHLET = 0.03 # from paper
+        self.EPS_NOISE = 0.25       # from paper
+
 
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         return 1 # TODO: implement it
     
-    def temp_param(self, iter):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
-        return 1 # TODO: implement it
+    def temp_param(self, num_move):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
+        if num_move <= 60:
+            return 1
+        else:
+            return 1e-3
 
 
 conf = Config()
