@@ -67,7 +67,7 @@ class Config:
         self.MAX_MOVE_COUNT = 200
 
         # MCTS parameters
-        self.MAX_DEPTH = 7
+        self.MAX_DEPTH = 4
         self.NUM_RESTARTS = 100
         
         self.BATCH_DIM = 8
