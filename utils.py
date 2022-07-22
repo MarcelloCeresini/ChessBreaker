@@ -1,6 +1,7 @@
 # import tensorflow as tf
 import numpy as np
 import chess
+import glob, os
 
 # queen moves of distance 1, planes from 0 to 7
 plane_dict = {
@@ -71,6 +72,7 @@ class Config:
         self.NUM_RESTARTS = 100
         
         self.BATCH_DIM = 8
+        self.IMITATION_LEARNING_BATCH = 512
 
         # Model stuff
         # self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
@@ -172,3 +174,50 @@ def update_planes(old, board, board_history):
     total_planes[:, :, conf.REPEATED_PLANES+conf.OLD_PLANES_TO_KEEP:] = special_input_planes(board)
     
     return total_planes
+
+
+def gen(path=None):
+    planes = None
+    output_array = np.zeros([*conf.BOARD_SHAPE, conf.N_PLANES], dtype=np.float32)
+    
+    if path == None:
+        database_path = '/home/marcello/github/ChessBreaker/data/Database'
+        files = glob.glob(os.path.join(database_path, '*.pgn'))
+    else:
+        path = path.decode("utf-8")
+        files = [path]
+    
+    for filename in files:
+        with open(os.path.join(os.getcwd(), filename), 'r') as pgn:
+            game = chess.pgn.read_game(pgn)
+
+            while game != None:
+                whole_game_moves = game.game().mainline_moves()
+                
+                result = outcome(game.headers["Result"])
+                if result == None:
+                    result = 0
+
+                board = chess.Board()
+                board_history = [board.fen()[:-6]]
+                
+                for move in whole_game_moves:
+                    # the input is the PREVIOUS board
+                    planes = update_planes(planes, board, board_history)
+                    # inputs.append(planes)
+                    
+                    # the output is the move from that position
+                    mask = mask_moves([move])[0]
+                    output_array[mask[0], mask[1], mask[2]] = 1
+                    # outputs.append(output_array)
+
+                    # oss: input = planes, output = (moves + result)!!
+                    yield (planes, (output_array, result)) ### yield before resetting the output
+
+                    output_array[mask[0], mask[1], mask[2]] = 0
+                    
+                    # then you actually push the move preparing for next turn
+                    board.push(move)
+                    board_history.append(board.fen()[:-6])
+                
+                game = chess.pgn.read_game(pgn)
