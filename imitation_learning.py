@@ -26,7 +26,7 @@ val_dataset = tf.data.Dataset.from_generator(utils.gen, output_signature=output_
 
 # oss: total training is 5,4 milion total steps, so 150k shuffle buffer should be enough 
 # (also because a match is ~200 steps, you want just to remove the correlation of moves inside games)
-ds = dataset.shuffle(conf.BATCH_DIM*100000) \
+ds = dataset.shuffle(conf.BATCH_DIM*10000) \
     .batch(conf.IMITATION_LEARNING_BATCH, num_parallel_calls=tf.data.AUTOTUNE) \
     .prefetch(tf.data.AUTOTUNE)
 
@@ -63,7 +63,7 @@ history = model.fit(
     ds,
     validation_data = val_ds,
     epochs = 60,
-    steps_per_epoch = 10000,    # 10000*60*512
+    steps_per_epoch = 10000,    # 10000*60*512 = 307'200'000 ~ all the available data
     callbacks = callbacks,
     workers = 16,
     use_multiprocessing = True

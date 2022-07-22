@@ -122,6 +122,7 @@ def outcome(res):
     elif res == "0-1":
         return np.array([-1],dtype=np.float32)
     else:
+        print("Outcome: ", res)
         return None
 
 def reduce_repetitions(leaf_node_batch, legal_moves_batch):
@@ -196,7 +197,7 @@ def gen(path=None):
                 
                 result = outcome(game.headers["Result"])
                 if result == None:
-                    result = 0
+                    result = np.array([0], dtype=np.float32)
 
                 board = chess.Board()
                 board_history = [board.fen()[:-6]]
