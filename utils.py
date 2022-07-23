@@ -196,29 +196,28 @@ def gen(path=None):
                 whole_game_moves = game.game().mainline_moves()
                 
                 result = outcome(game.headers["Result"])
-                if result == None:
-                    result = np.array([0], dtype=np.float32)
-
-                board = chess.Board()
-                board_history = [board.fen()[:-6]]
                 
-                for move in whole_game_moves:
-                    # the input is the PREVIOUS board
-                    planes = update_planes(planes, board, board_history)
-                    # inputs.append(planes)
+                if result != None:
+                    board = chess.Board()
+                    board_history = [board.fen()[:-6]]
                     
-                    # the output is the move from that position
-                    mask = mask_moves([move])[0]
-                    output_array[mask[0], mask[1], mask[2]] = 1
-                    # outputs.append(output_array)
+                    for move in whole_game_moves:
+                        # the input is the PREVIOUS board
+                        planes = update_planes(planes, board, board_history)
+                        # inputs.append(planes)
+                        
+                        # the output is the move from that position
+                        mask = mask_moves([move])[0]
+                        output_array[mask[0], mask[1], mask[2]] = 1
+                        # outputs.append(output_array)
 
-                    # oss: input = planes, output = (moves + result)!!
-                    yield (planes, (output_array, result)) ### yield before resetting the output
+                        # oss: input = planes, output = (moves + result)!!
+                        yield (planes, (output_array, result)) ### yield before resetting the output
 
-                    output_array[mask[0], mask[1], mask[2]] = 0
-                    
-                    # then you actually push the move preparing for next turn
-                    board.push(move)
-                    board_history.append(board.fen()[:-6])
+                        output_array[mask[0], mask[1], mask[2]] = 0
+                        
+                        # then you actually push the move preparing for next turn
+                        board.push(move)
+                        board_history.append(board.fen()[:-6])
                 
                 game = chess.pgn.read_game(pgn)

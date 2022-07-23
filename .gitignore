@@ -2,6 +2,7 @@
 /data/Database
 /data/dataset
 /data/Lichess Elite Database.7z
+/results/trials
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
