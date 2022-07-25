@@ -134,10 +134,10 @@ def create_model():
     x_end_ResNetBlock3 = layers.Activation("gelu")(x)
     ########################
 
-    action_values = layers.Conv2D(73, 1, name="action_values", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock3) # 73 planes for the moves
+    action_v = layers.Conv2D(73, 1, name="action_v", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock3) # 73 planes for the moves
 
-    state_value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock3)                          # only one plane for the state value
-    state_value = layers.GlobalMaxPooling2D()(state_value)                                                                              # and then only one value
-    state_value = layers.Lambda(lambda x: tf.clip_by_value(x, -1, 1), name="state_value")(state_value)                                  # and then clip to [-1, 1]
+    state_v = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x_end_ResNetBlock3)                          # only one plane for the state value
+    state_v = layers.GlobalMaxPooling2D()(state_v)                                                                              # and then only one value
+    state_v = layers.Lambda(lambda x: tf.clip_by_value(x, -1, 1), name="state_v")(state_v)                                  # and then clip to [-1, 1]
 
-    return tf.keras.Model(inputs=input, outputs=[action_values, state_value])
+    return tf.keras.Model(inputs=input, outputs=[action_v, state_v])

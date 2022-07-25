@@ -1,7 +1,6 @@
 import chess, os, chess.pgn
 import numpy as np
 import tensorflow as tf
-import glob
 
 from model import ResNet, create_model
 import utils
@@ -32,18 +31,18 @@ ds = dataset.shuffle(conf.BATCH_DIM*10000) \
 
 val_ds = val_dataset.batch(conf.IMITATION_LEARNING_BATCH, num_parallel_calls=tf.data.AUTOTUNE).prefetch(tf.data.AUTOTUNE)
 
-
 model = create_model()
 
 optimizer = tf.keras.optimizers.Adam()
 
 losses = {
-	"action_values": tf.keras.losses.BinaryCrossentropy(label_smoothing=0.1),
-	"state_value": tf.keras.losses.MeanSquaredError(),
+	"action_v": tf.keras.losses.BinaryCrossentropy(from_logits = True, label_smoothing=0.1),
+	"state_v": tf.keras.losses.MeanSquaredError()
 }
 
 metrics = {
-    "action_values": tf.keras.metrics.BinaryCrossentropy()
+    "action_v": tf.keras.metrics.BinaryCrossentropy(from_logits = True),
+    "state_v": tf.keras.metrics.MeanSquaredError()
 }
 
 model.compile(
@@ -52,11 +51,13 @@ model.compile(
     metrics = metrics
 )
 
+# oss: the epochs are just for convenience, it's just ONE PASS through almost all of the data
+# so no overfitting is possible --> 
 callbacks = [
-    tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=8, min_lr=1e-5),
-    tf.keras.callbacks.ModelCheckpoint(filepath="tmp/checkpoint", monitor='val_loss', save_freq='epoch'),
+    tf.keras.callbacks.ReduceLROnPlateau(monitor='loss', factor=0.5, patience=8, min_lr=1e-4, verbose=1),
+    tf.keras.callbacks.ModelCheckpoint(monitor='loss', filepath="tmp/checkpoint-{epoch:02d}.hdf5", save_freq='epoch', verbose=1),
     tf.keras.callbacks.TensorBoard(log_dir='logs'),
-    tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=12)
+    # tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=15, verbose=1)
 ]
 
 history = model.fit(
@@ -68,4 +69,3 @@ history = model.fit(
     workers = 16,
     use_multiprocessing = True
 )
-

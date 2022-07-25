@@ -94,8 +94,10 @@ class Config:
 
 conf = Config()
 
+
 def x_y_from_position(position):
     return (position%8, position//8)
+
 
 def mask_moves(legal_moves):
     idx = []
@@ -114,6 +116,7 @@ def mask_moves(legal_moves):
             
     return idx
 
+
 def outcome(res):
     if res == "1/2-1/2":
         return np.array([0], dtype=np.float32)
@@ -122,8 +125,9 @@ def outcome(res):
     elif res == "0-1":
         return np.array([-1],dtype=np.float32)
     else:
-        print("Outcome: ", res)
+        # print("Outcome: ", res)
         return None
+
 
 def reduce_repetitions(leaf_node_batch, legal_moves_batch):
                     new_leaf = []
@@ -189,6 +193,7 @@ def gen(path=None):
         files = [path]
     
     for filename in files:
+        
         with open(os.path.join(os.getcwd(), filename), 'r') as pgn:
             game = chess.pgn.read_game(pgn)
 
