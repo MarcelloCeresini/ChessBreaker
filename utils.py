@@ -2,6 +2,7 @@
 import numpy as np
 import chess
 import glob, os
+import tensorflow as tf
 
 # queen moves of distance 1, planes from 0 to 7
 plane_dict = {
@@ -189,13 +190,19 @@ def gen(path=None):
         database_path = '/home/marcello/github/ChessBreaker/data/Database'
         files = glob.glob(os.path.join(database_path, '*.pgn'))
     else:
-        path = path.decode("utf-8")
-        files = [path]
+        if type(path) == list:
+            for p in path:
+                p = p.decode("utf-8")
+        else:
+            path = path.decode("utf-8")
+            files = [path]
     
+    c = 0
+
     for filename in files:
-        
         with open(os.path.join(os.getcwd(), filename), 'r') as pgn:
             game = chess.pgn.read_game(pgn)
+            print(filename, )
 
             while game != None:
                 whole_game_moves = game.game().mainline_moves()
@@ -207,6 +214,9 @@ def gen(path=None):
                     board_history = [board.fen()[:-6]]
                     
                     for move in whole_game_moves:
+                        c+=1
+                        if c%1000 == 0:
+                            print(c)
                         # the input is the PREVIOUS board
                         planes = update_planes(planes, board, board_history)
                         # inputs.append(planes)
@@ -226,3 +236,35 @@ def gen(path=None):
                         board_history.append(board.fen()[:-6])
                 
                 game = chess.pgn.read_game(pgn)
+
+
+def softmax(x):
+    return np.exp(x) / np.sum(np.exp(x))
+
+
+def select_best_move(model, planes, board, board_history, probabilistic=False):
+    planes = update_planes(planes, board, board_history)
+    legal_moves = list(board.legal_moves)
+    action_v, outcome = model(tf.expand_dims(planes, axis=0))
+    action_v = action_v[0]
+
+    idxs = mask_moves(legal_moves)
+    move_value = []
+    for move, idx in zip(legal_moves, idxs):
+        move_value.append(action_v[idx[0], idx[1], idx[2]].numpy())
+
+    move_value = softmax(move_value)
+
+    high_av = -100
+    best_move = None
+
+    if probabilistic:
+            best_move_idx = np.random.choice(
+                len(legal_moves), 
+                p = move_value
+            )
+            best_move = legal_moves[best_move_idx]
+    else:
+        best_move = legal_moves[np.argmax(move_value)]
+
+    return best_move, planes
