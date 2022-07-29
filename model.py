@@ -179,6 +179,6 @@ def create_model_v2():
     value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
     value = layers.GlobalMaxPooling2D()(value)                                                                          # and then only one value
     value = layers.BatchNormalization()(value)
-    value = layers.Activation("tanh")(value)
+    value = layers.Activation("tanh", name="value")(value)
 
     return tf.keras.Model(inputs=input, outputs=[policy, value])
