@@ -73,7 +73,7 @@ class Config:
         self.NUM_RESTARTS = 100
         
         self.BATCH_DIM = 8
-        self.IMITATION_LEARNING_BATCH = 512
+        self.IMITATION_LEARNING_BATCH = 1024
 
         # Model stuff
         # self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)

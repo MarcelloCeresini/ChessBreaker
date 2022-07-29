@@ -180,6 +180,7 @@ def create_model_v2():
     value = layers.BatchNormalization()(value)
     value = layers.Activation("gelu")(value)
 
+    value = layers.Flatten()(value)
     value = layers.Dense(256, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(value)
     value = layers.Activation("gelu")(value)
 
