@@ -177,8 +177,13 @@ def create_model_v2():
     policy = layers.Conv2D(73, 1, name="policy", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(policy)
 
     value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
-    value = layers.GlobalMaxPooling2D()(value)                                                                          # and then only one value
     value = layers.BatchNormalization()(value)
+    value = layers.Activation("gelu")(value)
+
+    value = layers.Dense(256, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(value)
+    value = layers.Activation("gelu")(value)
+
+    value = layers.Dense(1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(value)
     value = layers.Activation("tanh", name="value")(value)
 
     return tf.keras.Model(inputs=input, outputs=[policy, value])
