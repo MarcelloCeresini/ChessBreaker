@@ -63,7 +63,7 @@ class Config:
         self.TOTAL_PLANES = self.PAST_TIMESTEPS*self.REPEATED_PLANES + 7
         # tensor dtype
         # self.PLANES_DTYPE = tf.dtypes.float16 # OSS: MAX 255 MOVES
-        self.PLANES_DTYPE_NP = np.float16 # OSS: MAX 255 MOVES
+        self.PLANES_DTYPE_NP = np.float16 
 
         # to limit the length of games
         self.MAX_MOVE_COUNT = 200
@@ -79,7 +79,7 @@ class Config:
         # self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
         self.INPUT_SHAPE = (*self.BOARD_SHAPE, self.TOTAL_PLANES)
 
-        self.ALPHA_DIRICHLET = 0.03 # from paper
+        self.ALPHA_DIRICHLET = 0.3 # from paper
         self.EPS_NOISE = 0.25       # from paper
 
 
@@ -120,11 +120,11 @@ def mask_moves(legal_moves):
 
 def outcome(res):
     if res == "1/2-1/2":
-        return np.array([0], dtype=np.float32)
+        return np.array([0], dtype=np.float16)
     elif res == "1-0":
-        return np.array([1], dtype=np.float32)
+        return np.array([1], dtype=np.float16)
     elif res == "0-1":
-        return np.array([-1],dtype=np.float32)
+        return np.array([-1],dtype=np.float16)
     else:
         # print("Outcome: ", res)
         return None
@@ -145,7 +145,7 @@ def special_input_planes(board):                                    # not repeat
     
     special_planes = np.zeros([*conf.BOARD_SHAPE, conf.SPECIAL_PLANES], conf.PLANES_DTYPE_NP)
     special_planes[:,:,0] = board.turn                                 
-    special_planes[:,:,1] = board.fullmove_number-1                    
+    special_planes[:,:,1] = board.fullmove_number                    
     special_planes[:,:,2] = board.has_kingside_castling_rights(True)   
     special_planes[:,:,3] = board.has_queenside_castling_rights(True)  
     special_planes[:,:,4] = board.has_kingside_castling_rights(False)  
@@ -164,7 +164,7 @@ def update_planes(old, board, board_history):
     plane = -1
     
     repetition_counter = board_history.count(board_history[-1])
-    for color in range(2):                                                                                                  # for each color
+    for color in [True, False]:                                                                                                  # for each color
         for piece_type in range(1, conf.N_PIECE_TYPES+1):                                                                   # for each piece type
             plane += 1
             indices = map(x_y_from_position, list(board.pieces(piece_type, color)))        # for each piece of that type                                                                                            # --> we save the position on the board in a list
@@ -184,11 +184,12 @@ def update_planes(old, board, board_history):
 
 def gen(path=None):
     planes = None
-    output_array = np.zeros([*conf.BOARD_SHAPE, conf.N_PLANES], dtype=np.float32)
+    output_array = np.zeros([*conf.BOARD_SHAPE, conf.N_PLANES], dtype=np.float16)
     
     if path == None:
         database_path = '/home/marcello/github/ChessBreaker/data/Database'
         files = glob.glob(os.path.join(database_path, '*.pgn'))
+        files.sort()
     else:
         if type(path) == list:
             for p in path:
@@ -197,12 +198,10 @@ def gen(path=None):
             path = path.decode("utf-8")
             files = [path]
     
-    c = 0
-
     for filename in files:
         with open(os.path.join(os.getcwd(), filename), 'r') as pgn:
             game = chess.pgn.read_game(pgn)
-            print(filename, )
+            print(filename) # just so we know where to restart if the learning crashes
 
             while game != None:
                 whole_game_moves = game.game().mainline_moves()
@@ -214,9 +213,6 @@ def gen(path=None):
                     board_history = [board.fen()[:-6]]
                     
                     for move in whole_game_moves:
-                        c+=1
-                        if c%1000 == 0:
-                            print(c)
                         # the input is the PREVIOUS board
                         planes = update_planes(planes, board, board_history)
                         # inputs.append(planes)
@@ -254,9 +250,6 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
         move_value.append(action_v[idx[0], idx[1], idx[2]].numpy())
 
     move_value = softmax(move_value)
-
-    high_av = -100
-    best_move = None
 
     if probabilistic:
             best_move_idx = np.random.choice(

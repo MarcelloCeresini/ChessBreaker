@@ -75,7 +75,7 @@ class ResNet(tf.keras.Model):
 
 def create_model():
     
-    l2_reg = 0.01
+    l2_reg = 1e-4
     ch_RNB1 = 128
     ch_RNB2 = 256
     ch_RNB3 = 512
@@ -141,3 +141,44 @@ def create_model():
     state_v = layers.Lambda(lambda x: tf.clip_by_value(x, -1, 1), name="state_v")(state_v)                                  # and then clip to [-1, 1]
 
     return tf.keras.Model(inputs=input, outputs=[action_v, state_v])
+
+
+def create_model_v2():
+    
+    l2_reg = 1e-4
+    channels_convolution = 256
+    channels_res_block = 256
+    channels_policy = 128
+    num_res_blocks = 10
+
+    ###### USING FUNCTIONAL MODEL because the other one was giving an error ########
+    input = layers.Input(shape=(8, 8, 119))
+
+    x = layers.Conv2D(channels_convolution, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(input)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("gelu")(x)
+
+    for i in range(num_res_blocks):
+        x_skip = x
+        x = layers.Conv2D(channels_res_block, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.Activation("gelu")(x)
+
+        x = layers.Conv2D(channels_res_block, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+        x = layers.BatchNormalization()(x)
+        
+        x = layers.Add()([x, x_skip])
+        
+        x = layers.Activation("gelu", name="activation_resblock_{}".format(i))(x)
+
+    policy = layers.Conv2D(channels_policy, 1, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
+    policy = layers.BatchNormalization()(policy)
+    policy = layers.Activation("gelu")(policy)
+    policy = layers.Conv2D(73, 1, name="policy", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(policy)
+
+    value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
+    value = layers.GlobalMaxPooling2D()(value)                                                                          # and then only one value
+    value = layers.BatchNormalization()(value)
+    value = layers.Activation("tanh")(value)
+
+    return tf.keras.Model(inputs=input, outputs=[policy, value])
