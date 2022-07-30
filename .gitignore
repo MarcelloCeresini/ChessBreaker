@@ -5,6 +5,7 @@
 /results/trials
 /tmp
 /old_stuff
+/tablebase
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
