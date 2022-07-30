@@ -118,6 +118,25 @@ def mask_moves(legal_moves):
     return idx
 
 
+def mask_moves_flatten(legal_moves):
+    idx = np.zeros((len(legal_moves), 1), dtype=conf.PLANES_DTYPE_NP)
+    for i, move in enumerate(legal_moves):
+        init_square = move.from_square
+        end_square = move.to_square
+        x_i, y_i = x_y_from_position(init_square)
+        x_f, y_f = x_y_from_position(end_square)
+        x, y = (x_f - x_i, y_f - y_i)
+
+        promotion = move.promotion
+        if promotion == None or promotion == chess.QUEEN:
+            tmp = (x_i, y_i, plane_dict[(x,y)])
+        else:
+            tmp = (x_i, y_i, plane_dict[(x,abs(y),promotion)]) # if black promotes y is -1
+
+        idx[i] = np.ravel_multi_index(tmp, (8,8,73))
+    return idx
+
+
 def outcome(res):
     if res == "1/2-1/2":
         return np.array([0], dtype=np.float16)
@@ -217,15 +236,11 @@ def gen(path=None):
                         planes = update_planes(planes, board, board_history)
                         # inputs.append(planes)
                         
-                        # the output is the move from that position
-                        mask = mask_moves([move])[0]
-                        output_array[mask[0], mask[1], mask[2]] = 1
-                        # outputs.append(output_array)
+                        # the policy label is the move from that position
+                        move = mask_moves([move])[0]
 
                         # oss: input = planes, output = (moves + result)!!
-                        yield (planes, (output_array, result)) ### yield before resetting the output
-
-                        output_array[mask[0], mask[1], mask[2]] = 0
+                        yield (planes, (move, result)) ### yield before resetting the output
                         
                         # then you actually push the move preparing for next turn
                         board.push(move)
