@@ -1,6 +1,8 @@
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
+from utils import Config
+conf = Config()
 
 class ResNetBlock(layers.Layer):
 
@@ -188,4 +190,12 @@ def create_model_v2():
     value = layers.Dense(1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(value)
     value = layers.Activation("tanh", name="value")(value)
 
-    return tf.keras.Model(inputs=input, outputs=[policy, value])
+    model = tf.keras.Model(inputs=input, outputs=[policy, value])
+
+    model.compile(
+        optimizer=conf.OPTIMIZER,
+        loss=[conf.LOSS_FN_POLICY, conf.LOSS_FN_VALUE],
+        metrics=[conf.METRIC_FN_POLICY, conf.METRIC_FN_VALUE]
+    )
+
+    return model

@@ -67,7 +67,7 @@ class Config:
 
 
         # to limit the length of games
-        self.MAX_MOVE_COUNT = 200
+        self.MAX_MOVE_COUNT = 100
 
         # MCTS parameters
         self.MAX_DEPTH = 4
@@ -110,6 +110,9 @@ class Config:
         self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                     # from paper
 
         self.METRIC_FN_POLICY = tf.keras.metrics.CategoricalAccuracy()
+        self.METRIC_FN_VALUE = tf.keras.metrics.MeanSquaredError()
+
+        self.SELF_PLAY_BATCH = 512
 
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         return 1 # TODO: implement it
@@ -118,7 +121,7 @@ class Config:
         if num_move <= 60:
             return 1
         else:
-            return 1e-3
+            return 1/5 # --> num_moves ^ 5 --> even small differences in move count will bring to big probability differences
 
 
 conf = Config()
@@ -147,8 +150,9 @@ def mask_moves(legal_moves):
 
 
 def mask_moves_flatten(legal_moves):
-    idx = np.zeros((len(legal_moves), 1), dtype=conf.PLANES_DTYPE_NP)
-    for i, move in enumerate(legal_moves):
+    # idx = np.zeros((len(legal_moves), 1), dtype=conf.PLANES_DTYPE_NP)
+    idx = []
+    for move in legal_moves:
         init_square = move.from_square
         end_square = move.to_square
         x_i, y_i = x_y_from_position(init_square)
@@ -161,7 +165,7 @@ def mask_moves_flatten(legal_moves):
         else:
             tmp = (x_i, y_i, plane_dict[(x,abs(y),promotion)]) # if black promotes y is -1
 
-        idx[i] = np.ravel_multi_index(tmp, (8,8,73))
+        idx.append(np.ravel_multi_index(tmp, (8,8,73)))
     return idx
 
 
@@ -304,3 +308,50 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
         best_move = legal_moves[np.argmax(move_value)]
 
     return best_move, planes
+
+
+class ExperienceBuffer():
+
+    def __init__(self, size):
+        self.size = size
+        self.planes = np.zeros((self.size, *conf.INPUT_SHAPE), dtype=conf.PLANES_DTYPE_NP)  # the bigger the better, check with some experiments
+        self.moves = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP)   # the bigger the better, check with some experiments
+        self.outcome = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP) # the bigger the better, check with some experiments
+        self.filled_up = 0
+        self.rng = np.random.default_rng()
+
+
+    def push(self, result):
+        planes_match = result[0]
+        moves_match = result[1]
+        outcome_match = result[2]
+
+        num_planes = len(planes_match)
+        
+        to_remove = max(0, (self.filled_up + num_planes) - self.size)
+        to_move = self.size - to_remove
+
+        self.planes[:to_move, ...] = self.planes[to_remove:, ...]
+        self.moves[:to_move] = self.moves[to_remove:]
+        self.outcome[:to_move] = self.outcome[to_remove:]
+
+        self.planes[self.filled_up-to_remove:self.filled_up-to_remove+num_planes, ...] = np.stack(planes_match)
+        self.moves[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.stack(moves_match)
+        self.outcome[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.repeat(outcome_match, num_planes)
+
+        self.filled_up = min(self.filled_up+num_planes, self.size)
+
+    
+    def sample(self, batch_size):
+        if self.filled_up >= batch_size:
+            replace = False
+        else:
+            replace = True
+
+        sample_idxs = self.rng.choice(range(self.filled_up), size=batch_size, replace=replace)
+        
+        planes_batch = [self.planes[idx] for idx in sample_idxs] # you don't pop them
+        moves_batch = [self.moves[idx] for idx in sample_idxs] # you don't pop them
+        outcome_batch = [self.outcome[idx] for idx in sample_idxs] # you don't pop them
+        
+        return planes_batch, moves_batch, outcome_batch
