@@ -83,6 +83,12 @@ class Config:
         self.EPS_NOISE = 0.25       # from paper
 
 
+        self.PATH_ENDGAME_TRAIN_DATASET = "data/endgame/train.txt"
+        self.PATH_ENDGAME_EVAL_DATASET = "data/endgame/eval.txt"
+        self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
+        self.N_GAMES_ENDGAME_EVAL =  2*5*5000
+        
+
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         return 1 # TODO: implement it
     

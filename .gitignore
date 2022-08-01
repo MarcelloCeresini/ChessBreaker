@@ -2,10 +2,12 @@
 /data/Database
 /data/dataset
 /data/Lichess Elite Database.7z
-/results/trials
+/results/full_games/trials
+/results/endgames/trials
 /tmp
 /old_stuff
 /tablebase
+/data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
