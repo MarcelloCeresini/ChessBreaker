@@ -65,6 +65,7 @@ class Config:
         # self.PLANES_DTYPE = tf.dtypes.float16 # OSS: MAX 255 MOVES
         self.PLANES_DTYPE_NP = np.float16 
 
+
         # to limit the length of games
         self.MAX_MOVE_COUNT = 200
 
@@ -87,7 +88,28 @@ class Config:
         self.PATH_ENDGAME_EVAL_DATASET = "data/endgame/eval.txt"
         self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
         self.N_GAMES_ENDGAME_EVAL =  2*5*5000
-        
+
+        self.PATH_FIXED_MODEL = "models/fixed_model"
+        self.PATH_UPDATING_MODEL = "models/updating_model"
+        self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{}"
+
+        self.MAX_BUFFER_SIZE = 70000
+        self.NUM_PARALLEL_GAMES = 160
+        self.NUM_TRAINING_STEPS = 100
+
+        self.STEPS_PER_UPDATE = 1000
+        self.STEPS_PER_EVAL_CKPT = 50000
+        self.TOTAL_STEPS = 500000
+
+        lr_boundaries = [100000, 300000, 500000]    # from paper
+        lr_values = [0.2, 0.02, 0.002, 0.0002]      # from paper
+        lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
+        self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
+
+        self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)  # from paper
+        self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                     # from paper
+
+        self.METRIC_FN_POLICY = tf.keras.metrics.CategoricalAccuracy()
 
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         return 1 # TODO: implement it
