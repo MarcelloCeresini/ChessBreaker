@@ -83,7 +83,6 @@ class Config:
         self.ALPHA_DIRICHLET = 0.3 # from paper
         self.EPS_NOISE = 0.25       # from paper
 
-
         self.PATH_ENDGAME_TRAIN_DATASET = "data/endgame/train.txt"
         self.PATH_ENDGAME_EVAL_DATASET = "data/endgame/eval.txt"
         self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
@@ -94,14 +93,15 @@ class Config:
         self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{}"
 
         self.MAX_BUFFER_SIZE = 70000
-        self.NUM_PARALLEL_GAMES = 160
-        self.NUM_TRAINING_STEPS = 100
+        self.NUM_PARALLEL_GAMES = 75
+        self.NUM_TRAINING_STEPS = 150
+        # even if the model sees the same sample more than once, it will not overfit
+        # because the dataset keeps changing
 
-        self.STEPS_PER_UPDATE = 1000
-        self.STEPS_PER_EVAL_CKPT = 50000
-        self.TOTAL_STEPS = 500000
+        self.STEPS_PER_EVAL_CKPT = 5000
+        self.TOTAL_STEPS = 50000
 
-        lr_boundaries = [100000, 300000, 500000]    # from paper
+        lr_boundaries = [10000, 30000, 50000]    # from paper (divided by 100)
         lr_values = [0.2, 0.02, 0.002, 0.0002]      # from paper
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
@@ -112,7 +112,7 @@ class Config:
         self.METRIC_FN_POLICY = tf.keras.metrics.CategoricalAccuracy()
         self.METRIC_FN_VALUE = tf.keras.metrics.MeanSquaredError()
 
-        self.SELF_PLAY_BATCH = 512
+        self.SELF_PLAY_BATCH = 64
 
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         return 1 # TODO: implement it
@@ -321,10 +321,7 @@ class ExperienceBuffer():
         self.rng = np.random.default_rng()
 
 
-    def push(self, result):
-        planes_match = result[0]
-        moves_match = result[1]
-        outcome_match = result[2]
+    def push(self, planes_match, moves_match, outcome_match):
 
         num_planes = len(planes_match)
         
@@ -340,6 +337,8 @@ class ExperienceBuffer():
         self.outcome[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.repeat(outcome_match, num_planes)
 
         self.filled_up = min(self.filled_up+num_planes, self.size)
+        
+        return num_planes
 
     
     def sample(self, batch_size):
@@ -350,8 +349,35 @@ class ExperienceBuffer():
 
         sample_idxs = self.rng.choice(range(self.filled_up), size=batch_size, replace=replace)
         
-        planes_batch = [self.planes[idx] for idx in sample_idxs] # you don't pop them
-        moves_batch = [self.moves[idx] for idx in sample_idxs] # you don't pop them
-        outcome_batch = [self.outcome[idx] for idx in sample_idxs] # you don't pop them
+        planes_batch = np.stack([self.planes[idx] for idx in sample_idxs]) # you don't pop them
+        moves_batch = np.stack([self.moves[idx] for idx in sample_idxs]) # you don't pop them
+        outcome_batch = np.stack([self.outcome[idx] for idx in sample_idxs]) # you don't pop them
         
         return planes_batch, moves_batch, outcome_batch
+        
+    def get_percentage_decisive_games(self):
+        return np.sum(np.abs(self.outcome[:self.filled_up])) / self.filled_up * 100
+
+
+class LossUpdater():
+     
+    def __init__(self):
+        self.policy_loss_value = 0
+        self.value_loss_value = 0
+        self.loss = 0
+        self.step = 0
+    
+    def update(self, p, v, l):
+        self.policy_loss_value += p
+        self.value_loss_value += v
+        self.loss += l
+        self.step += 1
+
+    def get_losses(self):
+        return self.policy_loss_value, self.value_loss_value, self.loss
+
+    def reset_state(self):
+        self.policy_loss_value = 0
+        self.value_loss_value = 0
+        self.loss = 0
+        self.step = 0

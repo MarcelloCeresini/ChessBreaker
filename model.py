@@ -194,8 +194,8 @@ def create_model_v2():
 
     model.compile(
         optimizer=conf.OPTIMIZER,
-        loss=[conf.LOSS_FN_POLICY, conf.LOSS_FN_VALUE],
-        metrics=[conf.METRIC_FN_POLICY, conf.METRIC_FN_VALUE]
+        loss={"policy":conf.LOSS_FN_POLICY, "value":conf.LOSS_FN_VALUE},
+        metrics={"policy":conf.METRIC_FN_POLICY}
     )
 
     return model
