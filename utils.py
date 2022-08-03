@@ -92,17 +92,19 @@ class Config:
         self.PATH_UPDATING_MODEL = "models/updating_model"
         self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{}"
 
-        self.MAX_BUFFER_SIZE = 70000
-        self.NUM_PARALLEL_GAMES = 75
-        self.NUM_TRAINING_STEPS = 150
+        self.MAX_BUFFER_SIZE = 80000
+        self.NUM_PARALLEL_GAMES = 80
+        self.NUM_TRAINING_STEPS = 100
+        self.SELF_PLAY_BATCH = 64
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 
-        self.STEPS_PER_EVAL_CKPT = 5000
+        self.STEPS_PER_EVAL_CKPT = 1000
         self.TOTAL_STEPS = 50000
 
-        lr_boundaries = [10000, 30000, 50000]    # from paper (divided by 100)
-        lr_values = [0.2, 0.02, 0.002, 0.0002]      # from paper
+        # TODO adjust the
+        lr_boundaries = [10000, 30000, 40000]    # from paper (divided by 100)
+        lr_values = [0.002, 0.0002, 0.00002, 0.000002]      # from paper
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
 
@@ -112,13 +114,12 @@ class Config:
         self.METRIC_FN_POLICY = tf.keras.metrics.CategoricalAccuracy()
         self.METRIC_FN_VALUE = tf.keras.metrics.MeanSquaredError()
 
-        self.SELF_PLAY_BATCH = 64
 
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         return 1 # TODO: implement it
     
     def temp_param(self, num_move):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
-        if num_move <= 60:
+        if num_move <= 10: # much less than paper because it's endgames (you don't need to vary openings)
             return 1
         else:
             return 1/5 # --> num_moves ^ 5 --> even small differences in move count will bring to big probability differences
@@ -374,7 +375,7 @@ class LossUpdater():
         self.step += 1
 
     def get_losses(self):
-        return self.policy_loss_value, self.value_loss_value, self.loss
+        return self.policy_loss_value/self.step, self.value_loss_value/self.step, self.loss/self.step
 
     def reset_state(self):
         self.policy_loss_value = 0

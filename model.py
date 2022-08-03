@@ -145,7 +145,7 @@ def create_model():
     return tf.keras.Model(inputs=input, outputs=[action_v, state_v])
 
 
-def create_model_v2():
+def create_model_v2(init_steps=0):
     
     l2_reg = 1e-4
     channels_convolution = 256

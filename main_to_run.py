@@ -1,5 +1,7 @@
 import os
+from pickle import TRUE
 import absl.logging
+from matplotlib.pyplot import step
 import tensorflow as tf
 import warnings
 import numpy as np
@@ -13,11 +15,10 @@ np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
 
 import chess
 from anytree import Node
+import datetime
 from time import time
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from queue import Queue
-from collections import deque
 import ray
 
 
@@ -36,13 +37,8 @@ from model import create_model_v2
 conf = Config()
 print(ray.available_resources())
 
-fixed_model = create_model_v2()
-fixed_model.save(conf.PATH_FIXED_MODEL)
-updating_model = create_model_v2()
-updating_model.save(conf.PATH_UPDATING_MODEL)
-
-dataset = tf.data.TextLineDataset(conf.PATH_ENDGAME_TRAIN_DATASET).shuffle(10000).prefetch(tf.data.AUTOTUNE)
-
+dataset_train = tf.data.TextLineDataset(conf.PATH_ENDGAME_TRAIN_DATASET).shuffle(10000).prefetch(tf.data.AUTOTUNE).repeat()
+dataset_eval = tf.data.TextLineDataset(conf.PATH_ENDGAME_EVAL_DATASET).batch(conf.SELF_PLAY_BATCH).prefetch(tf.data.AUTOTUNE)
 # using np.arrays because we add chunks of data and not one at a time (O(n) to move all data is actually O(n/m), with m chunk size)
 # and also we need to sample randomly batches of data, that for linked lists (like queue) is O(n*batch_zize), instead for arrays is O(batch_size)
 
@@ -233,7 +229,7 @@ def choose_move(root_node, num_move):
     return root_node
 
 
-@ray.remote(num_returns=3)
+@ray.remote(num_returns=3, max_calls=1)
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -265,7 +261,7 @@ def complete_game(model,
     move_counter = 0
 
     # while not root_node.board.is_game_over(claim_draw=True) and root_node.board.fullmove_number <= conf.MAX_MOVE_COUNT:
-    while not root_node.board.is_game_over(claim_draw=True) and move_counter < 10:
+    while not root_node.board.is_game_over(claim_draw=True) and move_counter < conf.MAX_MOVE_COUNT:
         move_counter += 1
         tic = time()
         root_node, eval_c = MTCS(model, root_node, max_depth = max_depth, num_restarts=num_restarts)                            # though the root node you can access all the tree
@@ -273,7 +269,6 @@ def complete_game(model,
         match_planes.append(root_node.planes)                                                                                   # 8x8x113
         root_node = choose_move(root_node, num_move=move_counter)                                                                                      
         match_policy.append(utils.mask_moves_flatten([chess.Move.from_uci(root_node.name)])[0])                                         # appends JUST AN INDEX
-
         if debugging:
             ###### only for debugging ######
             move_list.append(chess.Move.from_uci(root_node.name))
@@ -287,7 +282,7 @@ def complete_game(model,
             print(move_counter, time()-tic)
             ################################
 
-    if move_counter >= 10:
+    if move_counter >= conf.MAX_MOVE_COUNT:
         outcome = utils.outcome("1/2-1/2")
     else:
         outcome = utils.outcome(root_node.board.outcome(claim_draw=True).result())
@@ -312,25 +307,25 @@ def complete_game(model,
 
 def gradient_application(x, y_policy, y_value, model, metric):
     with tf.GradientTape() as tape:
-        policy_logits, value_logits = model(x)
-        print("y", np.average(y_policy))
-        print("logits", np.average(policy_logits))
+        policy_logits, value = model(x)
+        # print("y", y_policy, np.shape(y_policy), type(y_policy))
+        # print("policy_logits", np.shape(policy_logits), type(policy_logits), np.average(policy_logits))
+        # print("value_logits", np.shape(value), type(value), np.average(value))
         policy_loss_value = conf.LOSS_FN_POLICY(y_policy, policy_logits)
-        value_loss_value = conf.LOSS_FN_VALUE(y_value, value_logits)
-        print(policy_loss_value, value_loss_value, sum(model.losses))
+        value_loss_value = conf.LOSS_FN_VALUE(y_value, value)
+        # print(policy_loss_value, value_loss_value, sum(model.losses))
         loss = policy_loss_value + value_loss_value + sum(model.losses) # to add regularization loss
 
     grads = tape.gradient(loss, model.trainable_weights)
-    print("AVERAGE WEIGHT", np.average([np.average(w) for w in model.trainable_weights]))
-    print("AVERAGE GRAD", np.average([np.average(g) for g in grads]))
+    # print("AVERAGE WEIGHT", np.average([np.average(w) for w in model.trainable_weights]))
+    # print("AVERAGE GRAD", np.average([np.average(g) for g in grads]))
     model.optimizer.apply_gradients(zip(grads, model.trainable_weights))
     metric.update_state(y_policy, policy_logits)
 
     return policy_loss_value, value_loss_value, loss
 
 
-def train_loop( fixed_model, 
-                updating_model,
+def train_loop( model_creation_fn,
                 total_steps = conf.TOTAL_STEPS,
                 steps_per_checkpoint = conf.STEPS_PER_EVAL_CKPT,
                 parallel_games = conf.NUM_PARALLEL_GAMES,
@@ -340,35 +335,51 @@ def train_loop( fixed_model,
                 max_depth_MCTS = conf.MAX_DEPTH,
                 num_restarts_MCTS = conf.NUM_RESTARTS
                 ):
-    print("Total loops = {}".format(int(total_steps/consec_train_steps)))
-    print("Total games that will be played = {}".format(int(total_steps/consec_train_steps*parallel_games)))
-    print("Total samples that will be used = {}".format(batch_size*total_steps))
-    print("Total checkpoints that will be created = {}".format(int(total_steps/steps_per_checkpoint)))
+
+    if restart_from == 0:
+        fixed_model = model_creation_fn()
+        fixed_model.save(conf.PATH_FIXED_MODEL)
+        updating_model = model_creation_fn()
+        updating_model.save(conf.PATH_UPDATING_MODEL)
+        updating_model.save(conf.PATH_CKPT_FOR_EVAL.format(0), save_traces=False)
+        # TODO: should also delete files from /logs and /model_checkpoint ???
+    else:
+        fixed_model = tf.keras.models.load_model(conf.PATH_FIXED_MODEL)
+        updating_model = tf.keras.models.load_model(conf.PATH_UPDATING_MODEL)
+
+    actual_steps = total_steps-restart_from
+    print("Total loops = {}".format(int(actual_steps/consec_train_steps)))
+    print("Total games that will be played = {}".format(int(actual_steps/consec_train_steps*parallel_games)))
+    print("Total samples that will be used = {}".format(batch_size*actual_steps))
+    print("Total checkpoints that will be created = {}".format(int(actual_steps/steps_per_checkpoint)))
     
+
     steps = restart_from
-    steps_from_last_eval = 0
+    steps_from_last_ckpt = 0
     loss_updater = utils.LossUpdater()
 
-    tb_callback = tf.keras.callbacks.TensorBoard(
-        log_dir = "logs/self-play", 
-        write_graph = False,
-        write_steps_per_second = True,
-        update_freq = consec_train_steps
-    )
-    tb_callback.set_model(updating_model)
 
+    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    train_log_dir = 'logs/' + current_time
+    train_summary_writer = tf.summary.create_file_writer(train_log_dir)
+
+    updating_model.optimizer.iterations.assign(restart_from)
     metric = tf.keras.metrics.CategoricalAccuracy()
 
     tot_moves = 0
     tot_games = 0
 
     while steps < total_steps:
+        steps += consec_train_steps
+        steps_from_last_ckpt += consec_train_steps
+        
         tic = time()
-        starting_positions = dataset.take(parallel_games)
+        starting_positions = dataset_train.take(parallel_games)
         
         game_ids = []
 
-        for position in starting_positions:
+        for position in (pbar := tqdm(starting_positions)):
+            pbar.set_description("Initializing ray tasks")
             game_ids.append(
                 complete_game.remote(
                     fixed_model, 
@@ -379,22 +390,22 @@ def train_loop( fixed_model,
             )
 
         round_moves = 0
-        for id_ in game_ids:
+        for id_ in (pbar := tqdm(game_ids)):
+            pbar.set_description("Retrieving parallel games")
             planes, moves, outcome = ray.get(id_)
             round_moves += exp_buffer.push(planes, moves, outcome)
         
         tot_moves += round_moves
         tot_games += parallel_games
-        print("Finished {} parallel games in {}s, stacked {} moves in exp buffer".format(parallel_games, time()-tic, round_moves))
-        print("Decisive result percentage = {:.2f}".format(exp_buffer.get_percentage_decisive_games()))
-        print("Buffer size (debugging) {}".format(exp_buffer.size))
-        print("The learning step will consume {} moves".format(consec_train_steps*batch_size))
-        print("On average, the same move will be passed through the network {:.2f} times".format(consec_train_steps*batch_size/tot_moves))
+        print("Finished {} parallel games in {:.2f}s, stacked {} moves in exp buffer (tot {}), the learning step will consume {} moves".format(parallel_games, time()-tic, round_moves, exp_buffer.filled_up, consec_train_steps*batch_size))
+        print("Decisive result percentage = {:.2f}%".format(exp_buffer.get_percentage_decisive_games()))
+        print("On average, the same move will be passed through the network {:.2f} times".format(consec_train_steps*batch_size/round_moves))
+        print("The avg length of a game is {:.2f}".format(tot_moves/tot_games))
         tic = time()
 
         for _ in range(consec_train_steps):
             planes_batch, moves_batch, outcome_batch = exp_buffer.sample(batch_size)
-                
+            
             policy_loss_value, value_loss_value, loss = gradient_application(
                 planes_batch, 
                 moves_batch, 
@@ -404,34 +415,44 @@ def train_loop( fixed_model,
 
             loss_updater.update(policy_loss_value, value_loss_value, loss)
 
-        print("Finished {} train steps in {}s".format(consec_train_steps, time()-tic, tot_moves))
+        # print("Finished {} train steps in {}s".format(consec_train_steps, time()-tic, tot_moves))
         p_loss, v_loss, tot_loss = loss_updater.get_losses()
-        print("Policy loss {} - value loss {} - loss {} - policy_accuracy {}".format(p_loss, v_loss, tot_loss, metric.result()))
+        p_metric = metric.result()
+        # print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
         loss_updater.reset_state()
         metric.reset_states()
-        print("The avg length of a game is {}".format(tot_moves/tot_games))
+        
+        with train_summary_writer.as_default():
+            tf.summary.scalar('policy_loss', p_loss, step=steps)
+            tf.summary.scalar('value_loss', v_loss, step=steps)
+            tf.summary.scalar('loss', tot_loss, step=steps)
+            tf.summary.scalar('policy_accuracy', p_metric, step=steps)
+            tf.summary.scalar('lr', updating_model.optimizer.lr(updating_model.optimizer.iterations), steps)
         
         updating_model.save(conf.PATH_UPDATING_MODEL, save_traces=False) # should decrease saving time, since we don't have custome layers/models
-        fixed_model = tf.keras.models.load_model(conf.PATH_UPDATING_MODEL)
+        fixed_model = tf.keras.models.load_model(conf.PATH_UPDATING_MODEL) # the UPDATING MODEL is loaded into the fixed one
         
-        if steps_from_last_eval > steps_per_checkpoint:
-            steps_from_last_eval = 0
-
+        if steps_from_last_ckpt >= steps_per_checkpoint:
+            steps_from_last_ckpt = 0
+            print("Saving checkpoint at step {}".format(steps))
             updating_model.save(conf.PATH_CKPT_FOR_EVAL.format(steps), save_traces=False)
 
 
-        steps += consec_train_steps
-        steps_from_last_eval += consec_train_steps
-
-
-fixed_model = tf.keras.models.load_model(conf.PATH_FIXED_MODEL)
-updating_model = tf.keras.models.load_model(conf.PATH_UPDATING_MODEL)
-
 train_loop(
-    fixed_model, 
-    updating_model, 
-    total_steps=2000,
-    steps_per_checkpoint=1000,
-    parallel_games=1,
-    consec_train_steps=1,
-    batch_size=2)
+    create_model_v2, 
+    total_steps=conf.TOTAL_STEPS,
+    parallel_games=conf.NUM_PARALLEL_GAMES,
+    consec_train_steps=conf.NUM_TRAINING_STEPS,
+    steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+    batch_size=conf.SELF_PLAY_BATCH,
+    restart_from=0)
+
+# train_loop(
+#     fixed_model, 
+#     updating_model,
+#     total_steps=300,
+#     parallel_games=8,
+#     consec_train_steps=10,
+#     steps_per_checkpoint=20,
+#     batch_size=8,
+#     restart_from=100)
