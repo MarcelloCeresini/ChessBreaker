@@ -229,7 +229,7 @@ def choose_move(root_node, num_move):
     return root_node
 
 
-@ray.remote(num_returns=3, max_calls=1)
+@ray.remote(num_returns=3, max_calls=1) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -261,7 +261,7 @@ def complete_game(model,
     move_counter = 0
 
     # while not root_node.board.is_game_over(claim_draw=True) and root_node.board.fullmove_number <= conf.MAX_MOVE_COUNT:
-    while not root_node.board.is_game_over(claim_draw=True) and move_counter < conf.MAX_MOVE_COUNT:
+    while not root_node.board.is_game_over(claim_draw=True) and move_counter < 10:
         move_counter += 1
         tic = time()
         root_node, eval_c = MTCS(model, root_node, max_depth = max_depth, num_restarts=num_restarts)                            # though the root node you can access all the tree
@@ -282,7 +282,7 @@ def complete_game(model,
             print(move_counter, time()-tic)
             ################################
 
-    if move_counter >= conf.MAX_MOVE_COUNT:
+    if move_counter >= 10:
         outcome = utils.outcome("1/2-1/2")
     else:
         outcome = utils.outcome(root_node.board.outcome(claim_draw=True).result())
@@ -317,8 +317,9 @@ def gradient_application(x, y_policy, y_value, model, metric):
         loss = policy_loss_value + value_loss_value + sum(model.losses) # to add regularization loss
 
     grads = tape.gradient(loss, model.trainable_weights)
-    # print("AVERAGE WEIGHT", np.average([np.average(w) for w in model.trainable_weights]))
-    # print("AVERAGE GRAD", np.average([np.average(g) for g in grads]))
+    print("avg weight", np.average([np.average(np.abs(w)) for w in model.trainable_weights]))
+    print("avg grad", np.average([np.average(g) for g in grads]))
+    grads = [tf.clip_by_norm(g, 1) for g in grads] # avg weight
     model.optimizer.apply_gradients(zip(grads, model.trainable_weights))
     metric.update_state(y_policy, policy_logits)
 
@@ -353,11 +354,9 @@ def train_loop( model_creation_fn,
     print("Total samples that will be used = {}".format(batch_size*actual_steps))
     print("Total checkpoints that will be created = {}".format(int(actual_steps/steps_per_checkpoint)))
     
-
     steps = restart_from
     steps_from_last_ckpt = 0
     loss_updater = utils.LossUpdater()
-
 
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     train_log_dir = 'logs/' + current_time
@@ -425,9 +424,18 @@ def train_loop( model_creation_fn,
         with train_summary_writer.as_default():
             tf.summary.scalar('policy_loss', p_loss, step=steps)
             tf.summary.scalar('value_loss', v_loss, step=steps)
-            tf.summary.scalar('loss', tot_loss, step=steps)
+            tf.summary.scalar('L2_loss', tot_loss-p_loss-v_loss, step=steps)
+            tf.summary.scalar('total_loss', tot_loss, step=steps)
             tf.summary.scalar('policy_accuracy', p_metric, step=steps)
             tf.summary.scalar('lr', updating_model.optimizer.lr(updating_model.optimizer.iterations), steps)
+            
+            for layer in updating_model.layers:
+                for i, weight in enumerate(layer.trainable_weights):
+                    if i==0:
+                        kind = "bias"
+                    else:
+                        kind = "kernel"
+                    tf.summary.histogram(layer.name+kind, weight, steps)
         
         updating_model.save(conf.PATH_UPDATING_MODEL, save_traces=False) # should decrease saving time, since we don't have custome layers/models
         fixed_model = tf.keras.models.load_model(conf.PATH_UPDATING_MODEL) # the UPDATING MODEL is loaded into the fixed one
@@ -438,21 +446,20 @@ def train_loop( model_creation_fn,
             updating_model.save(conf.PATH_CKPT_FOR_EVAL.format(steps), save_traces=False)
 
 
+# train_loop(
+#     create_model_v2, 
+#     total_steps=conf.TOTAL_STEPS,
+#     parallel_games=conf.NUM_PARALLEL_GAMES,
+#     consec_train_steps=conf.NUM_TRAINING_STEPS,
+#     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+#     batch_size=conf.SELF_PLAY_BATCH,
+#     restart_from=0)
+
 train_loop(
     create_model_v2, 
-    total_steps=conf.TOTAL_STEPS,
-    parallel_games=conf.NUM_PARALLEL_GAMES,
-    consec_train_steps=conf.NUM_TRAINING_STEPS,
-    steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
-    batch_size=conf.SELF_PLAY_BATCH,
+    total_steps=300,
+    parallel_games=1,
+    consec_train_steps=10,
+    steps_per_checkpoint=20,
+    batch_size=8,
     restart_from=0)
-
-# train_loop(
-#     fixed_model, 
-#     updating_model,
-#     total_steps=300,
-#     parallel_games=8,
-#     consec_train_steps=10,
-#     steps_per_checkpoint=20,
-#     batch_size=8,
-#     restart_from=100)

@@ -177,6 +177,7 @@ def create_model_v2(init_steps=0):
     policy = layers.BatchNormalization()(policy)
     policy = layers.Activation("gelu")(policy)
     policy = layers.Conv2D(73, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(policy)
+    policy = layers.BatchNormalization()(policy)
     policy = layers.Flatten(name="policy")(policy)
 
     value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
