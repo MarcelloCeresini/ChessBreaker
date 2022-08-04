@@ -151,12 +151,12 @@ def create_model_v2(init_steps=0):
     channels_convolution = 256
     channels_res_block = 256
     channels_policy = 128
-    num_res_blocks = 10
+    num_res_blocks = 8
 
     ###### USING FUNCTIONAL MODEL because the other one was giving an error ########
-    input = layers.Input(shape=(8, 8, 119))
+    input_planes = layers.Input(shape=(8, 8, 119), name="planes")
 
-    x = layers.Conv2D(channels_convolution, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(input)
+    x = layers.Conv2D(channels_convolution, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(input_planes)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("gelu")(x)
 
@@ -178,7 +178,10 @@ def create_model_v2(init_steps=0):
     policy = layers.Activation("gelu")(policy)
     policy = layers.Conv2D(73, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(policy)
     policy = layers.BatchNormalization()(policy)
-    policy = layers.Flatten(name="policy")(policy)
+
+    policy = layers.Flatten()(policy)
+    input_legal_moves = layers.Input(shape=(8*8*73), name="legal_moves")                            # array with 1 for legal moves, 0 otherwise
+    policy = layers.multiply([policy, input_legal_moves], name="policy")                             # the result is a boolean mask PRIOR to the crossentropy
 
     value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
     value = layers.BatchNormalization()(value)
@@ -191,7 +194,7 @@ def create_model_v2(init_steps=0):
     value = layers.Dense(1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(value)
     value = layers.Activation("tanh", name="value")(value)
 
-    model = tf.keras.Model(inputs=input, outputs=[policy, value])
+    model = tf.keras.Model(inputs=[input_planes, input_legal_moves], outputs=[policy, value])
 
     model.compile(
         optimizer=conf.OPTIMIZER,

@@ -10,6 +10,7 @@
 /data
 /models
 /logs
+/model_checkpoint
 
 
 # Byte-compiled / optimized / DLL files

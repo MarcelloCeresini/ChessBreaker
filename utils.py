@@ -72,6 +72,11 @@ class Config:
         # MCTS parameters
         self.MAX_DEPTH = 4
         self.NUM_RESTARTS = 100
+
+        self.MAXIMUM_EXPL_PARAM = 1
+        self.MINIMUM_EXPL_PARAM = 0.2
+
+        self.TEMP_PARAM = 0.2
         
         self.BATCH_DIM = 8
         self.IMITATION_LEARNING_BATCH = 1024
@@ -86,25 +91,29 @@ class Config:
         self.PATH_ENDGAME_TRAIN_DATASET = "data/endgame/train.txt"
         self.PATH_ENDGAME_EVAL_DATASET = "data/endgame/eval.txt"
         self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
-        self.N_GAMES_ENDGAME_EVAL =  2*5*5000
+        self.N_GAMES_ENDGAME_EVAL =  2*5*50
 
         self.PATH_FIXED_MODEL = "models/fixed_model"
         self.PATH_UPDATING_MODEL = "models/updating_model"
         self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{}"
 
-        self.MAX_BUFFER_SIZE = 80000
-        self.NUM_PARALLEL_GAMES = 80
-        self.NUM_TRAINING_STEPS = 100
+        # max_buffer_size/(games*max_moves) ~= n_loops of changing buffer
+        # this means that every 5 loops it changes --> 500 train steps per change
+        # could reuse the same sample 500 times
+
+        self.MAX_BUFFER_SIZE = 40000
+        self.NUM_PARALLEL_GAMES = 80 
+
+        self.NUM_TRAINING_STEPS = 100 #  consecutive --> so the model that plays and that learns are not strictly correlated
         self.SELF_PLAY_BATCH = 64
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 
-        self.STEPS_PER_EVAL_CKPT = 1000
+        self.STEPS_PER_EVAL_CKPT = 500
         self.TOTAL_STEPS = 50000
 
-        # TODO adjust the
-        lr_boundaries = [10000, 30000, 40000]    # from paper (divided by 100)
-        lr_values = [0.002, 0.0002, 0.00002, 0.000002]      # from paper
+        lr_boundaries = [10000, 30000]    # idea from paper, numbers changed
+        lr_values = [0.002, 0.0002, 0.00002]
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
 
@@ -116,13 +125,18 @@ class Config:
 
 
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
-        return 1 # TODO: implement it
+        # if you are descending the tree for the 100th time, you should rely more on the visit count than on the prior of the model (if the prior was good at the beginning, the node will have been visited a lot)
+        expl_param = conf.MAXIMUM_EXPL_PARAM*(1-iter/conf.NUM_RESTARTS) + conf.MINIMUM_EXPL_PARAM*(iter/conf.NUM_RESTARTS)
+        return expl_param # TODO: implement it
     
     def temp_param(self, num_move):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
-        if num_move <= 10: # much less than paper because it's endgames (you don't need to vary openings)
-            return 1
-        else:
-            return 1/5 # --> num_moves ^ 5 --> even small differences in move count will bring to big probability differences
+        return conf.TEMP_PARAM # you should never "try" different moves because the starting position is never the same --> always go for the best move
+        
+        ### from paper ###
+        # if num_move <= 60: 
+        #     return 1
+        # else:
+        #     return 1/5 # --> num_moves ^ 5 --> even small differences in move count will bring to big probability differences
 
 
 conf = Config()
@@ -132,27 +146,9 @@ def x_y_from_position(position):
     return (position%8, position//8)
 
 
-def mask_moves(legal_moves):
-    idx = []
-    for move in legal_moves:
-        init_square = move.from_square
-        end_square = move.to_square
-        x_i, y_i = x_y_from_position(init_square)
-        x_f, y_f = x_y_from_position(end_square)
-        x, y = (x_f - x_i, y_f - y_i)
-
-        promotion = move.promotion
-        if promotion == None or promotion == chess.QUEEN:
-            idx.append((x_i, y_i, plane_dict[(x,y)]))
-        else:
-            idx.append((x_i, y_i, plane_dict[(x,abs(y),promotion)])) # if black promotes y is -1
-            
-    return idx
-
-
 def mask_moves_flatten(legal_moves):
     # idx = np.zeros((len(legal_moves), 1), dtype=conf.PLANES_DTYPE_NP)
-    idx = []
+    idxs = []
     for move in legal_moves:
         init_square = move.from_square
         end_square = move.to_square
@@ -166,8 +162,15 @@ def mask_moves_flatten(legal_moves):
         else:
             tmp = (x_i, y_i, plane_dict[(x,abs(y),promotion)]) # if black promotes y is -1
 
-        idx.append(np.ravel_multi_index(tmp, (8,8,73)))
-    return idx
+        idxs.append(np.ravel_multi_index(tmp, (8,8,73)))
+    return idxs
+
+
+def scatter_idxs(idxs):
+    result = np.zeros(8*8*73, dtype=conf.PLANES_DTYPE_NP)
+    for idx in idxs:
+        result[idx] = 1
+    return result
 
 
 def outcome(res):
@@ -197,14 +200,14 @@ def special_input_planes(board):                                    # not repeat
     
     special_planes = np.zeros([*conf.BOARD_SHAPE, conf.SPECIAL_PLANES], conf.PLANES_DTYPE_NP)
     special_planes[:,:,0] = board.turn                                 
-    special_planes[:,:,1] = board.fullmove_number                    
-    special_planes[:,:,2] = board.has_kingside_castling_rights(True)   
+    special_planes[:,:,1] = board.fullmove_number/conf.MAX_MOVE_COUNT   # normalization to [0,1]                    
+    special_planes[:,:,2] = board.has_kingside_castling_rights(True)    # always 0 in endgames, could remove (but it's more general this way)
     special_planes[:,:,3] = board.has_queenside_castling_rights(True)  
     special_planes[:,:,4] = board.has_kingside_castling_rights(False)  
     special_planes[:,:,5] = board.has_queenside_castling_rights(False) 
-    special_planes[:,:,6] = board.halfmove_clock                       
+    special_planes[:,:,6] = board.halfmove_clock/50                     # rule in chess: draw after 50 half moves without capture/pawn move   
 
-    return special_planes                                            # transpose to have plane number last --> in order to concat them
+    return special_planes
 
 
 def update_planes(old, board, board_history):
@@ -236,7 +239,6 @@ def update_planes(old, board, board_history):
 
 def gen(path=None):
     planes = None
-    output_array = np.zeros([*conf.BOARD_SHAPE, conf.N_PLANES], dtype=np.float16)
     
     if path == None:
         database_path = '/home/marcello/github/ChessBreaker/data/Database'
@@ -270,7 +272,7 @@ def gen(path=None):
                         # inputs.append(planes)
                         
                         # the policy label is the move from that position
-                        move = mask_moves([move])[0]
+                        move = mask_moves_flatten([move])[0]
 
                         # oss: input = planes, output = (moves + result)!!
                         yield (planes, (move, result)) ### yield before resetting the output
@@ -289,13 +291,16 @@ def softmax(x):
 def select_best_move(model, planes, board, board_history, probabilistic=False):
     planes = update_planes(planes, board, board_history)
     legal_moves = list(board.legal_moves)
-    action_v, outcome = model(tf.expand_dims(planes, axis=0))
-    action_v = action_v[0]
+    idxs = mask_moves_flatten(legal_moves)
+    legal_moves_input = scatter_idxs(idxs)
+    action_v, _ = model([
+        tf.expand_dims(planes, axis=0), 
+        tf.expand_dims(legal_moves_input, axis=0)])
+    action_v = action_v[0] # batch of 1
 
-    idxs = mask_moves(legal_moves)
     move_value = []
-    for move, idx in zip(legal_moves, idxs):
-        move_value.append(action_v[idx[0], idx[1], idx[2]].numpy())
+    for _, idx in zip(legal_moves, idxs):
+        move_value.append(action_v[idx].numpy())
 
     move_value = softmax(move_value)
 
@@ -316,13 +321,14 @@ class ExperienceBuffer():
     def __init__(self, size):
         self.size = size
         self.planes = np.zeros((self.size, *conf.INPUT_SHAPE), dtype=conf.PLANES_DTYPE_NP)  # the bigger the better, check with some experiments
+        self.legal_moves = np.zeros((self.size, 8*8*73), dtype=conf.PLANES_DTYPE_NP)  # the bigger the better, check with some experiments
         self.moves = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP)   # the bigger the better, check with some experiments
         self.outcome = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP) # the bigger the better, check with some experiments
         self.filled_up = 0
         self.rng = np.random.default_rng()
 
 
-    def push(self, planes_match, moves_match, outcome_match):
+    def push(self, planes_match, legal_moves, moves_match, outcome_match):
 
         num_planes = len(planes_match)
         
@@ -330,10 +336,12 @@ class ExperienceBuffer():
         to_move = self.size - to_remove
 
         self.planes[:to_move, ...] = self.planes[to_remove:, ...]
+        self.legal_moves[:to_move, ...] = self.legal_moves[to_remove:, ...]
         self.moves[:to_move] = self.moves[to_remove:]
         self.outcome[:to_move] = self.outcome[to_remove:]
 
         self.planes[self.filled_up-to_remove:self.filled_up-to_remove+num_planes, ...] = np.stack(planes_match)
+        self.legal_moves[self.filled_up-to_remove:self.filled_up-to_remove+num_planes, ...] = np.stack(legal_moves)
         self.moves[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.stack(moves_match)
         self.outcome[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.repeat(outcome_match, num_planes)
 
@@ -351,11 +359,13 @@ class ExperienceBuffer():
         sample_idxs = self.rng.choice(range(self.filled_up), size=batch_size, replace=replace)
         
         planes_batch = np.stack([self.planes[idx] for idx in sample_idxs]) # you don't pop them
+        legal_moves_batch = np.stack([self.legal_moves[idx] for idx in sample_idxs]) # you don't pop them
         moves_batch = np.stack([self.moves[idx] for idx in sample_idxs]) # you don't pop them
         outcome_batch = np.stack([self.outcome[idx] for idx in sample_idxs]) # you don't pop them
         
-        return planes_batch, moves_batch, outcome_batch
+        return planes_batch, legal_moves_batch,  moves_batch, outcome_batch
         
+
     def get_percentage_decisive_games(self):
         return np.sum(np.abs(self.outcome[:self.filled_up])) / self.filled_up * 100
 
