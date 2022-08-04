@@ -1,6 +1,7 @@
 import chess
 import chess.pgn
 import tensorflow as tf
+import datetime
 import utils
 
 conf = utils.Config()
@@ -11,6 +12,11 @@ models = [
 ]
 
 eval_dataset = tf.data.TextLineDataset(conf.PATH_ENDGAME_EVAL_DATASET).prefetch(tf.data.AUTOTUNE)
+
+current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+pgn_path = "results/endgame/{}.pgn".format(current_time)
+with open(pgn_path, "w") as f: # to generate the file in case it does not exist
+    pass
 
 for model_1_name in models:
     model_1 = tf.keras.models.load_model(model_1_name)
@@ -55,6 +61,6 @@ for model_1_name in models:
             
             game.headers["Result"] = board.outcome(claim_draw=True).result()
 
-            with open("results/01-10-18-27-35-44.pgn", "a") as f:
+            with open(pgn_path, "a") as f:
                 print(game, file=f, end="\n\n")
             

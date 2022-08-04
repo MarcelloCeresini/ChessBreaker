@@ -32,7 +32,7 @@ rng = default_rng()
 
 import utils
 from utils import plane_dict, Config, x_y_from_position
-from model import create_model_v2
+from model import create_model
 
 conf = Config()
 print(ray.available_resources())
@@ -419,7 +419,7 @@ def train_loop( model_creation_fn,
 
 
 train_loop(
-    create_model_v2, 
+    create_model, 
     total_steps=conf.TOTAL_STEPS,
     parallel_games=conf.NUM_PARALLEL_GAMES,
     consec_train_steps=conf.NUM_TRAINING_STEPS,
@@ -428,7 +428,7 @@ train_loop(
     restart_from=0)
 
 # train_loop(
-#     create_model_v2, 
+#     create_model, 
 #     total_steps=300,
 #     parallel_games=1,
 #     consec_train_steps=10,

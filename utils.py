@@ -110,9 +110,9 @@ class Config:
         # because the dataset keeps changing
 
         self.STEPS_PER_EVAL_CKPT = 500
-        self.TOTAL_STEPS = 50000
+        self.TOTAL_STEPS = 10000
 
-        lr_boundaries = [10000, 30000]    # idea from paper, numbers changed
+        lr_boundaries = [3000, 8000]    # idea from paper, numbers changed
         lr_values = [0.002, 0.0002, 0.00002]
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
