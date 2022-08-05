@@ -2,10 +2,40 @@ import tensorflow as tf
 from tensorflow import keras
 from keras import layers
 from utils import Config
+import numpy as np
+
 conf = Config()
 
+class LogitsMaskToSoftmax(keras.layers.Layer):
+    def __init__(self, **kwargs):
+        super(LogitsMaskToSoftmax, self).__init__(**kwargs)
 
-def create_model(init_steps=0):
+    def call(self, *args):
+        logits, mask = zip(*args)
+        # masked_logits = tf.boolean_mask(logits, mask)
+        masked_probs = tf.boolean_mask(logits, mask)
+        # masked_probs = tf.nn.softmax(masked_logits)
+        probs = tf.scatter_nd(tf.where(mask), masked_probs, tf.shape(mask, out_type=tf.int64))
+        probs = tf.squeeze(probs, axis=0)
+        return probs
+
+# class TurnTensor(keras.layers.Layer):
+#     def __init__(self, **kwargs):
+#         super(TurnTensor, self).__init__(**kwargs)
+#         self.mask = tf.stack(
+#                         tf.fill((8,8,112),  False),
+#                         tf.fill((8,8,1),    True),
+#                         tf.fill((8,8,6),    False)
+#         )
+
+#     def call(self, planes):
+#         batch_size = tf.shape(planes)[0]
+#         mask = tf.repeat(self.mask, repeats=batch_size, axis=0)
+#         turn_plane = tf.boolean_mask(planes, mask)
+#         turn_value = tf.math.reduce_mean(turn_plane, axis=[1,2])
+#         return probs
+
+def create_model():
     
     l2_reg = 1e-4
     channels_convolution = 256
@@ -14,7 +44,18 @@ def create_model(init_steps=0):
     num_res_blocks = 8
 
     ###### USING FUNCTIONAL MODEL because the other one was giving an error ########
+    input_legal_moves = layers.Input(shape=(8*8*73), name="legal_moves")                            # array with 1 for legal moves, 0 otherwise
+
     input_planes = layers.Input(shape=(8, 8, 119), name="planes")
+    turn = layers.Lambda(lambda x: tf.expand_dims(x[..., -7], axis=-1))(input_planes) # 1 for white, -1 for black
+    turn = layers.GlobalAveragePooling2D()(turn)
+    
+    # dense_layer_turn = layers.Dense(8*8*73, kernel_initializer=tf.keras.initializers.Constant(value=1), use_bias=False)
+    # dense_layer_turn.build((None, 1))
+    # dense_layer_turn.trainable = False
+    # turn = dense_layer_turn(turn)
+
+    turn = layers.Dense(8*8*73, kernel_initializer=tf.keras.initializers.Constant(value=1), use_bias=False, trainable=False)(turn)
 
     x = layers.Conv2D(channels_convolution, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(input_planes)
     x = layers.BatchNormalization()(x)
@@ -40,8 +81,9 @@ def create_model(init_steps=0):
     policy = layers.BatchNormalization()(policy)
 
     policy = layers.Flatten()(policy)
-    input_legal_moves = layers.Input(shape=(8*8*73), name="legal_moves")                            # array with 1 for legal moves, 0 otherwise
-    policy = layers.multiply([policy, input_legal_moves], name="policy")                             # the result is a boolean mask PRIOR to the crossentropy
+    # for "black" moves, we want the logits to be POSITIVE as well! otherwise the log from the crossentropy will kill them
+    policy = layers.Multiply()([policy, turn]) # black turn --> swap signs
+    policy = LogitsMaskToSoftmax(name="policy")([policy, input_legal_moves])
 
     value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
     value = layers.BatchNormalization()(value)

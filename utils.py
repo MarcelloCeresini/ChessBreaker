@@ -67,7 +67,7 @@ class Config:
 
 
         # to limit the length of games
-        self.MAX_MOVE_COUNT = 100
+        self.MAX_MOVE_COUNT = 10
 
         # MCTS parameters
         self.MAX_DEPTH = 4
@@ -117,10 +117,10 @@ class Config:
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
 
-        self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)  # from paper
+        self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy()  # from paper
         self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                     # from paper
 
-        self.METRIC_FN_POLICY = tf.keras.metrics.CategoricalAccuracy()
+        self.METRIC_FN_POLICY = tf.keras.metrics.SparseCategoricalAccuracy()
         self.METRIC_FN_VALUE = tf.keras.metrics.MeanSquaredError()
 
 
@@ -199,7 +199,7 @@ def reduce_repetitions(leaf_node_batch, legal_moves_batch):
 def special_input_planes(board):                                    # not repeated planes
     
     special_planes = np.zeros([*conf.BOARD_SHAPE, conf.SPECIAL_PLANES], conf.PLANES_DTYPE_NP)
-    special_planes[:,:,0] = board.turn                                 
+    special_planes[:,:,0] = board.turn*2-1                                 
     special_planes[:,:,1] = board.fullmove_number/conf.MAX_MOVE_COUNT   # normalization to [0,1]                    
     special_planes[:,:,2] = board.has_kingside_castling_rights(True)    # always 0 in endgames, could remove (but it's more general this way)
     special_planes[:,:,3] = board.has_queenside_castling_rights(True)  
@@ -299,7 +299,7 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
     action_v = action_v[0] # batch of 1
 
     move_value = []
-    for _, idx in zip(legal_moves, idxs):
+    for idx in idxs:
         move_value.append(action_v[idx].numpy())
 
     move_value = softmax(move_value)

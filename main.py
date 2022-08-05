@@ -24,8 +24,8 @@ import ray
 
 ray.shutdown()
 ray.init(
-    log_to_driver = False, # comment to see logs from workers
-    include_dashboard=False)
+    log_to_driver = False,  # comment to see logs from workers
+    include_dashboard=False)         # to remove objects in ray's object_store_memory that are no longer in use
 
 from numpy.random import default_rng
 rng = default_rng()
@@ -35,7 +35,7 @@ from utils import plane_dict, Config, x_y_from_position
 from model import create_model
 
 conf = Config()
-print(ray.available_resources())
+# print(ray.available_resources())
 
 dataset_train = tf.data.TextLineDataset(conf.PATH_ENDGAME_TRAIN_DATASET).shuffle(10000).prefetch(tf.data.AUTOTUNE).repeat()
 # using np.arrays because we add chunks of data and not one at a time (O(n) to move all data is actually O(n/m), with m chunk size)
@@ -106,19 +106,21 @@ def MTCS(model, root_node, max_depth, num_restarts):
                 # important! save legal moves AFTER choosing root_node (they have to be the legal moves available in that position)
                 legal_moves = list(root_node.board.legal_moves)
 
-                if len(legal_moves) == 0:
+                if len(legal_moves) == 0: # if you can't move, the match is finished
                     step_down = False
                     final_outcome = root_node.board.outcome(claim_draw=True)
 
                     if final_outcome != None:
                         root_node.is_finish_position = True
                         if final_outcome.winner == None:
+                            # ACTION_VALUE ASSIGNATION
                             root_node.action_value = 0
                         else:
-                            root_node.action_value = int(final_outcome.winner)*2-1 # winner white = 1, black =1 --> we want +1 and -1
+                            # ACTION_VALUE ASSIGNATION
+                            root_node.action_value = int(final_outcome.winner)*2-1 # winner white = 1, black =0 --> we want +1 and -1
                     else:
                         print("Something's wrong")
-                else:
+                else: # if instead there are legal moves, keep going and expand it
                     leaf_node_batch.append(root_node)
                     legal_moves_batch.append(legal_moves)
                 
@@ -153,11 +155,19 @@ def MTCS(model, root_node, max_depth, num_restarts):
                         nodes_to_visit.put_nowait(root_node)
                         
                         mask_idx = utils.mask_moves_flatten(legal_moves)
-                        priors = [full_moves[idx] for idx in mask_idx]                        # boolean mask returns a tensor of only the values that were masked (as a list let's say)
+                        
+                        # we want all the priors POSITIVE in order to comply with training
+                        # so we swap the signs inside the model when it's black's turn
+                        # since we want the value of the nodes (and so, also the priors) in which black wins
+                        # to be negative, we need to swap them again
+                        turn = root_node.board.turn*2-1 # white = 1, black = -1
+                        priors = [full_moves[idx]*turn for idx in mask_idx]                        # boolean mask returns a tensor of only the values that were masked (as a list let's say)
+                                                
                         # 0.006434917449951172
                         # 1.3113021850585938e-05
                         root_node.action_value = outcome    
                         
+                        # TODO: maybe a second training without this? 
                         if root_node == INIT_ROOT:  # increase exploration at the root, since if the network is not good it will not make good starting choices
                             dir_noise = rng.dirichlet([conf.ALPHA_DIRICHLET]*len(priors))
                             priors = [((1-conf.EPS_NOISE)*p + conf.EPS_NOISE*noise) for p, noise in zip(priors, dir_noise)]
@@ -221,7 +231,7 @@ def choose_move(root_node, num_move):
     assert root_node.children != [], "No children, cannot choose move"
     p = [child.calculate_move_probability(num_move) for child in children] 
     p_norm = [i/sum(p) for i in p] # normalize probabilities
-
+        
     root_node = np.random.choice(
         children, 
         p = p_norm  # choose the child proportionally to the number of times it has been visited (exponentiated by a temperature parameter)
@@ -334,12 +344,13 @@ def train_loop( model_creation_fn,
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
 
     updating_model.optimizer.iterations.assign(restart_from)
-    metric = tf.keras.metrics.CategoricalAccuracy()
+    metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
     tot_moves = 0
     tot_games = 0
 
     while steps < total_steps:
+        print(ray.available_resources())
         steps += consec_train_steps
         steps_from_last_ckpt += consec_train_steps
         
@@ -364,7 +375,12 @@ def train_loop( model_creation_fn,
             pbar.set_description("Retrieving parallel games")
             planes, legal_moves, moves, outcome = ray.get(id_)
             round_moves += exp_buffer.push(planes, legal_moves, moves, outcome)
+            # delete the reference to "ray.get"
+            del planes, legal_moves, moves, outcome
         
+        # delete the reference to "ray.put" or "ray.remote"
+        del game_ids # to decrease / avoid memory leaks caused by ray in its object_store_memory
+
         tot_moves += round_moves
         tot_games += parallel_games
         print("Finished {} parallel games in {:.2f}s, stacked {} moves in exp buffer (tot {}), the learning step will consume {} moves".format(parallel_games, time()-tic, round_moves, exp_buffer.filled_up, consec_train_steps*batch_size))
@@ -404,9 +420,9 @@ def train_loop( model_creation_fn,
             for layer in updating_model.layers:
                 for i, weight in enumerate(layer.trainable_weights):
                     if i==0:
-                        kind = "bias"
+                        kind = "_kernel"
                     else:
-                        kind = "kernel"
+                        kind = "_bias"
                     tf.summary.histogram(layer.name+kind, weight, steps)
         
         updating_model.save(conf.PATH_UPDATING_MODEL, save_traces=False) # should decrease saving time, since we don't have custome layers/models
@@ -418,20 +434,23 @@ def train_loop( model_creation_fn,
             updating_model.save(conf.PATH_CKPT_FOR_EVAL.format(steps), save_traces=False)
 
 
-train_loop(
-    create_model, 
-    total_steps=conf.TOTAL_STEPS,
-    parallel_games=conf.NUM_PARALLEL_GAMES,
-    consec_train_steps=conf.NUM_TRAINING_STEPS,
-    steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
-    batch_size=conf.SELF_PLAY_BATCH,
-    restart_from=0)
-
 # train_loop(
 #     create_model, 
-#     total_steps=300,
-#     parallel_games=1,
-#     consec_train_steps=10,
-#     steps_per_checkpoint=20,
-#     batch_size=8,
+#     total_steps=conf.TOTAL_STEPS,
+#     parallel_games=conf.NUM_PARALLEL_GAMES,
+#     consec_train_steps=conf.NUM_TRAINING_STEPS,
+#     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+#     batch_size=conf.SELF_PLAY_BATCH,
 #     restart_from=0)
+
+train_loop(
+    create_model, 
+    total_steps=300,
+    parallel_games=1,
+    consec_train_steps=10,
+    steps_per_checkpoint=20,
+    batch_size=8,
+    restart_from=0)
+
+# model = create_model()
+# model.summary()

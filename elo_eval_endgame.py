@@ -8,13 +8,15 @@ conf = utils.Config()
 
 models = [
     "/home/marcello/github/ChessBreaker/model_checkpoint/step-0",
-    "/home/marcello/github/ChessBreaker/model_checkpoint/step-500"
+    "/home/marcello/github/ChessBreaker/model_checkpoint/step-500",
+    "/home/marcello/github/ChessBreaker/model_checkpoint/step-1000",
 ]
 
 eval_dataset = tf.data.TextLineDataset(conf.PATH_ENDGAME_EVAL_DATASET).prefetch(tf.data.AUTOTUNE)
 
 current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 pgn_path = "results/endgame/{}.pgn".format(current_time)
+
 with open(pgn_path, "w") as f: # to generate the file in case it does not exist
     pass
 
@@ -28,15 +30,18 @@ for model_1_name in models:
         print("1", model_1_name)
         print("2", model_2_name)
 
+        round = 0
         for fen in eval_dataset:
+            round+=1
             game = chess.pgn.Game()
-            game.headers["Round"] = str(i)
+            game.headers["Round"] = str(round)
             game.headers["White"] = str(model_1_name.split("/")[-1])
             game.headers["Black"] = str(model_2_name.split("/")[-1])
 
             planes = None
             board = chess.Board()
-            board.set_fen(fen)
+            board.set_fen(fen.numpy().decode("utf8"))
+            game.setup(board)
             board_history = [board.fen()[:-6]]
             model = model_2
             i=0
@@ -48,7 +53,7 @@ for model_1_name in models:
                     model = model_2
                 
                 move, planes = utils.select_best_move(model, planes, board, board_history, probabilistic=True)
-
+                
                 if i==0:
                     node = game.add_variation(move)
                 else:
