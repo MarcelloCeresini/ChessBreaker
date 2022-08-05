@@ -19,6 +19,13 @@ class LogitsMaskToSoftmax(keras.layers.Layer):
         probs = tf.squeeze(probs, axis=0)
         return probs
 
+    def get_config(self):
+        return {}
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
+        
 # class TurnTensor(keras.layers.Layer):
 #     def __init__(self, **kwargs):
 #         super(TurnTensor, self).__init__(**kwargs)
@@ -49,12 +56,6 @@ def create_model():
     input_planes = layers.Input(shape=(8, 8, 119), name="planes")
     turn = layers.Lambda(lambda x: tf.expand_dims(x[..., -7], axis=-1))(input_planes) # 1 for white, -1 for black
     turn = layers.GlobalAveragePooling2D()(turn)
-    
-    # dense_layer_turn = layers.Dense(8*8*73, kernel_initializer=tf.keras.initializers.Constant(value=1), use_bias=False)
-    # dense_layer_turn.build((None, 1))
-    # dense_layer_turn.trainable = False
-    # turn = dense_layer_turn(turn)
-
     turn = layers.Dense(8*8*73, kernel_initializer=tf.keras.initializers.Constant(value=1), use_bias=False, trainable=False)(turn)
 
     x = layers.Conv2D(channels_convolution, 3, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(input_planes)

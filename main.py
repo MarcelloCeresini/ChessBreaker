@@ -32,7 +32,7 @@ rng = default_rng()
 
 import utils
 from utils import plane_dict, Config, x_y_from_position
-from model import create_model
+from model import create_model, LogitsMaskToSoftmax
 
 conf = Config()
 # print(ray.available_resources())
@@ -318,16 +318,18 @@ def train_loop( model_creation_fn,
                 num_restarts_MCTS = conf.NUM_RESTARTS
                 ):
 
-    if restart_from == 0:
-        fixed_model = model_creation_fn()
-        fixed_model.save(conf.PATH_FIXED_MODEL)
+    custom_objects = {"LogitsMaskToSoftmax": LogitsMaskToSoftmax}
+    fixed_model = model_creation_fn()
+    config = fixed_model.get_config()
+    if restart_from == 0:        
         updating_model = model_creation_fn()
         updating_model.save(conf.PATH_UPDATING_MODEL)
         updating_model.save(conf.PATH_CKPT_FOR_EVAL.format(0), save_traces=False)
         # TODO: should also delete files from /logs and /model_checkpoint ???
     else:
-        fixed_model = tf.keras.models.load_model(conf.PATH_FIXED_MODEL)
-        updating_model = tf.keras.models.load_model(conf.PATH_UPDATING_MODEL)
+        with tf.keras.utils.custom_object_scope(custom_objects):
+            updating_model = tf.keras.Model.from_config(config)
+        updating_model.load_weights(conf.PATH_UPDATING_MODEL)
 
     actual_steps = total_steps-restart_from
     print("Total loops = {}".format(int(actual_steps/consec_train_steps)))
