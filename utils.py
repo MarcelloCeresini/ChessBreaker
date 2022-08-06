@@ -116,6 +116,7 @@ class Config:
         lr_values = [0.002, 0.0002, 0.00002]
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
+        self.OPTIMIZER_W_PATH = 'model_checkpoints/optimizer.pkl'
 
         self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy()  # from paper
         self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                     # from paper
@@ -392,3 +393,14 @@ class LossUpdater():
         self.value_loss_value = 0
         self.loss = 0
         self.step = 0
+        
+def get_and_save_optimizer_weights(model):
+    weights = model.optimizer.get_weights()
+    with open(conf.OPTIMIZER_W_PATH, 'wb') as f:
+        pickle.dump(weights, f)
+
+def load_and_set_optimizer_weights(model):
+    with open(conf.OPTIMIZER_W_PATH, 'rb') as f:
+        weights = pickle.load(f)
+    model.optimizer.set_weights(weights)
+
