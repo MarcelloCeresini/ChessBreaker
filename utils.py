@@ -3,6 +3,7 @@ import numpy as np
 import chess
 import glob, os
 import tensorflow as tf
+import pickle
 
 # queen moves of distance 1, planes from 0 to 7
 plane_dict = {
