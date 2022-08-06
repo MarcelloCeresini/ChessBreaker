@@ -96,7 +96,7 @@ class Config:
 
         self.PATH_FIXED_MODEL = "models/fixed_model"
         self.PATH_UPDATING_MODEL = "models/updating_model"
-        self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{}"
+        self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{:05.0f}"
 
         # max_buffer_size/(games*max_moves) ~= n_loops of changing buffer
         # this means that every 5 loops it changes --> 500 train steps per change
