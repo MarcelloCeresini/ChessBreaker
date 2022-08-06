@@ -398,29 +398,39 @@ class LossUpdater():
         
 def get_and_save_optimizer_weights(model):
     weights = model.optimizer.get_weights()
+    config = model.optimizer.get_config()
     
     if not os.path.exists(conf.OPTIMIZER_W_PATH.split("/")[0]):
         os.makedirs(conf.OPTIMIZER_W_PATH.split("/")[0])
         
-    with open(conf.OPTIMIZER_W_PATH, 'wb') as f:
+    with open(conf.OPTIMIZER_W_PATH, 'w') as f:
         pickle.dump(weights, f)
+    
+    with open(conf.OPTIMIZER_CONFIG_PATH, 'w') as f:
+        pickle.dump(config, f)
 
 def load_and_set_optimizer_weights(model):
     trainable_weights = model.trainable_weights
     
-    # dummy zero gradients
-    zero_grads = [tf.zeros_like(w) for w in trainable_weights]
-    # save current state of variables
-    saved_weights = [tf.identity(w) for w in trainable_weights]
-
-    # Apply gradients which don't do nothing with Adam to INITIALIZE it
-    optimizer.apply_gradients(zip(zero_grads, trainable_weights))
-
-    # Reload variables
-    [x.assign(y) for x,y in zip(trainable_weights, saved_weights)]
-
+    # # dummy zero gradients
+    # zero_grads = [tf.zeros_like(w) for w in trainable_weights]
+    # # save current state of variables
+    # saved_weights = [tf.identity(w) for w in trainable_weights]
+    #
+    # # Apply gradients which don't do nothing with Adam to INITIALIZE it
+    # optimizer.apply_gradients(zip(zero_grads, trainable_weights))
+    #
+    # # Reload variables
+    # [x.assign(y) for x,y in zip(trainable_weights, saved_weights)]
+    
+    # Load config
+    with open(conf.OPTIMIZER_CONFIG_PATH, 'r') as f:
+        config = pickle.load(f)
+       
     # Set the weights of the optimizer
-    with open(conf.OPTIMIZER_W_PATH, 'rb') as f:
+    with open(conf.OPTIMIZER_W_PATH, 'r') as f:
         weights = pickle.load(f)
+        
+    model.optimizer.from_config(config)
     model.optimizer.set_weights(weights)
 
