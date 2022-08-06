@@ -397,10 +397,28 @@ class LossUpdater():
         
 def get_and_save_optimizer_weights(model):
     weights = model.optimizer.get_weights()
+    
+    if not os.path.exists(conf.OPTIMIZER_W_PATH.split("/")[0]):
+        os.makedirs(conf.OPTIMIZER_W_PATH.split("/")[0])
+        
     with open(conf.OPTIMIZER_W_PATH, 'wb') as f:
         pickle.dump(weights, f)
 
 def load_and_set_optimizer_weights(model):
+    trainable_weights = model.trainable_weights
+    
+    # dummy zero gradients
+    zero_grads = [tf.zeros_like(w) for w in trainable_weights]
+    # save current state of variables
+    saved_weights = [tf.identity(w) for w in trainable_weights]
+
+    # Apply gradients which don't do nothing with Adam to INITIALIZE it
+    optimizer.apply_gradients(zip(zero_grads, trainable_weights))
+
+    # Reload variables
+    [x.assign(y) for x,y in zip(trainable_weights, saved_weights)]
+
+    # Set the weights of the optimizer
     with open(conf.OPTIMIZER_W_PATH, 'rb') as f:
         weights = pickle.load(f)
     model.optimizer.set_weights(weights)
