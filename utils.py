@@ -118,6 +118,7 @@ class Config:
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
         self.OPTIMIZER_W_PATH = 'model_checkpoints/optimizer.pkl'
+        self.OPTIMIZER_CONFIG_PATH = 'model_checkpoints/optimizer_config.pkl'
 
         self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy()  # from paper
         self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                     # from paper
