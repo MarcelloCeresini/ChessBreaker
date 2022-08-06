@@ -321,16 +321,21 @@ def train_loop( model_creation_fn,
     custom_objects = {"LogitsMaskToSoftmax": LogitsMaskToSoftmax}
     fixed_model = model_creation_fn()
     config = fixed_model.get_config()
-    if restart_from == 0:        
-        updating_model = model_creation_fn()
-        updating_model.save(conf.PATH_UPDATING_MODEL)
-        updating_model.save(conf.PATH_CKPT_FOR_EVAL.format(0), save_traces=False)
+    
+    if restart_from == 0:
+        updating_model.save_weights(conf.PATH_UPDATING_MODEL)
+        updating_model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(0))
         # TODO: should also delete files from /logs and /model_checkpoint ???
+    elif restart_from == "last_checkpoint":
+        all_ckpts = glob.glob(os.path.basename(conf.PATH_CKPT_FOR_EVAL.format(0))+"/*.tf")
+        latest_ckpt = sort(all_ckpts)[0]
+        updating_model.load_weights(latest_ckpt)
+        utils.load_and_set_optimizer_weights(updating_model)
     else:
-        with tf.keras.utils.custom_object_scope(custom_objects):
-            updating_model = tf.keras.Model.from_config(config)
-        updating_model.load_weights(conf.PATH_UPDATING_MODEL)
+        raise ValueError("restart_from can only be 0 or 'last_checkpoint'")
 
+    fixed_model.load_weights(conf.PATH_UPDATING_MODEL)
+    
     actual_steps = total_steps-restart_from
     print("Total loops = {}".format(int(actual_steps/consec_train_steps)))
     print("Total games that will be played = {}".format(int(actual_steps/consec_train_steps*parallel_games)))
@@ -345,7 +350,6 @@ def train_loop( model_creation_fn,
     train_log_dir = 'logs/' + current_time
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
 
-    updating_model.optimizer.iterations.assign(restart_from)
     metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
     tot_moves = 0
@@ -427,13 +431,15 @@ def train_loop( model_creation_fn,
                         kind = "_bias"
                     tf.summary.histogram(layer.name+kind, weight, steps)
         
-        updating_model.save(conf.PATH_UPDATING_MODEL, save_traces=False) # should decrease saving time, since we don't have custome layers/models
-        fixed_model = tf.keras.models.load_model(conf.PATH_UPDATING_MODEL) # the UPDATING MODEL is loaded into the fixed one
+        
+        updating_model.save_weights(conf.PATH_UPDATING_MODEL)
+        fixed_model.load_weights(conf.PATH_UPDATING_MODEL) # the UPDATING MODEL is loaded into the fixed one
         
         if steps_from_last_ckpt >= steps_per_checkpoint:
             steps_from_last_ckpt = 0
             print("Saving checkpoint at step {}".format(steps))
-            updating_model.save(conf.PATH_CKPT_FOR_EVAL.format(steps), save_traces=False)
+            updating_model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(steps))
+            utils.get_and_save_optimizer_weights(updating_model)
 
 
 # train_loop(
