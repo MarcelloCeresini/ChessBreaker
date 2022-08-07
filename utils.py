@@ -68,7 +68,7 @@ class Config:
 
 
         # to limit the length of games
-        self.MAX_MOVE_COUNT = 10
+        self.MAX_MOVE_COUNT = 100
 
         # MCTS parameters
         self.MAX_DEPTH = 4
@@ -110,8 +110,8 @@ class Config:
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 
-        self.STEPS_PER_EVAL_CKPT = 500
-        self.TOTAL_STEPS = 10000
+        self.STEPS_PER_EVAL_CKPT = 300
+        self.TOTAL_STEPS = 10200
 
         lr_boundaries = [3000, 8000]    # idea from paper, numbers changed
         lr_values = [0.002, 0.0002, 0.00002]
@@ -120,8 +120,15 @@ class Config:
         self.OPTIMIZER_W_PATH = 'model_checkpoint/optimizer_weights.pkl'
         self.OPTIMIZER_CONFIG_PATH = 'model_checkpoint/optimizer_config.pkl'
 
-        self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy()  # from paper
-        self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                     # from paper
+        self.EXP_BUFFER_PLANES_PATH = 'model_checkpoint/planes.pkl'
+        self.EXP_BUFFER_LEG_MOVES_PATH = 'model_checkpoint/leg_moves.pkl'
+        self.EXP_BUFFER_MOVES_PATH = 'model_checkpoint/moves.pkl'
+        self.EXP_BUFFER_OUTCOME_PATH = 'model_checkpoint/outcome.pkl'
+        self.EXP_BUFFER_FILLED_UP = 'model_checkpoint/filled_up.pkl'
+        self.EXP_BUFFER_SIZE = 'model_checkpoint/filled_up.pkl'
+
+        self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)  # from paper
+        self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                                 # from paper
 
         self.METRIC_FN_POLICY = tf.keras.metrics.SparseCategoricalAccuracy()
         self.METRIC_FN_VALUE = tf.keras.metrics.MeanSquaredError()
@@ -373,6 +380,31 @@ class ExperienceBuffer():
         return np.sum(np.abs(self.outcome[:self.filled_up])) / self.filled_up * 100
 
 
+    def save(self):
+        with open(conf.EXP_BUFFER_PLANES_PATH, 'wb') as f:
+            pickle.dump(self.planes, f)
+        with open(conf.EXP_BUFFER_LEG_MOVES_PATH, 'wb') as f:
+            pickle.dump(self.legal_moves, f)
+        with open(conf.EXP_BUFFER_MOVES_PATH, 'wb') as f:
+            pickle.dump(self.moves, f)
+        with open(conf.EXP_BUFFER_OUTCOME_PATH, 'wb') as f:
+            pickle.dump(self.outcome, f)
+        with open(conf.EXP_BUFFER_FILLED_UP, 'wb') as f:
+            pickle.dump(self.filled_up, f)
+        
+
+    def load(self):
+        with open(conf.EXP_BUFFER_PLANES_PATH, 'rb') as f:
+            self.planes = pickle.load(f)
+        with open(conf.EXP_BUFFER_LEG_MOVES_PATH, 'rb') as f:
+            self.legal_moves = pickle.load(f)
+        with open(conf.EXP_BUFFER_MOVES_PATH, 'rb') as f:
+            self.moves = pickle.load(f)
+        with open(conf.EXP_BUFFER_OUTCOME_PATH, 'rb') as f:
+            self.outcome = pickle.load(f)
+        with open(conf.EXP_BUFFER_FILLED_UP, 'rb') as f:
+            self.filled_up = pickle.load(f)
+
 class LossUpdater():
      
     def __init__(self):
@@ -400,9 +432,6 @@ class LossUpdater():
 def get_and_save_optimizer_weights(model):
     weights = model.optimizer.get_weights()
     config = model.optimizer.get_config()
-
-    [print(np.shape(w)) for w in weights]
-    print(config)
     
     if not os.path.exists(conf.OPTIMIZER_W_PATH.split("/")[0]):
         os.makedirs(conf.OPTIMIZER_W_PATH.split("/")[0])

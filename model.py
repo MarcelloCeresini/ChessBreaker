@@ -12,9 +12,9 @@ class LogitsMaskToSoftmax(keras.layers.Layer):
 
     def call(self, *args):
         logits, mask = zip(*args)
-        # masked_logits = tf.boolean_mask(logits, mask)
-        masked_probs = tf.boolean_mask(logits, mask)
-        # masked_probs = tf.nn.softmax(masked_logits)
+        masked_logits = tf.boolean_mask(logits, mask)
+        # masked_probs = tf.boolean_mask(logits, mask)
+        masked_probs = tf.nn.softmax(masked_logits)
         probs = tf.scatter_nd(tf.where(mask), masked_probs, tf.shape(mask, out_type=tf.int64))
         probs = tf.squeeze(probs, axis=0)
         return probs
@@ -26,21 +26,6 @@ class LogitsMaskToSoftmax(keras.layers.Layer):
     def from_config(cls, config):
         return cls(**config)
         
-# class TurnTensor(keras.layers.Layer):
-#     def __init__(self, **kwargs):
-#         super(TurnTensor, self).__init__(**kwargs)
-#         self.mask = tf.stack(
-#                         tf.fill((8,8,112),  False),
-#                         tf.fill((8,8,1),    True),
-#                         tf.fill((8,8,6),    False)
-#         )
-
-#     def call(self, planes):
-#         batch_size = tf.shape(planes)[0]
-#         mask = tf.repeat(self.mask, repeats=batch_size, axis=0)
-#         turn_plane = tf.boolean_mask(planes, mask)
-#         turn_value = tf.math.reduce_mean(turn_plane, axis=[1,2])
-#         return probs
 
 def create_model():
     
@@ -75,6 +60,7 @@ def create_model():
         
         x = layers.Activation("gelu", name="activation_resblock_{}".format(i))(x)
 
+    ### policy head
     policy = layers.Conv2D(channels_policy, 1, padding="same", kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)
     policy = layers.BatchNormalization()(policy)
     policy = layers.Activation("gelu")(policy)
@@ -86,6 +72,7 @@ def create_model():
     policy = layers.Multiply()([policy, turn]) # black turn --> swap signs
     policy = LogitsMaskToSoftmax(name="policy")([policy, input_legal_moves])
 
+    ### value head
     value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
     value = layers.BatchNormalization()(value)
     value = layers.Activation("gelu")(value)

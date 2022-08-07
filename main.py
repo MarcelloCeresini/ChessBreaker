@@ -43,9 +43,6 @@ dataset_train = tf.data.TextLineDataset(conf.PATH_ENDGAME_TRAIN_DATASET).shuffle
 # using np.arrays because we add chunks of data and not one at a time (O(n) to move all data is actually O(n/m), with m chunk size)
 # and also we need to sample randomly batches of data, that for linked lists (like queue) is O(n*batch_zize), instead for arrays is O(batch_size)
 
-exp_buffer = utils.ExperienceBuffer(conf.MAX_BUFFER_SIZE)
-
-
 class MyNode(Node): # subclassing Node from Anytree to add some methods
 
     def update_action_value(self, new_action_value):                                                        # used during backtracking to update action value if the simulation reached the end through that node
@@ -243,7 +240,7 @@ def choose_move(root_node, num_move):
     return root_node
 
 
-@ray.remote(num_returns=4, max_calls=1) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
+@ray.remote(num_returns=4) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -321,6 +318,7 @@ def train_loop( model_creation_fn,
                 ):
 
     model = model_creation_fn()
+    exp_buffer = utils.ExperienceBuffer(conf.MAX_BUFFER_SIZE)
 
     if restart_from == 0:
         model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(0))
@@ -330,6 +328,7 @@ def train_loop( model_creation_fn,
         latest_ckpt = all_ckpts[0]
         model.load_weights(latest_ckpt)
         utils.load_and_set_optimizer_weights(model)
+        exp_buffer.load()
     else:
         raise ValueError("restart_from can only be 0 or 'latest_checkpoint'")
     
@@ -379,10 +378,10 @@ def train_loop( model_creation_fn,
             planes, legal_moves, moves, outcome = ray.get(id_)
             round_moves += exp_buffer.push(planes, legal_moves, moves, outcome)
             # delete the reference to "ray.get"
-            del planes, legal_moves, moves, outcome
+            # del planes, legal_moves, moves, outcome
         
         # delete the reference to "ray.put" or "ray.remote"
-        del game_ids # to decrease / avoid memory leaks caused by ray in its object_store_memory
+        # del game_ids # to decrease / avoid memory leaks caused by ray in its object_store_memory
 
         tot_moves += round_moves
         tot_games += parallel_games
@@ -408,7 +407,7 @@ def train_loop( model_creation_fn,
         # print("Finished {} train steps in {}s".format(consec_train_steps, time()-tic, tot_moves))
         p_loss, v_loss, tot_loss = loss_updater.get_losses()
         p_metric = metric.result()
-        print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
+        # print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
         loss_updater.reset_state()
         metric.reset_states()
         
@@ -433,6 +432,7 @@ def train_loop( model_creation_fn,
             print("Saving checkpoint at step {}".format(steps))
             model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(steps))
             utils.get_and_save_optimizer_weights(model)
+            exp_buffer.save()
 
 
 # train_loop(
@@ -442,7 +442,7 @@ def train_loop( model_creation_fn,
 #     consec_train_steps=conf.NUM_TRAINING_STEPS,
 #     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
 #     batch_size=conf.SELF_PLAY_BATCH,
-#     restart_from=0)
+#     restart_from="latest_checkpoint")
 
 train_loop(
     create_model, 
