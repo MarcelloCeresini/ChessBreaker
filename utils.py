@@ -96,7 +96,7 @@ class Config:
 
         self.PATH_FIXED_MODEL = "models/fixed_model"
         self.PATH_UPDATING_MODEL = "models/updating_model"
-        self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{:05.0f}"
+        self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{:05.0f}.h5"
 
         # max_buffer_size/(games*max_moves) ~= n_loops of changing buffer
         # this means that every 5 loops it changes --> 500 train steps per change
@@ -117,8 +117,8 @@ class Config:
         lr_values = [0.002, 0.0002, 0.00002]
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
-        self.OPTIMIZER_W_PATH = 'model_checkpoints/optimizer.pkl'
-        self.OPTIMIZER_CONFIG_PATH = 'model_checkpoints/optimizer_config.pkl'
+        self.OPTIMIZER_W_PATH = 'model_checkpoint/optimizer_weights.pkl'
+        self.OPTIMIZER_CONFIG_PATH = 'model_checkpoint/optimizer_config.pkl'
 
         self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy()  # from paper
         self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                     # from paper
@@ -395,40 +395,46 @@ class LossUpdater():
         self.value_loss_value = 0
         self.loss = 0
         self.step = 0
-        
+
+ 
 def get_and_save_optimizer_weights(model):
     weights = model.optimizer.get_weights()
     config = model.optimizer.get_config()
+
+    [print(np.shape(w)) for w in weights]
+    print(config)
     
     if not os.path.exists(conf.OPTIMIZER_W_PATH.split("/")[0]):
         os.makedirs(conf.OPTIMIZER_W_PATH.split("/")[0])
         
-    with open(conf.OPTIMIZER_W_PATH, 'w') as f:
+    with open(conf.OPTIMIZER_W_PATH, 'wb') as f:
         pickle.dump(weights, f)
     
-    with open(conf.OPTIMIZER_CONFIG_PATH, 'w') as f:
+    with open(conf.OPTIMIZER_CONFIG_PATH, 'wb') as f:
         pickle.dump(config, f)
+
 
 def load_and_set_optimizer_weights(model):
     trainable_weights = model.trainable_weights
     
-    # # dummy zero gradients
-    # zero_grads = [tf.zeros_like(w) for w in trainable_weights]
-    # # save current state of variables
-    # saved_weights = [tf.identity(w) for w in trainable_weights]
-    #
-    # # Apply gradients which don't do nothing with Adam to INITIALIZE it
-    # optimizer.apply_gradients(zip(zero_grads, trainable_weights))
-    #
-    # # Reload variables
-    # [x.assign(y) for x,y in zip(trainable_weights, saved_weights)]
+    # dummy zero gradients
+    zero_grads = [tf.zeros_like(w) for w in trainable_weights]
+
+    # save current state of variables
+    saved_weights = [tf.identity(w) for w in trainable_weights]
+    
+    # Apply gradients which don't do nothing with Adam to INITIALIZE it
+    model.optimizer.apply_gradients(zip(zero_grads, trainable_weights))
+    
+    # Reload variables (for safety?)
+    [x.assign(y) for x,y in zip(trainable_weights, saved_weights)]
     
     # Load config
-    with open(conf.OPTIMIZER_CONFIG_PATH, 'r') as f:
+    with open(conf.OPTIMIZER_CONFIG_PATH, 'rb') as f:
         config = pickle.load(f)
        
-    # Set the weights of the optimizer
-    with open(conf.OPTIMIZER_W_PATH, 'r') as f:
+    # Load weights
+    with open(conf.OPTIMIZER_W_PATH, 'rb') as f:
         weights = pickle.load(f)
         
     model.optimizer.from_config(config)

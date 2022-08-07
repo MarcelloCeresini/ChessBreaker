@@ -1,5 +1,6 @@
 import os
 from pickle import TRUE
+from pyexpat import model
 import absl.logging
 from matplotlib.pyplot import step
 import tensorflow as tf
@@ -20,6 +21,7 @@ from time import time
 from tqdm import tqdm
 from queue import Queue
 import ray
+import glob
 
 
 ray.shutdown()
@@ -318,37 +320,32 @@ def train_loop( model_creation_fn,
                 num_restarts_MCTS = conf.NUM_RESTARTS
                 ):
 
-    custom_objects = {"LogitsMaskToSoftmax": LogitsMaskToSoftmax}
-    fixed_model = model_creation_fn()
-    config = fixed_model.get_config()
-    
-    if restart_from == 0:
-        updating_model.save_weights(conf.PATH_UPDATING_MODEL)
-        updating_model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(0))
-        # TODO: should also delete files from /logs and /model_checkpoint ???
-    elif restart_from == "last_checkpoint":
-        all_ckpts = glob.glob(os.path.basename(conf.PATH_CKPT_FOR_EVAL.format(0))+"/*.tf")
-        latest_ckpt = sort(all_ckpts)[0]
-        updating_model.load_weights(latest_ckpt)
-        utils.load_and_set_optimizer_weights(updating_model)
-    else:
-        raise ValueError("restart_from can only be 0 or 'last_checkpoint'")
+    model = model_creation_fn()
 
-    fixed_model.load_weights(conf.PATH_UPDATING_MODEL)
+    if restart_from == 0:
+        model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(0))
+    elif restart_from == "latest_checkpoint":
+        all_ckpts = glob.glob(os.path.dirname(conf.PATH_CKPT_FOR_EVAL.format(0))+"/step*")
+        all_ckpts.sort(reverse=True)
+        latest_ckpt = all_ckpts[0]
+        model.load_weights(latest_ckpt)
+        utils.load_and_set_optimizer_weights(model)
+    else:
+        raise ValueError("restart_from can only be 0 or 'latest_checkpoint'")
     
-    actual_steps = total_steps-restart_from
+    actual_steps = total_steps - model.optimizer.iterations
     print("Total loops = {}".format(int(actual_steps/consec_train_steps)))
     print("Total games that will be played = {}".format(int(actual_steps/consec_train_steps*parallel_games)))
     print("Total samples that will be used = {}".format(batch_size*actual_steps))
     print("Total checkpoints that will be created = {}".format(int(actual_steps/steps_per_checkpoint)))
     
-    steps = restart_from
+    steps = model.optimizer.iterations.numpy()
     steps_from_last_ckpt = 0
     loss_updater = utils.LossUpdater()
 
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    train_log_dir = 'logs/' + current_time
-    train_summary_writer = tf.summary.create_file_writer(train_log_dir)
+    log_dir = 'logs/' + current_time
+    summary_writer = tf.summary.create_file_writer(log_dir)
 
     metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
@@ -369,7 +366,7 @@ def train_loop( model_creation_fn,
             pbar.set_description("Initializing ray tasks")
             game_ids.append(
                 complete_game.remote(
-                    fixed_model, 
+                    model, 
                     starting_fen=position.numpy().decode("utf8"), 
                     max_depth=max_depth_MCTS, 
                     num_restarts=num_restarts_MCTS
@@ -403,7 +400,7 @@ def train_loop( model_creation_fn,
                 legal_moves_input_batch, 
                 moves_batch, 
                 outcome_batch, 
-                updating_model,
+                model,
                 metric)
 
             loss_updater.update(policy_loss_value, value_loss_value, loss)
@@ -411,19 +408,19 @@ def train_loop( model_creation_fn,
         # print("Finished {} train steps in {}s".format(consec_train_steps, time()-tic, tot_moves))
         p_loss, v_loss, tot_loss = loss_updater.get_losses()
         p_metric = metric.result()
-        # print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
+        print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
         loss_updater.reset_state()
         metric.reset_states()
         
-        with train_summary_writer.as_default():
+        with summary_writer.as_default():
             tf.summary.scalar('policy_loss', p_loss, step=steps)
             tf.summary.scalar('value_loss', v_loss, step=steps)
             tf.summary.scalar('L2_loss', tot_loss-p_loss-v_loss, step=steps)
             tf.summary.scalar('total_loss', tot_loss, step=steps)
             tf.summary.scalar('policy_accuracy', p_metric, step=steps)
-            tf.summary.scalar('lr', updating_model.optimizer.lr(updating_model.optimizer.iterations), steps)
+            tf.summary.scalar('lr', model.optimizer.lr(model.optimizer.iterations), steps)
             
-            for layer in updating_model.layers:
+            for layer in model.layers:
                 for i, weight in enumerate(layer.trainable_weights):
                     if i==0:
                         kind = "_kernel"
@@ -431,15 +428,11 @@ def train_loop( model_creation_fn,
                         kind = "_bias"
                     tf.summary.histogram(layer.name+kind, weight, steps)
         
-        
-        updating_model.save_weights(conf.PATH_UPDATING_MODEL)
-        fixed_model.load_weights(conf.PATH_UPDATING_MODEL) # the UPDATING MODEL is loaded into the fixed one
-        
         if steps_from_last_ckpt >= steps_per_checkpoint:
             steps_from_last_ckpt = 0
             print("Saving checkpoint at step {}".format(steps))
-            updating_model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(steps))
-            utils.get_and_save_optimizer_weights(updating_model)
+            model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(steps))
+            utils.get_and_save_optimizer_weights(model)
 
 
 # train_loop(
@@ -456,8 +449,9 @@ train_loop(
     total_steps=300,
     parallel_games=1,
     consec_train_steps=10,
-    steps_per_checkpoint=20,
+    steps_per_checkpoint=5,
     batch_size=8,
+    # restart_from="latest_checkpoint")
     restart_from=0)
 
 # model = create_model()
