@@ -23,11 +23,10 @@ from queue import Queue
 import ray
 import glob
 
-
 ray.shutdown()
 ray.init(
     log_to_driver = False,  # comment to see logs from workers
-    include_dashboard=False)         # to remove objects in ray's object_store_memory that are no longer in use
+    include_dashboard=True)
 
 from numpy.random import default_rng
 rng = default_rng()
@@ -331,14 +330,15 @@ def train_loop( model_creation_fn,
         exp_buffer.load()
     else:
         raise ValueError("restart_from can only be 0 or 'latest_checkpoint'")
-    
-    actual_steps = total_steps - model.optimizer.iterations
-    print("Total loops = {}".format(int(actual_steps/consec_train_steps)))
-    print("Total games that will be played = {}".format(int(actual_steps/consec_train_steps*parallel_games)))
-    print("Total samples that will be used = {}".format(batch_size*actual_steps))
-    print("Total checkpoints that will be created = {}".format(int(actual_steps/steps_per_checkpoint)))
-    
+
     steps = model.optimizer.iterations.numpy()
+    print("Starting from {} steps".format(steps))
+    actual_steps = total_steps - model.optimizer.iterations
+    print("Remaining loops = {}".format(int(actual_steps/consec_train_steps)))
+    print("Ggames that will be played = {}".format(int(actual_steps/consec_train_steps*parallel_games)))
+    print("Samples that will be used = {}".format(batch_size*actual_steps))
+    print("Checkpoints that will be created = {}".format(int(actual_steps/steps_per_checkpoint)))
+    
     steps_from_last_ckpt = 0
     loss_updater = utils.LossUpdater()
 
@@ -363,30 +363,30 @@ def train_loop( model_creation_fn,
 
         for position in (pbar := tqdm(starting_positions)):
             pbar.set_description("Initializing ray tasks")
-            game_ids.append(
-                complete_game.remote(
+            game = complete_game.remote(
                     model, 
                     starting_fen=position.numpy().decode("utf8"), 
                     max_depth=max_depth_MCTS, 
                     num_restarts=num_restarts_MCTS
                 )
-            )
+            game_ids.append(game)
 
         round_moves = 0
         for id_ in (pbar := tqdm(game_ids)):
             pbar.set_description("Retrieving parallel games")
             planes, legal_moves, moves, outcome = ray.get(id_)
             round_moves += exp_buffer.push(planes, legal_moves, moves, outcome)
-            # delete the reference to "ray.get"
-            # del planes, legal_moves, moves, outcome
+            
+            del planes, legal_moves, moves, outcome
         
-        # delete the reference to "ray.put" or "ray.remote"
-        # del game_ids # to decrease / avoid memory leaks caused by ray in its object_store_memory
+        for game in game_ids:
+            ray.internal.internal_api.free(game)
+        del game_ids # to decrease / avoid memory leaks caused by ray in its object_store_memory
 
         tot_moves += round_moves
         tot_games += parallel_games
         print("Finished {} parallel games in {:.2f}s, stacked {} moves in exp buffer (tot {}), the learning step will consume {} moves".format(parallel_games, time()-tic, round_moves, exp_buffer.filled_up, consec_train_steps*batch_size))
-        print("Decisive result percentage = {:.2f}%".format(exp_buffer.get_percentage_decisive_games()))
+        print("Decisive result percentage in buffer  = {:.2f}% (avg on samples, not games)".format(exp_buffer.get_percentage_decisive_games()))
         print("On average, the same move will be passed through the network {:.2f} times".format(consec_train_steps*batch_size/round_moves))
         print("The avg length of a game is {:.2f}".format(tot_moves/tot_games))
         tic = time()
@@ -404,7 +404,6 @@ def train_loop( model_creation_fn,
 
             loss_updater.update(policy_loss_value, value_loss_value, loss)
 
-        # print("Finished {} train steps in {}s".format(consec_train_steps, time()-tic, tot_moves))
         p_loss, v_loss, tot_loss = loss_updater.get_losses()
         p_metric = metric.result()
         # print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
@@ -428,6 +427,7 @@ def train_loop( model_creation_fn,
                     tf.summary.histogram(layer.name+kind, weight, steps)
         
         if steps_from_last_ckpt >= steps_per_checkpoint:
+            # we create checkpoints for 2 reasons: evaluation and safety (in case the training stops for errors)
             steps_from_last_ckpt = 0
             print("Saving checkpoint at step {}".format(steps))
             model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(steps))
@@ -442,17 +442,18 @@ train_loop(
     consec_train_steps=conf.NUM_TRAINING_STEPS,
     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
     batch_size=conf.SELF_PLAY_BATCH,
-    restart_from=0)
+    restart_from="latest_checkpoint")
+#     # restart_from=0)
 
 # train_loop(
 #     create_model, 
 #     total_steps=300,
-#     parallel_games=1,
+#     parallel_games=2,
 #     consec_train_steps=10,
 #     steps_per_checkpoint=5,
 #     batch_size=8,
-#     restart_from="latest_checkpoint")
-#     # restart_from=0)
+#     # restart_from="latest_checkpoint")
+#     restart_from=0)
 
 # model = create_model()
 # model.summary()

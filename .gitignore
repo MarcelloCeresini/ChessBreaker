@@ -11,7 +11,7 @@
 /models
 /logs
 /model_checkpoint
-
+/complete_try_with_mask
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

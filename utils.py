@@ -4,6 +4,7 @@ import chess
 import glob, os
 import tensorflow as tf
 import pickle
+import copy
 
 # queen moves of distance 1, planes from 0 to 7
 plane_dict = {
@@ -117,15 +118,15 @@ class Config:
         lr_values = [0.002, 0.0002, 0.00002]
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
-        self.OPTIMIZER_W_PATH = 'model_checkpoint/optimizer_weights.pkl'
-        self.OPTIMIZER_CONFIG_PATH = 'model_checkpoint/optimizer_config.pkl'
+        self.EXTRA_CONFIG_PATH = 'model_checkpoint/stored_config/'
+        self.OPTIMIZER_W_PATH =             self.EXTRA_CONFIG_PATH+'optimizer_weights.pkl'
+        self.OPTIMIZER_CONFIG_PATH =        self.EXTRA_CONFIG_PATH+'optimizer_config.pkl'
 
-        self.EXP_BUFFER_PLANES_PATH = 'model_checkpoint/planes.pkl'
-        self.EXP_BUFFER_LEG_MOVES_PATH = 'model_checkpoint/leg_moves.pkl'
-        self.EXP_BUFFER_MOVES_PATH = 'model_checkpoint/moves.pkl'
-        self.EXP_BUFFER_OUTCOME_PATH = 'model_checkpoint/outcome.pkl'
-        self.EXP_BUFFER_FILLED_UP = 'model_checkpoint/filled_up.pkl'
-        self.EXP_BUFFER_SIZE = 'model_checkpoint/filled_up.pkl'
+        self.EXP_BUFFER_PLANES_PATH =       self.EXTRA_CONFIG_PATH+'planes.pkl'
+        self.EXP_BUFFER_LEG_MOVES_PATH =    self.EXTRA_CONFIG_PATH+'leg_moves.pkl'
+        self.EXP_BUFFER_MOVES_PATH =        self.EXTRA_CONFIG_PATH+'moves.pkl'
+        self.EXP_BUFFER_OUTCOME_PATH =      self.EXTRA_CONFIG_PATH+'outcome.pkl'
+        self.EXP_BUFFER_FILLED_UP =         self.EXTRA_CONFIG_PATH+'filled_up.pkl'
 
         self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)  # from paper
         self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                                 # from paper
@@ -330,15 +331,21 @@ class ExperienceBuffer():
 
     def __init__(self, size):
         self.size = size
+        self.rng = np.random.default_rng()
+
         self.planes = np.zeros((self.size, *conf.INPUT_SHAPE), dtype=conf.PLANES_DTYPE_NP)  # the bigger the better, check with some experiments
         self.legal_moves = np.zeros((self.size, 8*8*73), dtype=conf.PLANES_DTYPE_NP)  # the bigger the better, check with some experiments
         self.moves = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP)   # the bigger the better, check with some experiments
         self.outcome = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP) # the bigger the better, check with some experiments
         self.filled_up = 0
-        self.rng = np.random.default_rng()
 
 
     def push(self, planes_match, legal_moves, moves_match, outcome_match):
+
+        planes_match = copy.deepcopy(planes_match)
+        legal_moves = copy.deepcopy(legal_moves)
+        moves_match = copy.deepcopy(moves_match)
+        outcome_match = copy.deepcopy(outcome_match)
 
         num_planes = len(planes_match)
         
@@ -362,9 +369,9 @@ class ExperienceBuffer():
     
     def sample(self, batch_size):
         if self.filled_up >= batch_size:
-            replace = False
+            replace = False # we try to avoid the same sample in the same batch
         else:
-            replace = True
+            replace = True  # but if we have less samples than batch, then we sample with repetition
 
         sample_idxs = self.rng.choice(range(self.filled_up), size=batch_size, replace=replace)
         
