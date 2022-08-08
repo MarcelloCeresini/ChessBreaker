@@ -240,7 +240,7 @@ def choose_move(root_node, num_move):
     return root_node
 
 
-@ray.remote(num_returns=4) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
+@ray.remote(num_returns=4, max_retries=-1) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -435,24 +435,24 @@ def train_loop( model_creation_fn,
             exp_buffer.save()
 
 
-# train_loop(
-#     create_model, 
-#     total_steps=conf.TOTAL_STEPS,
-#     parallel_games=conf.NUM_PARALLEL_GAMES,
-#     consec_train_steps=conf.NUM_TRAINING_STEPS,
-#     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
-#     batch_size=conf.SELF_PLAY_BATCH,
-#     restart_from="latest_checkpoint")
-
 train_loop(
     create_model, 
-    total_steps=300,
-    parallel_games=1,
-    consec_train_steps=10,
-    steps_per_checkpoint=5,
-    batch_size=8,
-    # restart_from="latest_checkpoint")
+    total_steps=conf.TOTAL_STEPS,
+    parallel_games=conf.NUM_PARALLEL_GAMES,
+    consec_train_steps=conf.NUM_TRAINING_STEPS,
+    steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+    batch_size=conf.SELF_PLAY_BATCH,
     restart_from=0)
+
+# train_loop(
+#     create_model, 
+#     total_steps=300,
+#     parallel_games=1,
+#     consec_train_steps=10,
+#     steps_per_checkpoint=5,
+#     batch_size=8,
+#     restart_from="latest_checkpoint")
+#     # restart_from=0)
 
 # model = create_model()
 # model.summary()
