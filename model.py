@@ -6,24 +6,24 @@ import numpy as np
 
 conf = Config()
 
-class LogitsMaskToSoftmax(keras.layers.Layer):
-    def __init__(self, **kwargs):
-        super(LogitsMaskToSoftmax, self).__init__(**kwargs)
+# class LogitsMaskToSoftmax(keras.layers.Layer):
+#     def __init__(self, **kwargs):
+#         super(LogitsMaskToSoftmax, self).__init__(**kwargs)
 
-    def call(self, *args):
-        logits, mask = zip(*args)
-        masked_logits = tf.boolean_mask(logits, mask)                                           # creates a vector of REDUCED SHAPE, only the "1"s are kept
-        masked_probs = tf.nn.softmax(masked_logits)                                             # now we softmax, so the contribution of illegal moves isn't present
-        probs = tf.scatter_nd(tf.where(mask), masked_probs, tf.shape(mask, out_type=tf.int64))  # then we recreate the vector, with "0"s for illegal moves, and move prob for legal ones
-        probs = tf.squeeze(probs, axis=0)                                                       # then we remove the first dimension, because axis=1 became the batch dim
-        return probs
+#     def call(self, *args):
+#         logits, mask = zip(*args)
+#         masked_logits = tf.boolean_mask(logits, mask)                                           # creates a vector of REDUCED SHAPE, only the "1"s are kept
+#         masked_probs = tf.nn.softmax(masked_logits)                                             # now we softmax, so the contribution of illegal moves isn't present
+#         probs = tf.scatter_nd(tf.where(mask), masked_probs, tf.shape(mask, out_type=tf.int64))  # then we recreate the vector, with "0"s for illegal moves, and move prob for legal ones
+#         probs = tf.squeeze(probs, axis=0)                                                       # then we remove the first dimension, because axis=1 became the batch dim
+#         return probs
 
-    def get_config(self):
-        return {}
+#     def get_config(self):
+#         return {}
 
-    @classmethod
-    def from_config(cls, config):
-        return cls(**config)
+#     @classmethod
+#     def from_config(cls, config):
+#         return cls(**config)
         
 
 def create_model():
@@ -34,7 +34,7 @@ def create_model():
     channels_policy = 128
     num_res_blocks = 8
 
-    input_legal_moves = layers.Input(shape=(8*8*73), name="legal_moves") # array with 1 for legal moves, 0 otherwise
+    # input_legal_moves = layers.Input(shape=(8*8*73), name="legal_moves") # array with 1 for legal moves, 0 otherwise
 
     input_planes = layers.Input(shape=(8, 8, 119), name="planes")
     # only select the turn plane
@@ -70,8 +70,8 @@ def create_model():
 
     policy = layers.Flatten()(policy)
     # for "black" moves, we want the logits to be POSITIVE as well! otherwise the log from the crossentropy will kill them
-    policy = layers.Multiply()([policy, turn]) # black turn --> swap +/- signs
-    policy = LogitsMaskToSoftmax(name="policy")([policy, input_legal_moves])
+    policy = layers.Multiply(name="policy")([policy, turn]) # black turn --> swap +/- signs
+    # policy = LogitsMaskToSoftmax(name="policy")([policy, input_legal_moves])
 
     ### value head
     value = layers.Conv2D(1, 1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(x)                          # only one plane for the state value
@@ -85,7 +85,7 @@ def create_model():
     value = layers.Dense(1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg))(value)
     value = layers.Activation("tanh", name="value")(value)
 
-    model = tf.keras.Model(inputs=[input_planes, input_legal_moves], outputs=[policy, value])
+    model = tf.keras.Model(inputs=input_planes, outputs=[policy, value])
 
     model.compile(
         optimizer=conf.OPTIMIZER,

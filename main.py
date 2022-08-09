@@ -33,7 +33,7 @@ rng = default_rng()
 
 import utils
 from utils import plane_dict, Config, x_y_from_position
-from model import create_model, LogitsMaskToSoftmax
+from model import create_model
 
 conf = Config()
 # print(ray.available_resources())
@@ -65,15 +65,15 @@ def MTCS(model, root_node, max_depth, num_restarts):
     INIT_ROOT = root_node
     nodes_to_visit = Queue()
     # number of times to explore up until max_depth
-    i = 0
+    restart_counter = 0
 
     leaf_node_batch = []
     legal_moves_batch = []
     
-    while i < num_restarts:
+    while restart_counter < num_restarts:
         if nodes_to_visit.empty():
             root_node = INIT_ROOT
-            i+=1
+            restart_counter+=1
         else:
             root_node = nodes_to_visit.get_nowait()
         # print(i, root_node.name, root_node.depth, root_node.visit_count)
@@ -102,23 +102,20 @@ def MTCS(model, root_node, max_depth, num_restarts):
                         root_node = random_sibling
                         
                 # important! save legal moves AFTER choosing root_node (they have to be the legal moves available in that position)
-                legal_moves = list(root_node.board.legal_moves)
-
-                if len(legal_moves) == 0: # if you can't move, the match is finished
+                possible_outcome = root_node.board.outcome(claim_draw=True)
+                
+                if possible_outcome != None: # if you can't move or it's a draw, the match is finished
                     step_down = False
-                    final_outcome = root_node.board.outcome(claim_draw=True)
-
-                    if final_outcome != None:
-                        root_node.is_finish_position = True
-                        if final_outcome.winner == None:
-                            # ACTION_VALUE ASSIGNATION
-                            root_node.action_value = 0
-                        else:
-                            # ACTION_VALUE ASSIGNATION
-                            root_node.action_value = int(final_outcome.winner)*2-1 # winner white = 1, black =0 --> we want +1 and -1
+                    root_node.is_finish_position = True
+                    if possible_outcome.winner == None:
+                        # ACTION_VALUE
+                        root_node.action_value = 0
                     else:
-                        print("Something's wrong")
-                else: # if instead there are legal moves, keep going and expand it
+                        # ACTION_VALUE
+                        root_node.action_value = int(possible_outcome.winner)*2-1 # winner white = 1, black =0 --> we want +1 and -1
+                
+                else: # if instead there are legal moves and it's not a draw, keep going and expand it
+                    legal_moves = list(root_node.board.legal_moves)
                     leaf_node_batch.append(root_node)
                     legal_moves_batch.append(legal_moves)
                 
@@ -134,12 +131,10 @@ def MTCS(model, root_node, max_depth, num_restarts):
                     plane_list = [root_node.planes for root_node in leaf_node_batch]
                     # 0.0032072067260742188
                     # 7.05718994140625e-05
-                    legal_moves_list = [utils.scatter_idxs(utils.mask_moves_flatten(legal_moves)) for legal_moves in legal_moves_batch]
 
                     planes = np.stack(plane_list)
-                    legal_moves_input = np.stack(legal_moves_list)
 
-                    full_moves_batch, outcome_batch = model([planes, legal_moves_input])
+                    full_moves_batch, outcome_batch = model(planes)
 
                     full_moves_batch_np = full_moves_batch.numpy()
                     # print(np.shape(full_moves_batch_np[0]))
@@ -160,15 +155,13 @@ def MTCS(model, root_node, max_depth, num_restarts):
                         # to be negative, we need to swap them again
                         turn = root_node.board.turn*2-1 # white = 1, black = -1
                         priors = [full_moves[idx]*turn for idx in mask_idx]                        # boolean mask returns a tensor of only the values that were masked (as a list let's say)
-                                                
                         # 0.006434917449951172
                         # 1.3113021850585938e-05
-                        root_node.action_value = outcome    
+                        root_node.action_value = outcome[0]    
                         
-                        # TODO: maybe a second training without this? 
-                        if root_node == INIT_ROOT:  # increase exploration at the root, since if the network is not good it will not make good starting choices
-                            dir_noise = rng.dirichlet([conf.ALPHA_DIRICHLET]*len(priors))
-                            priors = [((1-conf.EPS_NOISE)*p + conf.EPS_NOISE*noise) for p, noise in zip(priors, dir_noise)]
+                        # if root_node == INIT_ROOT:  # increase exploration at the root, since if the network is not good it will not make good starting choices
+                        #     dir_noise = rng.dirichlet([conf.ALPHA_DIRICHLET]*len(priors))
+                        #     priors = [((1-conf.EPS_NOISE)*p + conf.EPS_NOISE*noise) for p, noise in zip(priors, dir_noise)]
 
                         for move, prior in zip(legal_moves, priors):                                                # creating children
 
@@ -202,7 +195,7 @@ def MTCS(model, root_node, max_depth, num_restarts):
                     # print("choosing point", "d", root_node.depth, "vc", root_node.visit_count, "name", root_node.name)
                     children = root_node.children                                                               # get all the children (always != [])
                     
-                    values = [child.calculate_upper_confidence_bound(i) for child in children]  # we pass the restart number (i) to the function --> decrease exploration
+                    values = [child.calculate_upper_confidence_bound(restart_counter) for child in children]  # we pass the restart number (i) to the function --> decrease exploration
                     if INIT_ROOT.board.turn == chess.WHITE:
                         root_node = children[np.argmax(values)]
                     else:
@@ -224,22 +217,23 @@ def MTCS(model, root_node, max_depth, num_restarts):
 
 
 def choose_move(root_node, num_move):
-    # add dirichlet noise to the root node? (page 14, Mastering Chess and Shogi by self play... --> configuration)
     children = root_node.children
     assert root_node.children != [], "No children, cannot choose move"
     p = [child.calculate_move_probability(num_move) for child in children] 
-    p_norm = [i/sum(p) for i in p] # normalize probabilities
+    tot_p = sum(p)
+    p_norm = [i/tot_p for i in p] # normalize probabilities
         
     root_node = np.random.choice(
         children, 
         p = p_norm  # choose the child proportionally to the number of times it has been visited (exponentiated by a temperature parameter)
     ) 
     root_node.parent = None # To detach the subtree and restart with the next move search
+    # print((root_node.board.turn*2-1)*(-1), root_node.visit_count, root_node.prior, root_node.action_value, root_node.calculate_upper_confidence_bound(70))
 
     return root_node
 
 
-@ray.remote(num_returns=4, max_retries=-1) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
+@ray.remote(num_returns=3, max_calls=1, max_retries=5) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -262,7 +256,6 @@ def complete_game(model,
         )
     
     match_planes = []
-    match_legal_moves = []
     match_policy = []
     move_counter = 0
 
@@ -272,7 +265,6 @@ def complete_game(model,
         root_node = MTCS(model, root_node, max_depth = max_depth, num_restarts=num_restarts)                            # though the root node you can access all the tree
 
         match_planes.append(root_node.planes)                                                                                   # 8x8x113
-        match_legal_moves.append(utils.scatter_idxs(utils.mask_moves_flatten(root_node.board.legal_moves)))
         root_node = choose_move(root_node, num_move=move_counter)                                                                                      
         match_policy.append(utils.mask_moves_flatten([chess.Move.from_uci(root_node.name)])[0])                                         # appends JUST AN INDEX
 
@@ -281,12 +273,12 @@ def complete_game(model,
     else:
         outcome = utils.outcome(root_node.board.outcome(claim_draw=True).result())
     
-    return match_planes, match_legal_moves, match_policy, outcome
+    return match_planes, match_policy, outcome
 
 
-def gradient_application(planes, legal_moves_input, y_policy, y_value, model, metric):
+def gradient_application(planes, y_policy, y_value, model, metric):
     with tf.GradientTape() as tape:
-        policy_logits, value = model([planes, legal_moves_input])
+        policy_logits, value = model(planes)
         # print("y", y_policy, np.shape(y_policy), type(y_policy))
         # print("policy_logits", np.average(np.abs(policy_logits)), policy_logits[0][int(y_policy[0])])
         # print("value_logits", np.shape(value), type(value), np.average(value))
@@ -374,10 +366,10 @@ def train_loop( model_creation_fn,
         round_moves = 0
         for id_ in (pbar := tqdm(game_ids)):
             pbar.set_description("Retrieving parallel games")
-            planes, legal_moves, moves, outcome = ray.get(id_)
-            round_moves += exp_buffer.push(planes, legal_moves, moves, outcome)
+            planes, moves, outcome = ray.get(id_)
+            round_moves += exp_buffer.push(planes, moves, outcome)
             
-            del planes, legal_moves, moves, outcome
+            del planes, moves, outcome
         
         for game in game_ids:
             ray.internal.internal_api.free(game)
@@ -392,11 +384,10 @@ def train_loop( model_creation_fn,
         tic = time()
 
         for _ in range(consec_train_steps):
-            planes_batch, legal_moves_input_batch, moves_batch, outcome_batch = exp_buffer.sample(batch_size)
+            planes_batch, moves_batch, outcome_batch = exp_buffer.sample(batch_size)
             
             policy_loss_value, value_loss_value, loss = gradient_application(
                 planes_batch,
-                legal_moves_input_batch, 
                 moves_batch, 
                 outcome_batch, 
                 model,
@@ -417,6 +408,8 @@ def train_loop( model_creation_fn,
             tf.summary.scalar('total_loss', tot_loss, step=steps)
             tf.summary.scalar('policy_accuracy', p_metric, step=steps)
             tf.summary.scalar('lr', model.optimizer.lr(model.optimizer.iterations), steps)
+            tf.summary.scalar('decisive_games', exp_buffer.get_percentage_decisive_games(), steps)
+            tf.summary.scalar('avg_len_game', tot_moves/tot_games, steps)
             
             for layer in model.layers:
                 for i, weight in enumerate(layer.trainable_weights):
@@ -430,30 +423,36 @@ def train_loop( model_creation_fn,
             # we create checkpoints for 2 reasons: evaluation and safety (in case the training stops for errors)
             steps_from_last_ckpt = 0
             print("Saving checkpoint at step {}".format(steps))
+            utils.save_checkpoint(model, exp_buffer, steps)
             model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(steps))
             utils.get_and_save_optimizer_weights(model)
             exp_buffer.save()
 
 
-train_loop(
-    create_model, 
-    total_steps=conf.TOTAL_STEPS,
-    parallel_games=conf.NUM_PARALLEL_GAMES,
-    consec_train_steps=conf.NUM_TRAINING_STEPS,
-    steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
-    batch_size=conf.SELF_PLAY_BATCH,
-    restart_from="latest_checkpoint")
-#     # restart_from=0)
+if __name__ == "__main__":
 
-# train_loop(
-#     create_model, 
-#     total_steps=300,
-#     parallel_games=2,
-#     consec_train_steps=10,
-#     steps_per_checkpoint=5,
-#     batch_size=8,
-#     # restart_from="latest_checkpoint")
-#     restart_from=0)
+    train_loop(
+        create_model, 
+        total_steps=conf.TOTAL_STEPS,
+        parallel_games=conf.NUM_PARALLEL_GAMES,
+        consec_train_steps=conf.NUM_TRAINING_STEPS,
+        steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+        batch_size=conf.SELF_PLAY_BATCH,
+        # restart_from="latest_checkpoint")
+        restart_from=0)
 
-# model = create_model()
-# model.summary()
+    # train_loop(
+    #     create_model, 
+    #     total_steps=300,
+    #     parallel_games=2,
+    #     consec_train_steps=10,
+    #     steps_per_checkpoint=5,
+    #     batch_size=8,
+    #     # restart_from="latest_checkpoint")
+    #     restart_from=0)
+
+    # model = create_model()
+    # # model.summary()
+
+    # for sample in dataset_train.take(1):
+    #     complete_game(model, sample.numpy().decode("utf8"))
