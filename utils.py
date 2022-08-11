@@ -93,6 +93,7 @@ class Config:
         self.PATH_ENDGAME_TRAIN_DATASET = "data/endgame/train.txt"
         self.PATH_ENDGAME_EVAL_DATASET = "data/endgame/eval.txt"
         self.PATH_ENDGAME_ROOK = "data/endgame/rook.txt"
+        self.PATH_ENDGAME_3_4_pieces = "data/endgame/3_4_pieces.txt"
         self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
         self.N_GAMES_ENDGAME_EVAL =  2*5*20
         self.N_GAMES_ENDGAME_ROOK = 2*5000

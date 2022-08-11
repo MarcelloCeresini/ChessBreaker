@@ -23,11 +23,6 @@ from queue import Queue
 import ray
 import glob
 
-ray.shutdown()
-ray.init(
-    log_to_driver = False,  # comment to see logs from workers
-    include_dashboard=True)
-
 from numpy.random import default_rng
 rng = default_rng()
 
@@ -38,7 +33,6 @@ from model import create_model
 conf = Config()
 # print(ray.available_resources())
 
-dataset_train = tf.data.TextLineDataset(conf.PATH_ENDGAME_ROOK).shuffle(10000).prefetch(tf.data.AUTOTUNE).repeat()
 # using np.arrays because we add chunks of data and not one at a time (O(n) to move all data is actually O(n/m), with m chunk size)
 # and also we need to sample randomly batches of data, that for linked lists (like queue) is O(n*batch_zize), instead for arrays is O(batch_size)
 
@@ -54,6 +48,14 @@ class MyNode(Node): # subclassing Node from Anytree to add some methods
     def calculate_move_probability(self, num_move=1):                                           # N^(1/tau) --> tau is a temperature parameter (exploration vs. exploitation)
         return self.visit_count**(1/conf.temp_param(num_move))
 
+def backpropagate_action_value(root_node):
+    outcome = root_node.action_value    # needed for when depth=max_depth AND NOT LEAF (that means, already visited leaf) --> don't REDO the evaluation, it would give the same result, simply copy it from before
+    # barckpropagation of action value through the tree
+    while root_node.depth > 0:
+        # root node should be an already evalued leaf, at max depth (so OUTCOME has been set)
+        # assert root_node.depth > 0 and root_node.depth <= max_depth, "depth is wrong"
+        root_node = root_node.parent
+        root_node.update_action_value(outcome)
 
 def MTCS(model, root_node, max_depth, num_restarts):
     '''
@@ -76,18 +78,20 @@ def MTCS(model, root_node, max_depth, num_restarts):
             restart_counter+=1
         else:
             root_node = nodes_to_visit.get_nowait()
+
         # print(i, root_node.name, root_node.depth, root_node.visit_count)
         
         step_down = True
         control_counter = 0
-        while step_down:
+
+        while step_down and not root_node.is_finish_position:
             control_counter+=1
             if control_counter > 2*max_depth: 
                 print("stuck in loop, leaving")
                 break # bigger margin, but if it is stuk in a loop for some reason, at least it leaves
             
             # assert root_node.depth >= 0 and root_node.depth <= max_depth, "depth is wrong"
-            if root_node.is_leaf and not root_node.is_finish_position:                                                                           # if it's leaf --> need to pass the position (planes) through the model, to get priors (action_values) and outcome (state_value)
+            if root_node.is_leaf:                                                                           # if it's leaf --> need to pass the position (planes) through the model, to get priors (action_values) and outcome (state_value)
                 step_down = False
 
                 if len(root_node.siblings) > 0:         # this part is to try and avoid batching the same node twice (so we evaluate a random sibling instead)
@@ -105,7 +109,6 @@ def MTCS(model, root_node, max_depth, num_restarts):
                 possible_outcome = root_node.board.outcome(claim_draw=True)
                 
                 if possible_outcome != None: # if the match is finished
-                    step_down = False
                     root_node.is_finish_position = True
                     if possible_outcome.winner == None: # draw
                         # ACTION_VALUE
@@ -113,7 +116,7 @@ def MTCS(model, root_node, max_depth, num_restarts):
                     else:
                         # ACTION_VALUE
                         root_node.action_value = int(possible_outcome.winner)*2-1 # winner white = 1, black =0 --> we want +1 and -1
-                
+
                 else: # if instead there are legal moves and it's not a draw, keep going and expand it
                     legal_moves = list(root_node.board.legal_moves)
                     leaf_node_batch.append(root_node)
@@ -157,7 +160,9 @@ def MTCS(model, root_node, max_depth, num_restarts):
                         priors = [full_moves[idx]*turn for idx in mask_idx]                        # boolean mask returns a tensor of only the values that were masked (as a list let's say)
                         # 0.006434917449951172
                         # 1.3113021850585938e-05
-                        root_node.action_value = outcome[0]    
+                        root_node.action_value = outcome[0]  
+                        # we backpropagate only once we expand the node, reading the action value  
+                        backpropagate_action_value(root_node)
                         
                         # not needed for endgames, exploration is not needed because the first position is different all the times
                         # if root_node == INIT_ROOT:  # increase exploration at the root, since if the network is not good it will not make good starting choices
@@ -192,7 +197,7 @@ def MTCS(model, root_node, max_depth, num_restarts):
                     legal_moves_batch = []
 
             else: # if it does not need to be evalued because it already has children 
-                if root_node.depth < max_depth and not root_node.is_finish_position:                                # if we are normally descending
+                if root_node.depth < max_depth and step_down:                                # if we are normally descending
                     # print("choosing point", "d", root_node.depth, "vc", root_node.visit_count, "name", root_node.name)
                     children = root_node.children                                                               # get all the children (always != [])
                     
@@ -203,18 +208,15 @@ def MTCS(model, root_node, max_depth, num_restarts):
                         root_node = children[np.argmin(values)]
                     root_node.visit_count += 1                                                                  # add 1 to the visit count of the chosen child
                     # print("chosen node", "d", root_node.depth, "vc", root_node.visit_count, "name", root_node.name)
+                    
                 else:
-                    step_down = False                                # it will leave the while, max depth is reached
-                    # print("final leaf", "d", root_node.depth, "vc", root_node.visit_count, "name", root_node.name, root_node.calculate_upper_confidence_bound())
-        
-        outcome = root_node.action_value    # needed for when depth=max_depth AND NOT LEAF (that means, already visited leaf) --> don't REDO the evaluation, it would give the same result, simply copy it from before
-        print(root_node.name, outcome)
-        # barckpropagation of action value through the tree
-        while root_node.depth > 0:
-            # root node should be an already evalued leaf, at max depth (so OUTCOME has been set)
-            # assert root_node.depth > 0 and root_node.depth <= max_depth, "depth is wrong"
-            root_node = root_node.parent
-            root_node.update_action_value(outcome)
+                    step_down = False
+                    backpropagate_action_value(root_node)
+
+        if root_node.is_finish_position:
+            backpropagate_action_value(root_node)
+            # print(root_node.depth, root_node.name, root_node.action_value, root_node.parent.name, root_node.parent.action_value)
+
 
     return INIT_ROOT
 
@@ -232,11 +234,11 @@ def choose_move(root_node, num_move):
     ) 
     root_node.parent = None # To detach the subtree and restart with the next move search
     # print((root_node.board.turn*2-1)*(-1), root_node.visit_count, root_node.prior, root_node.action_value, root_node.calculate_upper_confidence_bound(70))
-
+    print(root_node.name)
     return root_node
 
 
-# @ray.remote(num_returns=3, max_calls=1, max_retries=5) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
+@ray.remote(num_returns=3) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -301,6 +303,7 @@ def gradient_application(planes, y_policy, y_value, model, metric):
 
 
 def train_loop( model_creation_fn,
+                dataset_path=conf.PATH_ENDGAME_TRAIN_DATASET,
                 total_steps = conf.TOTAL_STEPS,
                 steps_per_checkpoint = conf.STEPS_PER_EVAL_CKPT,
                 parallel_games = conf.NUM_PARALLEL_GAMES,
@@ -313,6 +316,7 @@ def train_loop( model_creation_fn,
 
     model = model_creation_fn()
     exp_buffer = utils.ExperienceBuffer(conf.MAX_BUFFER_SIZE)
+    dataset_train = tf.data.TextLineDataset(dataset_path).shuffle(10000).prefetch(tf.data.AUTOTUNE).repeat()
 
     if restart_from == 0:
         utils.save_checkpoint(model, exp_buffer, restart_from)
@@ -440,15 +444,16 @@ def train_loop( model_creation_fn,
 
 if __name__ == "__main__":
 
-    # train_loop(
-    #     create_model, 
-    #     total_steps=conf.TOTAL_STEPS,
-    #     parallel_games=conf.NUM_PARALLEL_GAMES,
-    #     consec_train_steps=conf.NUM_TRAINING_STEPS,
-    #     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
-    #     batch_size=conf.SELF_PLAY_BATCH,
-    #     # restart_from="latest_checkpoint")
-    #     restart_from=0)
+    train_loop(
+        create_model,
+        dataset_path=conf.PATH_ENDGAME_TRAIN_DATASET,
+        total_steps=conf.TOTAL_STEPS,
+        parallel_games=conf.NUM_PARALLEL_GAMES,
+        consec_train_steps=conf.NUM_TRAINING_STEPS,
+        steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+        batch_size=conf.SELF_PLAY_BATCH,
+        # restart_from="latest_checkpoint")
+        restart_from=0)
 
     # train_loop(
     #     create_model, 
@@ -467,12 +472,12 @@ if __name__ == "__main__":
     #     complete_game(model, sample.numpy().decode("utf8"))
     
 
-    ### checkmate in 1
-    model = create_model()
-    board = chess.Board()
-    board.clear()
-    board.set_piece_at(0, chess.Piece(chess.KING, chess.BLACK))
-    board.set_piece_at(16, chess.Piece(chess.KING, chess.WHITE))
-    board.set_piece_at(15, chess.Piece(chess.ROOK, chess.WHITE))
-    board.clear_stack()
-    complete_game(model, board.fen())
+    # ## checkmate in 1
+    # model = create_model()
+    # board = chess.Board()
+    # board.clear()
+    # board.set_piece_at(1, chess.Piece(chess.KING, chess.BLACK))
+    # board.set_piece_at(18, chess.Piece(chess.KING, chess.WHITE))
+    # board.set_piece_at(19, chess.Piece(chess.ROOK, chess.WHITE))
+    # board.push(chess.Move.null())
+    # complete_game(model, board.fen())
