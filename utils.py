@@ -103,10 +103,12 @@ class Config:
         # could reuse the same sample 500 times
 
         self.MAX_BUFFER_SIZE = 40000
+        self.MIN_BUFFER_SIZE = 10000
+
         self.NUM_PARALLEL_GAMES = 80 
 
-        self.NUM_TRAINING_STEPS = 50 #  consecutive --> so the model that plays and that learns are not strictly correlated
-        self.SELF_PLAY_BATCH = 128
+        self.NUM_TRAINING_STEPS = 100 #  consecutive --> so the model that plays and that learns are not strictly correlated
+        self.SELF_PLAY_BATCH = 64
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 

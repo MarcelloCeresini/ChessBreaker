@@ -238,7 +238,7 @@ def choose_move(root_node, num_move):
     return root_node
 
 
-@ray.remote(num_returns=3) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
+@ray.remote(num_returns=3, max_calls=1) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -311,7 +311,8 @@ def train_loop( model_creation_fn,
                 batch_size = conf.SELF_PLAY_BATCH,
                 restart_from = 0,
                 max_depth_MCTS = conf.MAX_DEPTH,
-                num_restarts_MCTS = conf.NUM_RESTARTS
+                num_restarts_MCTS = conf.NUM_RESTARTS,
+                start_training_from = conf.MIN_BUFFER_SIZE
                 ):
 
     model = model_creation_fn()
@@ -361,8 +362,6 @@ def train_loop( model_creation_fn,
             include_dashboard=True)
         print(ray.available_resources())
         
-        steps += consec_train_steps
-        steps_from_last_ckpt += consec_train_steps
         
         tic = time()
         starting_positions = dataset_train.take(parallel_games)
@@ -393,53 +392,58 @@ def train_loop( model_creation_fn,
 
         tot_moves += round_moves
         tot_games += parallel_games
-        print("Finished {} parallel games in {:.2f}s, stacked {} moves in exp buffer (tot {}), the learning step will consume {} moves".format(parallel_games, time()-tic, round_moves, exp_buffer.filled_up, consec_train_steps*batch_size))
+        print("Finished {} parallel games in {:.2f}s, stacked {} moves in exp buffer (tot {})".format(parallel_games, time()-tic, round_moves, exp_buffer.filled_up))
         print("Decisive result percentage in buffer  = {:.2f}% (avg on samples, not games)".format(exp_buffer.get_percentage_decisive_games()))
-        print("On average, the same move will be passed through the network {:.2f} times".format(consec_train_steps*batch_size/round_moves))
-        print("The avg length of a game is {:.2f}".format(tot_moves/tot_games))
-        tic = time()
-
-        for _ in range(consec_train_steps):
-            planes_batch, moves_batch, outcome_batch = exp_buffer.sample(batch_size)
-            
-            policy_loss_value, value_loss_value, loss = gradient_application(
-                planes_batch,
-                moves_batch, 
-                outcome_batch, 
-                model,
-                metric)
-
-            loss_updater.update(policy_loss_value, value_loss_value, loss)
-
-        p_loss, v_loss, tot_loss = loss_updater.get_losses()
-        p_metric = metric.result()
-        # print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
-        loss_updater.reset_state()
-        metric.reset_states()
+        print("The avg length of a game in buffer is {:.2f}".format(tot_moves/tot_games))
         
-        with summary_writer.as_default():
-            tf.summary.scalar('policy_loss', p_loss, step=steps)
-            tf.summary.scalar('value_loss', v_loss, step=steps)
-            tf.summary.scalar('L2_loss', tot_loss-p_loss-v_loss, step=steps)
-            tf.summary.scalar('total_loss', tot_loss, step=steps)
-            tf.summary.scalar('policy_accuracy', p_metric, step=steps)
-            tf.summary.scalar('lr', model.optimizer.lr(model.optimizer.iterations), steps)
-            tf.summary.scalar('decisive_games', exp_buffer.get_percentage_decisive_games(), steps)
-            tf.summary.scalar('avg_len_game', tot_moves/tot_games, steps)
+
+        if exp_buffer.filled_up >= start_training_from:
+            print("The learning step will consume {} moves".format(consec_train_steps*batch_size))
+            print("On average, the same move will be passed through the network {:.2f} times".format(consec_train_steps*batch_size/round_moves))
+            steps += consec_train_steps
+            steps_from_last_ckpt += consec_train_steps
+
+            for _ in range(consec_train_steps):
+                planes_batch, moves_batch, outcome_batch = exp_buffer.sample(batch_size)
+                
+                policy_loss_value, value_loss_value, loss = gradient_application(
+                    planes_batch,
+                    moves_batch, 
+                    outcome_batch, 
+                    model,
+                    metric)
+
+                loss_updater.update(policy_loss_value, value_loss_value, loss)
+
+            p_loss, v_loss, tot_loss = loss_updater.get_losses()
+            p_metric = metric.result()
+            # print("Finished training steps --> Policy loss {:.5f} - value loss {:.5f} - loss {:.5f} - policy_accuracy {:.5f}".format(p_loss, v_loss, tot_loss, p_metric))
+            loss_updater.reset_state()
+            metric.reset_states()
             
-            for layer in model.layers:
-                for i, weight in enumerate(layer.trainable_weights):
-                    if i==0:
-                        kind = "_kernel"
-                    else:
-                        kind = "_bias"
-                    tf.summary.histogram(layer.name+kind, weight, steps)
-        
-        if steps_from_last_ckpt >= steps_per_checkpoint:
-            # we create checkpoints for 2 reasons: evaluation and safety (in case the training stops for errors)
-            steps_from_last_ckpt = 0
-            print("Saving checkpoint at step {}".format(steps))
-            utils.save_checkpoint(model, exp_buffer, steps)
+            with summary_writer.as_default():
+                tf.summary.scalar('policy_loss', p_loss, step=steps)
+                tf.summary.scalar('value_loss', v_loss, step=steps)
+                tf.summary.scalar('L2_loss', tot_loss-p_loss-v_loss, step=steps)
+                tf.summary.scalar('total_loss', tot_loss, step=steps)
+                tf.summary.scalar('policy_accuracy', p_metric, step=steps)
+                tf.summary.scalar('lr', model.optimizer.lr(model.optimizer.iterations), steps)
+                tf.summary.scalar('decisive_games', exp_buffer.get_percentage_decisive_games(), steps)
+                tf.summary.scalar('avg_len_game', tot_moves/tot_games, steps)
+                
+                for layer in model.layers:
+                    for i, weight in enumerate(layer.trainable_weights):
+                        if i==0:
+                            kind = "_kernel"
+                        else:
+                            kind = "_bias"
+                        tf.summary.histogram(layer.name+kind, weight, steps)
+            
+            if steps_from_last_ckpt >= steps_per_checkpoint:
+                # we create checkpoints for 2 reasons: evaluation and safety (in case the training stops for errors)
+                steps_from_last_ckpt = 0
+                print("Saving checkpoint at step {}".format(steps))
+                utils.save_checkpoint(model, exp_buffer, steps)
 
 
 if __name__ == "__main__":
@@ -463,7 +467,8 @@ if __name__ == "__main__":
     #     steps_per_checkpoint=5,
     #     batch_size=8,
     #     # restart_from="latest_checkpoint")
-    #     restart_from=0)
+    #     restart_from=0,
+    #     start_training_from=200)
 
     # model = create_model()
     # # model.summary()
