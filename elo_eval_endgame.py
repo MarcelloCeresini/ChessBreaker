@@ -4,12 +4,13 @@ import tensorflow as tf
 import datetime
 import utils
 from model import create_model
+import tqdm
 
 conf = utils.Config()
 
-chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}.h5"
+chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
 # chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
-chosen_steps = [0, 300, 600]
+chosen_steps = [0, 1000, 4800]
 
 weights_list = [chekpoint_path.format(steps) for steps in chosen_steps]
 
@@ -36,7 +37,7 @@ for first_path in weights_list:
         print("2", second_path)
 
         round = 0
-        for fen in eval_dataset:
+        for fen in tqdm(eval_dataset):
             round+=1
             game = chess.pgn.Game()
             game.headers["Round"] = str(round)

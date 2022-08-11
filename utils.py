@@ -92,8 +92,10 @@ class Config:
 
         self.PATH_ENDGAME_TRAIN_DATASET = "data/endgame/train.txt"
         self.PATH_ENDGAME_EVAL_DATASET = "data/endgame/eval.txt"
+        self.PATH_ENDGAME_ROOK = "data/endgame/rook.txt"
         self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
         self.N_GAMES_ENDGAME_EVAL =  2*5*20
+        self.N_GAMES_ENDGAME_ROOK = 2*5000
 
         # max_buffer_size/(games*max_moves) ~= n_loops of changing buffer
         # this means that every 5 loops it changes --> 500 train steps per change
@@ -102,13 +104,13 @@ class Config:
         self.MAX_BUFFER_SIZE = 40000
         self.NUM_PARALLEL_GAMES = 80 
 
-        self.NUM_TRAINING_STEPS = 100 #  consecutive --> so the model that plays and that learns are not strictly correlated
-        self.SELF_PLAY_BATCH = 64
+        self.NUM_TRAINING_STEPS = 50 #  consecutive --> so the model that plays and that learns are not strictly correlated
+        self.SELF_PLAY_BATCH = 128
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 
-        self.STEPS_PER_EVAL_CKPT = 300
-        self.TOTAL_STEPS = 10200
+        self.STEPS_PER_EVAL_CKPT = 200
+        self.TOTAL_STEPS = 10000
 
         lr_boundaries = [3000, 8000]    # idea from paper, numbers changed
         lr_values = [0.002, 0.0002, 0.00002]
@@ -137,7 +139,7 @@ class Config:
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         # if you are descending the tree for the 100th time, you should rely more on the visit count than on the prior of the model (if the prior was good at the beginning, the node will have been visited a lot)
         expl_param = conf.MAXIMUM_EXPL_PARAM*(1-iter/conf.NUM_RESTARTS) + conf.MINIMUM_EXPL_PARAM*(iter/conf.NUM_RESTARTS)
-        return expl_param # TODO: implement it
+        return expl_param # TODO: HAS TO START FROM 0.5 BECAUSE first action value is 0!
     
     def temp_param(self, num_move):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
         return conf.TEMP_PARAM # you should never "try" different moves because the starting position is never the same --> always go for the best move
@@ -465,10 +467,10 @@ def load_and_set_optimizer_weights(model, steps):
 
 def save_checkpoint(model, exp_buffer, steps):
 
-    if not os.path.exists(conf.PATH_FULL_CKPT_FOR_EVAL):
-        os.makedirs(conf.PATH_FULL_CKPT_FOR_EVAL)
+    if not os.path.exists(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps)):
+        os.makedirs(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps))
     else:
-        files = glob.glob(conf.PATH_FULL_CKPT_FOR_EVAL)
+        files = glob.glob(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps))
         for f in files:
             os.remove(f)
     

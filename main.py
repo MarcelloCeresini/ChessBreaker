@@ -38,7 +38,7 @@ from model import create_model
 conf = Config()
 # print(ray.available_resources())
 
-dataset_train = tf.data.TextLineDataset(conf.PATH_ENDGAME_TRAIN_DATASET).shuffle(10000).prefetch(tf.data.AUTOTUNE).repeat()
+dataset_train = tf.data.TextLineDataset(conf.PATH_ENDGAME_ROOK).shuffle(10000).prefetch(tf.data.AUTOTUNE).repeat()
 # using np.arrays because we add chunks of data and not one at a time (O(n) to move all data is actually O(n/m), with m chunk size)
 # and also we need to sample randomly batches of data, that for linked lists (like queue) is O(n*batch_zize), instead for arrays is O(batch_size)
 
@@ -104,10 +104,10 @@ def MTCS(model, root_node, max_depth, num_restarts):
                 # important! save legal moves AFTER choosing root_node (they have to be the legal moves available in that position)
                 possible_outcome = root_node.board.outcome(claim_draw=True)
                 
-                if possible_outcome != None: # if you can't move or it's a draw, the match is finished
+                if possible_outcome != None: # if the match is finished
                     step_down = False
                     root_node.is_finish_position = True
-                    if possible_outcome.winner == None:
+                    if possible_outcome.winner == None: # draw
                         # ACTION_VALUE
                         root_node.action_value = 0
                     else:
@@ -159,6 +159,7 @@ def MTCS(model, root_node, max_depth, num_restarts):
                         # 1.3113021850585938e-05
                         root_node.action_value = outcome[0]    
                         
+                        # not needed for endgames, exploration is not needed because the first position is different all the times
                         # if root_node == INIT_ROOT:  # increase exploration at the root, since if the network is not good it will not make good starting choices
                         #     dir_noise = rng.dirichlet([conf.ALPHA_DIRICHLET]*len(priors))
                         #     priors = [((1-conf.EPS_NOISE)*p + conf.EPS_NOISE*noise) for p, noise in zip(priors, dir_noise)]
@@ -205,13 +206,15 @@ def MTCS(model, root_node, max_depth, num_restarts):
                 else:
                     step_down = False                                # it will leave the while, max depth is reached
                     # print("final leaf", "d", root_node.depth, "vc", root_node.visit_count, "name", root_node.name, root_node.calculate_upper_confidence_bound())
-                    outcome = root_node.action_value    # needed for when depth=max_depth AND NOT LEAF (that means, already visited leaf) --> don't REDO the evaluation, it would give the same result, simply copy it from before
-                    # barckpropagation of action value through the tree
-                    while root_node.depth > 0:
-                        # root node should be an already evalued leaf, at max depth (so OUTCOME has been set)
-                        # assert root_node.depth > 0 and root_node.depth <= max_depth, "depth is wrong"
-                        root_node = root_node.parent
-                        root_node.update_action_value(outcome)
+        
+        outcome = root_node.action_value    # needed for when depth=max_depth AND NOT LEAF (that means, already visited leaf) --> don't REDO the evaluation, it would give the same result, simply copy it from before
+        print(root_node.name, outcome)
+        # barckpropagation of action value through the tree
+        while root_node.depth > 0:
+            # root node should be an already evalued leaf, at max depth (so OUTCOME has been set)
+            # assert root_node.depth > 0 and root_node.depth <= max_depth, "depth is wrong"
+            root_node = root_node.parent
+            root_node.update_action_value(outcome)
 
     return INIT_ROOT
 
@@ -233,7 +236,7 @@ def choose_move(root_node, num_move):
     return root_node
 
 
-@ray.remote(num_returns=3, max_calls=1, max_retries=5) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
+# @ray.remote(num_returns=3, max_calls=1, max_retries=5) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -312,22 +315,26 @@ def train_loop( model_creation_fn,
     exp_buffer = utils.ExperienceBuffer(conf.MAX_BUFFER_SIZE)
 
     if restart_from == 0:
-        model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(0))
+        utils.save_checkpoint(model, exp_buffer, restart_from)
     elif restart_from == "latest_checkpoint":
-        all_ckpts = glob.glob(os.path.dirname(conf.PATH_CKPT_FOR_EVAL.format(0))+"/step*")
+        all_ckpts = glob.glob(os.path.dirname(conf.PATH_FULL_CKPT_FOR_EVAL.format(0)))
         all_ckpts.sort(reverse=True)
         latest_ckpt = all_ckpts[0]
-        model.load_weights(latest_ckpt)
-        utils.load_and_set_optimizer_weights(model)
-        exp_buffer.load()
+        restart_from = int(latest_ckpt[-5:])
+        utils.load_checkpoint(model, exp_buffer, restart_from)
     else:
-        raise ValueError("restart_from can only be 0 or 'latest_checkpoint'")
+        if not os.path.exists(conf.CKPT_WEIGHTS):
+            raise ValueError("restart_from can only be 0 or 'latest_checkpoint'")
+        else:
+            utils.load_checkpoint(model, exp_buffer, restart_from)
 
     steps = model.optimizer.iterations.numpy()
     print("Starting from {} steps".format(steps))
+    dataset_train.skip(steps)
+
     actual_steps = total_steps - model.optimizer.iterations
     print("Remaining loops = {}".format(int(actual_steps/consec_train_steps)))
-    print("Ggames that will be played = {}".format(int(actual_steps/consec_train_steps*parallel_games)))
+    print("Games that will be played = {}".format(int(actual_steps/consec_train_steps*parallel_games)))
     print("Samples that will be used = {}".format(batch_size*actual_steps))
     print("Checkpoints that will be created = {}".format(int(actual_steps/steps_per_checkpoint)))
     
@@ -344,7 +351,12 @@ def train_loop( model_creation_fn,
     tot_games = 0
 
     while steps < total_steps:
+        ray.shutdown()
+        ray.init(
+            log_to_driver = False,  # comment to see logs from workers
+            include_dashboard=True)
         print(ray.available_resources())
+        
         steps += consec_train_steps
         steps_from_last_ckpt += consec_train_steps
         
@@ -424,22 +436,19 @@ def train_loop( model_creation_fn,
             steps_from_last_ckpt = 0
             print("Saving checkpoint at step {}".format(steps))
             utils.save_checkpoint(model, exp_buffer, steps)
-            model.save_weights(conf.PATH_CKPT_FOR_EVAL.format(steps))
-            utils.get_and_save_optimizer_weights(model)
-            exp_buffer.save()
 
 
 if __name__ == "__main__":
 
-    train_loop(
-        create_model, 
-        total_steps=conf.TOTAL_STEPS,
-        parallel_games=conf.NUM_PARALLEL_GAMES,
-        consec_train_steps=conf.NUM_TRAINING_STEPS,
-        steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
-        batch_size=conf.SELF_PLAY_BATCH,
-        # restart_from="latest_checkpoint")
-        restart_from=0)
+    # train_loop(
+    #     create_model, 
+    #     total_steps=conf.TOTAL_STEPS,
+    #     parallel_games=conf.NUM_PARALLEL_GAMES,
+    #     consec_train_steps=conf.NUM_TRAINING_STEPS,
+    #     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+    #     batch_size=conf.SELF_PLAY_BATCH,
+    #     # restart_from="latest_checkpoint")
+    #     restart_from=0)
 
     # train_loop(
     #     create_model, 
@@ -456,3 +465,14 @@ if __name__ == "__main__":
 
     # for sample in dataset_train.take(1):
     #     complete_game(model, sample.numpy().decode("utf8"))
+    
+
+    ### checkmate in 1
+    model = create_model()
+    board = chess.Board()
+    board.clear()
+    board.set_piece_at(0, chess.Piece(chess.KING, chess.BLACK))
+    board.set_piece_at(16, chess.Piece(chess.KING, chess.WHITE))
+    board.set_piece_at(15, chess.Piece(chess.ROOK, chess.WHITE))
+    board.clear_stack()
+    complete_game(model, board.fen())
