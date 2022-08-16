@@ -429,7 +429,7 @@ class LossUpdater():
         self.loss = 0
         self.step = 0
 
- 
+
 def get_and_save_optimizer_weights(model, steps):
     weights = model.optimizer.get_weights()
     config = model.optimizer.get_config()
