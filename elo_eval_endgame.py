@@ -10,7 +10,7 @@ conf = utils.Config()
 
 chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
 # chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
-chosen_steps = [0, 2000, 4000, 6000, 8000, 10000]
+chosen_steps = [0, 8000, 14000]
 
 weights_list = [chekpoint_path.format(steps) for steps in chosen_steps]
 
@@ -41,24 +41,28 @@ for first_path in tqdm(weights_list):
             round+=1
             game = chess.pgn.Game()
             game.headers["Round"] = str(round)
-            game.headers["White"] = str(first_path)
-            game.headers["Black"] = str(second_path)
 
             planes = None
             board = chess.Board()
             board.set_fen(fen.numpy().decode("utf8"))
             game.setup(board)
+
             board_history = [board.fen()[:-6]]
-            model = model_1
+
+            if board.turn == chess.WHITE:
+                game.headers["White"] = str(first_path)
+                game.headers["Black"] = str(second_path)
+            else:
+                game.headers["White"] = str(second_path)
+                game.headers["Black"] = str(first_path)
+
             i=0
             while not board.is_game_over(claim_draw=True):
 
-                if i%2 == 0:
-                    model = model_1
+                if i%2 == 0: # the first model always moves first, somtetimes as white and sometimes as black
+                    move, planes = utils.select_best_move(model_1, planes, board, board_history, probabilistic=False)
                 else:
-                    model = model_2
-                
-                move, planes = utils.select_best_move(model, planes, board, board_history, probabilistic=False)
+                    move, planes = utils.select_best_move(model_2, planes, board, board_history, probabilistic=False)
                 
                 if i==0:
                     node = game.add_variation(move)

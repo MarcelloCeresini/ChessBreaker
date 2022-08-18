@@ -81,7 +81,6 @@ class Config:
         self.TEMP_PARAM = 0.2
         
         self.BATCH_DIM = 8
-        self.IMITATION_LEARNING_BATCH = 1024
 
         # Model stuff
         # self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
@@ -95,7 +94,7 @@ class Config:
         self.PATH_ENDGAME_ROOK = "data/endgame/rook.txt"
         self.PATH_ENDGAME_3_4_pieces = "data/endgame/3_4_pieces.txt"
         self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
-        self.N_GAMES_ENDGAME_EVAL =  2*5*20
+        self.N_GAMES_ENDGAME_EVAL =  2*5*10
         self.N_GAMES_ENDGAME_ROOK = 2*5000
 
         # max_buffer_size/(games*max_moves) ~= n_loops of changing buffer
@@ -107,13 +106,13 @@ class Config:
 
         self.NUM_PARALLEL_GAMES = 80 
 
-        self.NUM_TRAINING_STEPS = 100 #  consecutive --> so the model that plays and that learns are not strictly correlated
+        self.NUM_TRAINING_STEPS = 200 #  consecutive --> so the model that plays and that learns are not strictly correlated
         self.SELF_PLAY_BATCH = 64
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 
-        self.STEPS_PER_EVAL_CKPT = 200
-        self.TOTAL_STEPS = 10000
+        self.STEPS_PER_EVAL_CKPT = 1000
+        self.TOTAL_STEPS = 20000
 
         lr_boundaries = [3000, 8000]    # idea from paper, numbers changed
         lr_values = [0.002, 0.0002, 0.00002]
@@ -308,12 +307,13 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
     legal_moves = list(board.legal_moves)
     idxs = mask_moves_flatten(legal_moves)
     action_v, _ = model(tf.expand_dims(planes, axis=0))
-    
+
     action_v = action_v[0] # batch of 1
 
-    move_value = []
-    for idx in idxs:
-        move_value.append(action_v[idx].numpy())
+    move_value = [action_v[idx].numpy() for idx in idxs]
+
+    # for move, val in zip(legal_moves, move_value):
+    #     print(move, val) 
 
     move_value = softmax(move_value)
 
@@ -325,6 +325,7 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
             best_move = legal_moves[best_move_idx]
     else:
         best_move = legal_moves[np.argmax(move_value)]
+        # print("max", max(move_value), best_move)
 
     return best_move, planes
 

@@ -221,7 +221,7 @@ def MTCS(model, root_node, max_depth, num_restarts):
     return INIT_ROOT
 
 
-def choose_move(root_node, num_move):
+def choose_move(root_node, num_move=0):
     children = root_node.children
     assert root_node.children != [], "No children, cannot choose move"
     p = [child.calculate_move_probability(num_move) for child in children] 
@@ -234,7 +234,7 @@ def choose_move(root_node, num_move):
     ) 
     root_node.parent = None # To detach the subtree and restart with the next move search
     # print((root_node.board.turn*2-1)*(-1), root_node.visit_count, root_node.prior, root_node.action_value, root_node.calculate_upper_confidence_bound(70))
-    print(root_node.name)
+    # print(root_node.name)
     return root_node
 
 
@@ -242,7 +242,9 @@ def choose_move(root_node, num_move):
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
-                  num_restarts=conf.NUM_RESTARTS
+                  num_restarts=conf.NUM_RESTARTS,
+                  white_MCTS=True,
+                  black_MCTS=True
                   ):
 
     board = chess.Board()
@@ -267,7 +269,14 @@ def complete_game(model,
     # while not root_node.board.is_game_over(claim_draw=True) and root_node.board.fullmove_number <= conf.MAX_MOVE_COUNT:
     while not root_node.board.is_game_over(claim_draw=True) and move_counter < conf.MAX_MOVE_COUNT:
         move_counter += 1
-        root_node = MTCS(model, root_node, max_depth = max_depth, num_restarts=num_restarts)                            # though the root node you can access all the tree
+        if (root_node.board.turn == chess.WHITE and white_MCTS) or (root_node.board.turn == chess.BLACK and black_MCTS):
+            NO_MCTS_flag = False
+        else:
+            NO_MCTS_flag = True
+        
+        if NO_MCTS_flag:
+            move = utils.select_best_move(model, root_node.planes, root_node.board, root_node.board_history)
+        root_node = MTCS(model, root_node, max_depth = max_depth, num_restarts=num_restarts, no_search=NO_MCTS_flag)                            # though the root node you can access all the tree
 
         match_planes.append(root_node.planes)                                                                                   # 8x8x113
         root_node = choose_move(root_node, num_move=move_counter)                                                                                      
@@ -328,7 +337,7 @@ def train_loop( model_creation_fn,
         restart_from = int(latest_ckpt[-5:])
         utils.load_checkpoint(model, exp_buffer, restart_from)
     else:
-        if not os.path.exists(conf.CKPT_WEIGHTS):
+        if not os.path.exists(conf.CKPT_WEIGHTS.format(restart_from)):
             raise ValueError("restart_from can only be 0 or 'latest_checkpoint'")
         else:
             utils.load_checkpoint(model, exp_buffer, restart_from)
@@ -456,8 +465,8 @@ if __name__ == "__main__":
         consec_train_steps=conf.NUM_TRAINING_STEPS,
         steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
         batch_size=conf.SELF_PLAY_BATCH,
-        # restart_from="latest_checkpoint")
-        restart_from=0)
+        restart_from=15000)
+        # restart_from=0)
 
     # train_loop(
     #     create_model, 
