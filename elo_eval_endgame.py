@@ -3,14 +3,16 @@ import chess.pgn
 import tensorflow as tf
 import datetime
 import utils
+from model import create_model
+from tqdm import tqdm
 
 conf = utils.Config()
 
-models = [
-    "/home/marcello/github/ChessBreaker/model_checkpoint/step-0",
-    "/home/marcello/github/ChessBreaker/model_checkpoint/step-500",
-    "/home/marcello/github/ChessBreaker/model_checkpoint/step-1000",
-]
+chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
+# chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
+chosen_steps = [0, 6000, 10000, 14000]
+
+weights_list = [chekpoint_path.format(steps) for steps in chosen_steps]
 
 eval_dataset = tf.data.TextLineDataset(conf.PATH_ENDGAME_EVAL_DATASET).prefetch(tf.data.AUTOTUNE)
 
@@ -20,39 +22,52 @@ pgn_path = "results/endgame/{}.pgn".format(current_time)
 with open(pgn_path, "w") as f: # to generate the file in case it does not exist
     pass
 
-for model_1_name in models:
-    model_1 = tf.keras.models.load_model(model_1_name)
-    second_list = models.copy()
-    second_list.remove(model_1_name)
-    for model_2_name in second_list:
-        model_2 = tf.keras.models.load_model(model_2_name)
+model_1 = create_model()
+model_2 = create_model()
+
+wins = {}
+
+for path in weights_list:
+    wins[str(path)] = 0
+
+for first_path in tqdm(weights_list):
+    model_1.load_weights(first_path)
+    
+    second_list = weights_list.copy()
+    second_list.remove(first_path)
+    for second_path in second_list:
+        model_2.load_weights(second_path)
         print("--------")
-        print("1", model_1_name)
-        print("2", model_2_name)
+        print("1", first_path)
+        print("2", second_path)
 
         round = 0
         for fen in eval_dataset:
             round+=1
             game = chess.pgn.Game()
             game.headers["Round"] = str(round)
-            game.headers["White"] = str(model_1_name.split("/")[-1])
-            game.headers["Black"] = str(model_2_name.split("/")[-1])
 
             planes = None
             board = chess.Board()
             board.set_fen(fen.numpy().decode("utf8"))
             game.setup(board)
+
             board_history = [board.fen()[:-6]]
-            model = model_2
+
+            if board.turn == chess.WHITE:
+                game.headers["White"] = str(first_path)
+                game.headers["Black"] = str(second_path)
+            else:
+                game.headers["White"] = str(second_path)
+                game.headers["Black"] = str(first_path)
+
             i=0
             while not board.is_game_over(claim_draw=True):
 
-                if i%2 == 0:
-                    model = model_1
+                if i%2 == 0: # the first model always moves first, somtetimes as white and sometimes as black
+                    move, planes = utils.select_best_move(model_1, planes, board, board_history, probabilistic=False)
                 else:
-                    model = model_2
-                
-                move, planes = utils.select_best_move(model, planes, board, board_history, probabilistic=True)
+                    move, planes = utils.select_best_move(model_2, planes, board, board_history, probabilistic=False)
                 
                 if i==0:
                     node = game.add_variation(move)
@@ -64,8 +79,18 @@ for model_1_name in models:
 
                 i+=1
             
-            game.headers["Result"] = board.outcome(claim_draw=True).result()
+            result = board.outcome(claim_draw=True).result()
+            game.headers["Result"] = result
+            game.headers["Reason"] = str(board.outcome(claim_draw=True))
+
+            if result:
+                wins[game.headers["White"]] += 1
+                print(game.headers["White"])
+            elif result:
+                wins[game.headers["Black"]] += 1
+                print(game.headers["Black"])
 
             with open(pgn_path, "a") as f:
                 print(game, file=f, end="\n\n")
-            
+    
+print(wins)

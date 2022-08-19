@@ -81,7 +81,6 @@ class Config:
         self.TEMP_PARAM = 0.2
         
         self.BATCH_DIM = 8
-        self.IMITATION_LEARNING_BATCH = 1024
 
         # Model stuff
         # self.DUMMY_INPUT = tf.stack([tf.zeros([*self.BOARD_SHAPE, self.TOTAL_PLANES])]*8, axis = 0)
@@ -92,43 +91,47 @@ class Config:
 
         self.PATH_ENDGAME_TRAIN_DATASET = "data/endgame/train.txt"
         self.PATH_ENDGAME_EVAL_DATASET = "data/endgame/eval.txt"
+        self.PATH_ENDGAME_ROOK = "data/endgame/rook.txt"
+        self.PATH_ENDGAME_3_4_pieces = "data/endgame/3_4_pieces.txt"
         self.N_GAMES_ENDGAME_TRAIN = 2*5*50000
-        self.N_GAMES_ENDGAME_EVAL =  2*5*50
-
-        self.PATH_FIXED_MODEL = "models/fixed_model"
-        self.PATH_UPDATING_MODEL = "models/updating_model"
-        self.PATH_CKPT_FOR_EVAL = "model_checkpoint/step-{:05.0f}.h5"
+        self.N_GAMES_ENDGAME_EVAL =  2*5*10
+        self.N_GAMES_ENDGAME_ROOK = 2*5000
 
         # max_buffer_size/(games*max_moves) ~= n_loops of changing buffer
         # this means that every 5 loops it changes --> 500 train steps per change
         # could reuse the same sample 500 times
 
         self.MAX_BUFFER_SIZE = 40000
+        self.MIN_BUFFER_SIZE = 10000
+
         self.NUM_PARALLEL_GAMES = 80 
 
-        self.NUM_TRAINING_STEPS = 100 #  consecutive --> so the model that plays and that learns are not strictly correlated
+        self.NUM_TRAINING_STEPS = 200 #  consecutive --> so the model that plays and that learns are not strictly correlated
         self.SELF_PLAY_BATCH = 64
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 
-        self.STEPS_PER_EVAL_CKPT = 300
-        self.TOTAL_STEPS = 10200
+        self.STEPS_PER_EVAL_CKPT = 1000
+        self.TOTAL_STEPS = 20000
 
         lr_boundaries = [3000, 8000]    # idea from paper, numbers changed
         lr_values = [0.002, 0.0002, 0.00002]
         lr_scheduler = tf.keras.optimizers.schedules.PiecewiseConstantDecay(lr_boundaries, lr_values)
         self.OPTIMIZER = tf.keras.optimizers.Adam(learning_rate = lr_scheduler)
-        self.EXTRA_CONFIG_PATH = 'model_checkpoint/stored_config/'
-        self.OPTIMIZER_W_PATH =             self.EXTRA_CONFIG_PATH+'optimizer_weights.pkl'
-        self.OPTIMIZER_CONFIG_PATH =        self.EXTRA_CONFIG_PATH+'optimizer_config.pkl'
+        
+        self.PATH_FULL_CKPT_FOR_EVAL = "model_checkpoint/step-{:05.0f}/"
 
-        self.EXP_BUFFER_PLANES_PATH =       self.EXTRA_CONFIG_PATH+'planes.pkl'
-        self.EXP_BUFFER_LEG_MOVES_PATH =    self.EXTRA_CONFIG_PATH+'leg_moves.pkl'
-        self.EXP_BUFFER_MOVES_PATH =        self.EXTRA_CONFIG_PATH+'moves.pkl'
-        self.EXP_BUFFER_OUTCOME_PATH =      self.EXTRA_CONFIG_PATH+'outcome.pkl'
-        self.EXP_BUFFER_FILLED_UP =         self.EXTRA_CONFIG_PATH+'filled_up.pkl'
+        self.CKPT_WEIGHTS =                 self.PATH_FULL_CKPT_FOR_EVAL+'model_weights.h5'
+        self.OPTIMIZER_W_PATH =             self.PATH_FULL_CKPT_FOR_EVAL+'optimizer_weights.pkl'
+        self.OPTIMIZER_CONFIG_PATH =        self.PATH_FULL_CKPT_FOR_EVAL+'optimizer_config.pkl'
 
-        self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)  # from paper
+        self.EXP_BUFFER_PLANES_PATH =       self.PATH_FULL_CKPT_FOR_EVAL+'planes.pkl'
+        # self.EXP_BUFFER_LEG_MOVES_PATH =    self.PATH_FULL_CKPT_FOR_EVAL+'leg_moves.pkl'
+        self.EXP_BUFFER_MOVES_PATH =        self.PATH_FULL_CKPT_FOR_EVAL+'moves.pkl'
+        self.EXP_BUFFER_OUTCOME_PATH =      self.PATH_FULL_CKPT_FOR_EVAL+'outcome.pkl'
+        self.EXP_BUFFER_FILLED_UP =         self.PATH_FULL_CKPT_FOR_EVAL+'filled_up.pkl'
+
+        self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)  # from paper
         self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                                 # from paper
 
         self.METRIC_FN_POLICY = tf.keras.metrics.SparseCategoricalAccuracy()
@@ -138,7 +141,7 @@ class Config:
     def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         # if you are descending the tree for the 100th time, you should rely more on the visit count than on the prior of the model (if the prior was good at the beginning, the node will have been visited a lot)
         expl_param = conf.MAXIMUM_EXPL_PARAM*(1-iter/conf.NUM_RESTARTS) + conf.MINIMUM_EXPL_PARAM*(iter/conf.NUM_RESTARTS)
-        return expl_param # TODO: implement it
+        return expl_param # TODO: HAS TO START FROM 0.5 BECAUSE first action value is 0!
     
     def temp_param(self, num_move):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
         return conf.TEMP_PARAM # you should never "try" different moves because the starting position is never the same --> always go for the best move
@@ -303,15 +306,14 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
     planes = update_planes(planes, board, board_history)
     legal_moves = list(board.legal_moves)
     idxs = mask_moves_flatten(legal_moves)
-    legal_moves_input = scatter_idxs(idxs)
-    action_v, _ = model([
-        tf.expand_dims(planes, axis=0), 
-        tf.expand_dims(legal_moves_input, axis=0)])
+    action_v, _ = model(tf.expand_dims(planes, axis=0))
+
     action_v = action_v[0] # batch of 1
 
-    move_value = []
-    for idx in idxs:
-        move_value.append(action_v[idx].numpy())
+    move_value = [action_v[idx].numpy() for idx in idxs]
+
+    # for move, val in zip(legal_moves, move_value):
+    #     print(move, val) 
 
     move_value = softmax(move_value)
 
@@ -323,6 +325,7 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
             best_move = legal_moves[best_move_idx]
     else:
         best_move = legal_moves[np.argmax(move_value)]
+        # print("max", max(move_value), best_move)
 
     return best_move, planes
 
@@ -334,16 +337,14 @@ class ExperienceBuffer():
         self.rng = np.random.default_rng()
 
         self.planes = np.zeros((self.size, *conf.INPUT_SHAPE), dtype=conf.PLANES_DTYPE_NP)  # the bigger the better, check with some experiments
-        self.legal_moves = np.zeros((self.size, 8*8*73), dtype=conf.PLANES_DTYPE_NP)  # the bigger the better, check with some experiments
         self.moves = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP)   # the bigger the better, check with some experiments
         self.outcome = np.zeros((self.size), dtype=conf.PLANES_DTYPE_NP) # the bigger the better, check with some experiments
         self.filled_up = 0
 
 
-    def push(self, planes_match, legal_moves, moves_match, outcome_match):
+    def push(self, planes_match, moves_match, outcome_match):
 
         planes_match = copy.deepcopy(planes_match)
-        legal_moves = copy.deepcopy(legal_moves)
         moves_match = copy.deepcopy(moves_match)
         outcome_match = copy.deepcopy(outcome_match)
 
@@ -353,12 +354,10 @@ class ExperienceBuffer():
         to_move = self.size - to_remove
 
         self.planes[:to_move, ...] = self.planes[to_remove:, ...]
-        self.legal_moves[:to_move, ...] = self.legal_moves[to_remove:, ...]
         self.moves[:to_move] = self.moves[to_remove:]
         self.outcome[:to_move] = self.outcome[to_remove:]
 
         self.planes[self.filled_up-to_remove:self.filled_up-to_remove+num_planes, ...] = np.stack(planes_match)
-        self.legal_moves[self.filled_up-to_remove:self.filled_up-to_remove+num_planes, ...] = np.stack(legal_moves)
         self.moves[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.stack(moves_match)
         self.outcome[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.repeat(outcome_match, num_planes)
 
@@ -376,41 +375,37 @@ class ExperienceBuffer():
         sample_idxs = self.rng.choice(range(self.filled_up), size=batch_size, replace=replace)
         
         planes_batch = np.stack([self.planes[idx] for idx in sample_idxs]) # you don't pop them
-        legal_moves_batch = np.stack([self.legal_moves[idx] for idx in sample_idxs]) # you don't pop them
         moves_batch = np.stack([self.moves[idx] for idx in sample_idxs]) # you don't pop them
         outcome_batch = np.stack([self.outcome[idx] for idx in sample_idxs]) # you don't pop them
         
-        return planes_batch, legal_moves_batch,  moves_batch, outcome_batch
+        return planes_batch,  moves_batch, outcome_batch
         
 
     def get_percentage_decisive_games(self):
         return np.sum(np.abs(self.outcome[:self.filled_up])) / self.filled_up * 100
 
 
-    def save(self):
-        with open(conf.EXP_BUFFER_PLANES_PATH, 'wb') as f:
+    def save(self, steps):
+        with open(conf.EXP_BUFFER_PLANES_PATH.format(steps), 'wb') as f:
             pickle.dump(self.planes, f)
-        with open(conf.EXP_BUFFER_LEG_MOVES_PATH, 'wb') as f:
-            pickle.dump(self.legal_moves, f)
-        with open(conf.EXP_BUFFER_MOVES_PATH, 'wb') as f:
+        with open(conf.EXP_BUFFER_MOVES_PATH.format(steps), 'wb') as f:
             pickle.dump(self.moves, f)
-        with open(conf.EXP_BUFFER_OUTCOME_PATH, 'wb') as f:
+        with open(conf.EXP_BUFFER_OUTCOME_PATH.format(steps), 'wb') as f:
             pickle.dump(self.outcome, f)
-        with open(conf.EXP_BUFFER_FILLED_UP, 'wb') as f:
+        with open(conf.EXP_BUFFER_FILLED_UP.format(steps), 'wb') as f:
             pickle.dump(self.filled_up, f)
         
 
-    def load(self):
-        with open(conf.EXP_BUFFER_PLANES_PATH, 'rb') as f:
+    def load(self, steps):
+        with open(conf.EXP_BUFFER_PLANES_PATH.format(steps), 'rb') as f:
             self.planes = pickle.load(f)
-        with open(conf.EXP_BUFFER_LEG_MOVES_PATH, 'rb') as f:
-            self.legal_moves = pickle.load(f)
-        with open(conf.EXP_BUFFER_MOVES_PATH, 'rb') as f:
+        with open(conf.EXP_BUFFER_MOVES_PATH.format(steps), 'rb') as f:
             self.moves = pickle.load(f)
-        with open(conf.EXP_BUFFER_OUTCOME_PATH, 'rb') as f:
+        with open(conf.EXP_BUFFER_OUTCOME_PATH.format(steps), 'rb') as f:
             self.outcome = pickle.load(f)
-        with open(conf.EXP_BUFFER_FILLED_UP, 'rb') as f:
+        with open(conf.EXP_BUFFER_FILLED_UP.format(steps), 'rb') as f:
             self.filled_up = pickle.load(f)
+
 
 class LossUpdater():
      
@@ -435,22 +430,19 @@ class LossUpdater():
         self.loss = 0
         self.step = 0
 
- 
-def get_and_save_optimizer_weights(model):
+
+def get_and_save_optimizer_weights(model, steps):
     weights = model.optimizer.get_weights()
     config = model.optimizer.get_config()
-    
-    if not os.path.exists(conf.OPTIMIZER_W_PATH.split("/")[0]):
-        os.makedirs(conf.OPTIMIZER_W_PATH.split("/")[0])
         
-    with open(conf.OPTIMIZER_W_PATH, 'wb') as f:
+    with open(conf.OPTIMIZER_W_PATH.format(steps), 'wb') as f:
         pickle.dump(weights, f)
     
-    with open(conf.OPTIMIZER_CONFIG_PATH, 'wb') as f:
+    with open(conf.OPTIMIZER_CONFIG_PATH.format(steps), 'wb') as f:
         pickle.dump(config, f)
 
 
-def load_and_set_optimizer_weights(model):
+def load_and_set_optimizer_weights(model, steps):
     trainable_weights = model.trainable_weights
     
     # dummy zero gradients
@@ -466,13 +458,35 @@ def load_and_set_optimizer_weights(model):
     [x.assign(y) for x,y in zip(trainable_weights, saved_weights)]
     
     # Load config
-    with open(conf.OPTIMIZER_CONFIG_PATH, 'rb') as f:
+    with open(conf.OPTIMIZER_CONFIG_PATH.format(steps), 'rb') as f:
         config = pickle.load(f)
        
     # Load weights
-    with open(conf.OPTIMIZER_W_PATH, 'rb') as f:
+    with open(conf.OPTIMIZER_W_PATH.format(steps), 'rb') as f:
         weights = pickle.load(f)
         
     model.optimizer.from_config(config)
     model.optimizer.set_weights(weights)
 
+
+def save_checkpoint(model, exp_buffer, steps):
+
+    if not os.path.exists(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps)):
+        os.makedirs(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps))
+    else:
+        files = glob.glob(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps))
+        for f in files:
+            os.remove(f)
+    
+    model.save_weights(conf.CKPT_WEIGHTS.format(steps))
+    get_and_save_optimizer_weights(model, steps)
+    exp_buffer.save(steps)
+
+
+def load_checkpoint(model, exp_buffer, steps):
+    
+    model.load_weights(conf.CKPT_WEIGHTS.format(steps))
+    load_and_set_optimizer_weights(model, steps)
+    exp_buffer.load(steps)
+
+    
