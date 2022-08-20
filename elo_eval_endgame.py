@@ -89,6 +89,7 @@ for first_path in tqdm(weights_list):
             elif result == "0-1":
                 wins[game.headers["Black"]] += 1
                 print(game.headers["Black"])
+                
 
             with open(pgn_path, "a") as f:
                 print(game, file=f, end="\n\n")
