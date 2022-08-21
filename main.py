@@ -238,7 +238,7 @@ def choose_move(root_node, num_move=0):
     return root_node
 
 
-# @ray.remote(num_returns=3, max_calls=1) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
+@ray.remote(num_returns=3, max_calls=1) # max_calls = 1 is to avoid memory leaking from tensorflow, to release the unused memroy
 def complete_game(model, 
                   starting_fen=None, 
                   max_depth=conf.MAX_DEPTH, 
@@ -563,15 +563,15 @@ def MCTS_vs_NN_eval(steps, half_num_matches=50):
 
 if __name__ == "__main__":
 
-    # train_loop(
-    #     create_model,
-    #     dataset_path=conf.PATH_ENDGAME_TRAIN_DATASET,
-    #     total_steps=conf.TOTAL_STEPS,
-    #     parallel_games=conf.NUM_PARALLEL_GAMES,
-    #     consec_train_steps=conf.NUM_TRAINING_STEPS,
-    #     steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
-    #     batch_size=conf.SELF_PLAY_BATCH,
-    #     restart_from=20000)
+    train_loop(
+        create_model,
+        dataset_path=conf.PATH_ENDGAME_TRAIN_DATASET,
+        total_steps=conf.TOTAL_STEPS,
+        parallel_games=conf.NUM_PARALLEL_GAMES,
+        consec_train_steps=conf.NUM_TRAINING_STEPS,
+        steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
+        batch_size=conf.SELF_PLAY_BATCH,
+        restart_from=20000)
         # restart_from=0)
 
     # train_loop(
@@ -602,4 +602,5 @@ if __name__ == "__main__":
     # board.push(chess.Move.null())
     # complete_game(model, board.fen())
 
-    MCTS_vs_NN_eval(20000)
+    # remember to comment complete game remote before use
+    # MCTS_vs_NN_eval(steps=20000)

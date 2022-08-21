@@ -69,8 +69,8 @@ class Config:
 
 
         # to limit the length of games
-        self.MAX_MOVE_COUNT = 100000
-        # self.MAX_MOVE_COUNT = 100
+        # self.MAX_MOVE_COUNT = 100000
+        self.MAX_MOVE_COUNT = 80
 
         # MCTS parameters
         self.MAX_DEPTH = 4
