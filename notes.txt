@@ -1,2 +1,0 @@
-150 parallel games in 5598.153786182404s, stacked 6988 moves    | 37s x game - 47 moves x game
-16 parallel games in 393.41972947120667s, stacked 900 moves     | 24s x game - 56 moves x game
