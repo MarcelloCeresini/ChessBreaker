@@ -27,7 +27,7 @@ for key, value in zip(keys, values):
     for i in range(2, 7+1):
         plane_dict[(key[0]*i, key[1]*i)] = value + directions*(i-1)
 
-# night moves, planes from 56 to 63
+# knight moves, planes from 56 to 63
 plane_dict[( 1,  2)] = 56
 plane_dict[( 2,  1)] = 57
 plane_dict[( 2, -1)] = 58
@@ -98,10 +98,6 @@ class Config:
         self.N_GAMES_ENDGAME_EVAL =  2*5*10
         self.N_GAMES_ENDGAME_ROOK = 2*5000
 
-        # max_buffer_size/(games*max_moves) ~= n_loops of changing buffer
-        # this means that every 5 loops it changes --> 500 train steps per change
-        # could reuse the same sample 500 times
-
         self.MAX_BUFFER_SIZE = 40000
         self.MIN_BUFFER_SIZE = 10000
 
@@ -109,8 +105,6 @@ class Config:
 
         self.NUM_TRAINING_STEPS = 200 #  consecutive --> so the model that plays and that learns are not strictly correlated
         self.SELF_PLAY_BATCH = 64
-        # even if the model sees the same sample more than once, it will not overfit
-        # because the dataset keeps changing
 
         self.STEPS_PER_EVAL_CKPT = 2000
         self.TOTAL_STEPS = 30000
@@ -127,42 +121,41 @@ class Config:
         self.OPTIMIZER_CONFIG_PATH =        self.PATH_FULL_CKPT_FOR_EVAL+'optimizer_config.pkl'
 
         self.EXP_BUFFER_PLANES_PATH =       self.PATH_FULL_CKPT_FOR_EVAL+'planes.pkl'
-        # self.EXP_BUFFER_LEG_MOVES_PATH =    self.PATH_FULL_CKPT_FOR_EVAL+'leg_moves.pkl'
         self.EXP_BUFFER_MOVES_PATH =        self.PATH_FULL_CKPT_FOR_EVAL+'moves.pkl'
         self.EXP_BUFFER_OUTCOME_PATH =      self.PATH_FULL_CKPT_FOR_EVAL+'outcome.pkl'
         self.EXP_BUFFER_FILLED_UP =         self.PATH_FULL_CKPT_FOR_EVAL+'filled_up.pkl'
 
         self.LOSS_FN_POLICY = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)  # from paper
-        self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                                 # from paper
+        self.LOSS_FN_VALUE = tf.keras.losses.MeanSquaredError()                                # from paper
 
         self.METRIC_FN_POLICY = tf.keras.metrics.SparseCategoricalAccuracy()
         self.METRIC_FN_VALUE = tf.keras.metrics.MeanSquaredError()
 
 
-    def expl_param(self, iter):   # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
+    def expl_param(self, iter):   
+        # decrease with iterations (action value vs. prior/visit_count) --> lower decreases prior importance
         # if you are descending the tree for the 100th time, you should rely more on the visit count than on the prior of the model (if the prior was good at the beginning, the node will have been visited a lot)
         expl_param = conf.MAXIMUM_EXPL_PARAM*(1-iter/conf.NUM_RESTARTS) + conf.MINIMUM_EXPL_PARAM*(iter/conf.NUM_RESTARTS)
-        return expl_param # TODO: HAS TO START FROM 0.5 BECAUSE first action value is 0!
+        return expl_param
     
-    def temp_param(self, num_move):   # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
-        return conf.TEMP_PARAM # you should never "try" different moves because the starting position is never the same --> always go for the best move
-        
-        ### from paper ###
-        # if num_move <= 60: 
-        #     return 1
-        # else:
-        #     return 1/5 # --> num_moves ^ 5 --> even small differences in move count will bring to big probability differences
-
+    def temp_param(self, num_move):
+        # decrease with iterations (move choice, ) --> lower (<<1) deterministic behaviour (as argmax) / higher (>>1) random choice between all the moves
+        # in edgames however you should never "try" different moves because the starting position is never the same --> always go for the best move
+        return conf.TEMP_PARAM 
 
 conf = Config()
 
 
 def x_y_from_position(position):
+    # chess returns a position in [0,63], we want x,y
     return (position%8, position//8)
 
 
 def mask_moves_flatten(legal_moves):
-    # idx = np.zeros((len(legal_moves), 1), dtype=conf.PLANES_DTYPE_NP)
+    '''
+    Transform chess.Move(s) in indexes compatible with model predictions
+    '''
+
     idxs = []
     for move in legal_moves:
         init_square = move.from_square
@@ -172,23 +165,22 @@ def mask_moves_flatten(legal_moves):
         x, y = (x_f - x_i, y_f - y_i)
 
         promotion = move.promotion
+
+        # exploit plane_dict to get the right plane given the direction/length of move
         if promotion == None or promotion == chess.QUEEN:
             tmp = (x_i, y_i, plane_dict[(x,y)])
         else:
             tmp = (x_i, y_i, plane_dict[(x,abs(y),promotion)]) # if black promotes y is -1
 
         idxs.append(np.ravel_multi_index(tmp, (8,8,73)))
+    
     return idxs
 
 
-def scatter_idxs(idxs):
-    result = np.zeros(8*8*73, dtype=conf.PLANES_DTYPE_NP)
-    for idx in idxs:
-        result[idx] = 1
-    return result
-
-
 def outcome(res):
+    '''
+    Transform chess outcome into a reward
+    '''
     if res == "1/2-1/2":
         return np.array([0], dtype=np.float16)
     elif res == "1-0":
@@ -196,107 +188,79 @@ def outcome(res):
     elif res == "0-1":
         return np.array([-1],dtype=np.float16)
     else:
-        # print("Outcome: ", res)
         return None
 
 
 def reduce_repetitions(leaf_node_batch, legal_moves_batch):
-                    new_leaf = []
-                    new_legal = []
-                    for leaf_node, legal in zip(leaf_node_batch, legal_moves_batch):
-                        if leaf_node not in new_leaf:
-                            new_leaf.append(leaf_node)
-                            new_legal.append(legal)
-                    
-                    return new_leaf, new_legal
+    '''
+    Create a smaller batch if elements repeat
+    '''
 
-
-def special_input_planes(board):                                    # not repeated planes
+    new_leaf = []
+    new_legal = []
+    for leaf_node, legal in zip(leaf_node_batch, legal_moves_batch):
+        if leaf_node not in new_leaf:
+            new_leaf.append(leaf_node)
+            new_legal.append(legal)
     
+    return new_leaf, new_legal
+
+
+def special_input_planes(board):
+    '''
+    Create special input planes, that are planes that are not repeated
+    '''
     special_planes = np.zeros([*conf.BOARD_SHAPE, conf.SPECIAL_PLANES], conf.PLANES_DTYPE_NP)
+
     special_planes[:,:,0] = board.turn*2-1                                 
-    special_planes[:,:,1] = board.fullmove_number/conf.MAX_MOVE_COUNT   # normalization to [0,1]                    
+    special_planes[:,:,1] = board.fullmove_number/conf.MAX_MOVE_COUNT   # normalization to [0,1] (otherwise it would be the only feature >1)                    
     special_planes[:,:,2] = board.has_kingside_castling_rights(True)    # always 0 in endgames, could remove (but it's more general this way)
     special_planes[:,:,3] = board.has_queenside_castling_rights(True)  
     special_planes[:,:,4] = board.has_kingside_castling_rights(False)  
     special_planes[:,:,5] = board.has_queenside_castling_rights(False) 
-    special_planes[:,:,6] = board.halfmove_clock/50                     # rule in chess: draw after 50 half moves without capture/pawn move   
+    special_planes[:,:,6] = board.halfmove_clock/50                     # rule in chess: draw after 50 half moves without capture/pawn move  (normalized to 1) 
 
     return special_planes
 
 
 def update_planes(old, board, board_history):
-
-    if type(old) != np.ndarray: # root, initialize to zero
+    '''
+    Generate new planes from old ones and the new board position
+    '''
+    # root, initialize to zero
+    if type(old) != np.ndarray: 
         old = np.zeros([*conf.BOARD_SHAPE, conf.TOTAL_PLANES], dtype=conf.PLANES_DTYPE_NP)
     
-    total_planes = np.zeros([*conf.BOARD_SHAPE, conf.TOTAL_PLANES], dtype=conf.PLANES_DTYPE_NP) # since we cannot "change" a tensor after creating it, we create them one by one in a list and then stack them
+    total_planes = np.zeros([*conf.BOARD_SHAPE, conf.TOTAL_PLANES], dtype=conf.PLANES_DTYPE_NP)
     plane = -1
     
+    # used for the repetition plane, exploits board_history (counts how many time the last position was seen)
     repetition_counter = board_history.count(board_history[-1])
-    for color in [True, False]:                                                                                                  # for each color
-        for piece_type in range(1, conf.N_PIECE_TYPES+1):                                                                   # for each piece type
+    
+    # for each color
+    for color in [True, False]:          
+        # for each piece type
+        for piece_type in range(1, conf.N_PIECE_TYPES+1):
             plane += 1
-            indices = map(x_y_from_position, list(board.pieces(piece_type, color)))        # for each piece of that type                                                                                            # --> we save the position on the board in a list
-            # the function transforms a number (1-64) into a tuple (1-8, 1-8)
+
+            # for each piece of that type
+            indices = map(x_y_from_position, list(board.pieces(piece_type, color))) 
+
+            # add "1" to the correct plane in correspondance to that piece's position
             for idx in indices:
                 total_planes[idx[0], idx[1], plane] = 1
-        plane += 1
-        total_planes[:, :, plane] = repetition_counter    # adding a "repetition plane" for each color (simply count how many times the current (last) position has been encountered)
-   
-    # 7 stacks (total 8 repetitions)
 
+        # adding a "repetition plane" for each color (simply count how many times the current (last) position has been encountered)
+        plane += 1
+        total_planes[:, :, plane] = repetition_counter   
+   
+    # add 7 stacks of "normal planes" (taken from the old planes) to the current planes --> gives to the model the flow of the position (previous timesteps)
     total_planes[:, :, conf.REPEATED_PLANES:(conf.REPEATED_PLANES+conf.OLD_PLANES_TO_KEEP)] = old[:, :, :conf.OLD_PLANES_TO_KEEP]
+    
+    # add special planes at the end
     total_planes[:, :, conf.REPEATED_PLANES+conf.OLD_PLANES_TO_KEEP:] = special_input_planes(board)
     
     return total_planes
-
-
-def gen(path=None):
-    planes = None
-    
-    if path == None:
-        database_path = '/home/marcello/github/ChessBreaker/data/Database'
-        files = glob.glob(os.path.join(database_path, '*.pgn'))
-        files.sort()
-    else:
-        if type(path) == list:
-            for p in path:
-                p = p.decode("utf-8")
-        else:
-            path = path.decode("utf-8")
-            files = [path]
-    
-    for filename in files:
-        with open(os.path.join(os.getcwd(), filename), 'r') as pgn:
-            game = chess.pgn.read_game(pgn)
-            print(filename) # just so we know where to restart if the learning crashes
-
-            while game != None:
-                whole_game_moves = game.game().mainline_moves()
-                
-                result = outcome(game.headers["Result"])
-                
-                if result != None:
-                    board = chess.Board()
-                    board_history = [board.fen()[:-6]]
-                    
-                    for move in whole_game_moves:
-                        # the input is the PREVIOUS board
-                        planes = update_planes(planes, board, board_history)
-                        # inputs.append(planes)
-                        
-                        # the policy label is the move from that position
-                        move = mask_moves_flatten([move])[0]
-
-                        # oss: input = planes, output = (moves + result)!!
-                        yield (planes, (move, result)) ### yield before resetting the output
-                        
-                        # then you actually push the move preparing for next turn
-                        board.push(move)
-                        board_history.append(board.fen()[:-6])
-                
-                game = chess.pgn.read_game(pgn)
 
 
 def softmax(x):
@@ -304,18 +268,22 @@ def softmax(x):
 
 
 def select_best_move(model, planes, board, board_history, probabilistic=False):
+    '''
+    Selects best move in a position given the model (NO MCTS)
+    '''
+
     planes = update_planes(planes, board, board_history)
+
+    # transforms legal moves
     legal_moves = list(board.legal_moves)
     idxs = mask_moves_flatten(legal_moves)
-    action_v, _ = model(tf.expand_dims(planes, axis=0))
 
+    # gets the policy
+    action_v, _ = model(tf.expand_dims(planes, axis=0))
     action_v = action_v[0] # batch of 1
 
+    # only gets the legal moves
     move_value = [action_v[idx].numpy() for idx in idxs]
-
-    # for move, val in zip(legal_moves, move_value):
-    #     print(move, val) 
-
     move_value = softmax(move_value)
 
     if probabilistic:
@@ -328,10 +296,14 @@ def select_best_move(model, planes, board, board_history, probabilistic=False):
         best_move = legal_moves[np.argmax(move_value)]
         # print("max", max(move_value), best_move)
 
+    # returns also the planes (useful for next move)
     return best_move, planes
 
 
 class ExperienceBuffer():
+    '''
+    Just as a queue, but implemented with arrays since elements are added in big batches (>10% of the max_size usually)
+    '''
 
     def __init__(self, size):
         self.size = size
@@ -345,12 +317,14 @@ class ExperienceBuffer():
 
     def push(self, planes_match, moves_match, outcome_match):
 
+        # really important, otherwise the variable in the main would change
         planes_match = copy.deepcopy(planes_match)
         moves_match = copy.deepcopy(moves_match)
         outcome_match = copy.deepcopy(outcome_match)
 
         num_planes = len(planes_match)
         
+        # we remove the oldest samples, and add the new ones
         to_remove = max(0, (self.filled_up + num_planes) - self.size)
         to_move = self.size - to_remove
 
@@ -362,30 +336,38 @@ class ExperienceBuffer():
         self.moves[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.stack(moves_match)
         self.outcome[self.filled_up-to_remove:self.filled_up-to_remove+num_planes] = np.repeat(outcome_match, num_planes)
 
+        # keep track of how much it is filled up
         self.filled_up = min(self.filled_up+num_planes, self.size)
         
+        # return how many were added
         return num_planes
 
     
     def sample(self, batch_size):
         if self.filled_up >= batch_size:
-            replace = False # we try to avoid the same sample in the same batch
+            # we try to avoid the same sample in the same batch
+            replace = False 
         else:
-            replace = True  # but if we have less samples than batch, then we sample with repetition
+            # but if we have less samples than batch size, then we sample with repetition
+            replace = True  
 
         sample_idxs = self.rng.choice(range(self.filled_up), size=batch_size, replace=replace)
         
-        planes_batch = np.stack([self.planes[idx] for idx in sample_idxs]) # you don't pop them
-        moves_batch = np.stack([self.moves[idx] for idx in sample_idxs]) # you don't pop them
-        outcome_batch = np.stack([self.outcome[idx] for idx in sample_idxs]) # you don't pop them
+        planes_batch = np.stack([self.planes[idx] for idx in sample_idxs])
+        moves_batch = np.stack([self.moves[idx] for idx in sample_idxs])
+        outcome_batch = np.stack([self.outcome[idx] for idx in sample_idxs])
         
         return planes_batch,  moves_batch, outcome_batch
         
 
     def get_percentage_decisive_games(self):
+        '''
+        Only returns the percentage of SAMPLES that hold +1 or -1 outcomes
+        It's not accurate, because drawn games (0 ouctome) usually are longer, thus hold more samples!
+        '''
         return np.sum(np.abs(self.outcome[:self.filled_up])) / self.filled_up * 100
 
-
+    # used in checkpoint saving and loading
     def save(self, steps):
         with open(conf.EXP_BUFFER_PLANES_PATH.format(steps), 'wb') as f:
             pickle.dump(self.planes, f)
@@ -431,7 +413,7 @@ class LossUpdater():
         self.loss = 0
         self.step = 0
 
-
+# used in checkpoint saving and loading
 def get_and_save_optimizer_weights(model, steps):
     weights = model.optimizer.get_weights()
     config = model.optimizer.get_config()
@@ -444,6 +426,9 @@ def get_and_save_optimizer_weights(model, steps):
 
 
 def load_and_set_optimizer_weights(model, steps):
+    '''
+    Loads the optimizer by applying dummy gradients to the model, and then saves the optimizer's weights to their right value
+    '''
     trainable_weights = model.trainable_weights
     
     # dummy zero gradients
@@ -475,6 +460,7 @@ def save_checkpoint(model, exp_buffer, steps):
     if not os.path.exists(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps)):
         os.makedirs(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps))
     else:
+        # empty directory
         files = glob.glob(conf.PATH_FULL_CKPT_FOR_EVAL.format(steps))
         for f in files:
             os.remove(f)
@@ -490,4 +476,51 @@ def load_checkpoint(model, exp_buffer, steps):
     load_and_set_optimizer_weights(model, steps)
     exp_buffer.load(steps)
 
+
+### used in supervised learning, to transform pgn games into planes, moves and outcomes
+# def gen(path=None):
+#     planes = None
     
+#     if path == None:
+#         database_path = '/home/marcello/github/ChessBreaker/data/Database'
+#         files = glob.glob(os.path.join(database_path, '*.pgn'))
+#         files.sort()
+#     else:
+#         if type(path) == list:
+#             for p in path:
+#                 p = p.decode("utf-8")
+#         else:
+#             path = path.decode("utf-8")
+#             files = [path]
+    
+#     for filename in files:
+#         with open(os.path.join(os.getcwd(), filename), 'r') as pgn:
+#             game = chess.pgn.read_game(pgn)
+#             print(filename) # just so we know where to restart if the learning crashes
+
+#             while game != None:
+#                 whole_game_moves = game.game().mainline_moves()
+                
+#                 result = outcome(game.headers["Result"])
+                
+#                 if result != None:
+#                     board = chess.Board()
+#                     board_history = [board.fen()[:-6]]
+                    
+#                     for move in whole_game_moves:
+#                         # the input is the PREVIOUS board
+#                         planes = update_planes(planes, board, board_history)
+#                         # inputs.append(planes)
+                        
+#                         # the policy label is the move from that position
+#                         move = mask_moves_flatten([move])[0]
+
+#                         # oss: input = planes, output = (moves + result)!!
+#                         yield (planes, (move, result)) ### yield before resetting the output
+                        
+#                         # then you actually push the move preparing for next turn
+#                         board.push(move)
+#                         board_history.append(board.fen()[:-6])
+                
+#                 game = chess.pgn.read_game(pgn)
+

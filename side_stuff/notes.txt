@@ -1,4 +1,0 @@
-Total games in database: 3'819'130
-Total moves in database: 313'831'972
-
-Imitation learning --> 45*10000*512 samples (450000 steps) = 230'400'000 steps (3/4) of the database
