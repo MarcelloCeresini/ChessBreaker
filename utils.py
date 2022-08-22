@@ -69,7 +69,8 @@ class Config:
 
 
         # to limit the length of games
-        self.MAX_MOVE_COUNT = 100
+        # self.MAX_MOVE_COUNT = 100000
+        self.MAX_MOVE_COUNT = 80
 
         # MCTS parameters
         self.MAX_DEPTH = 4
@@ -111,8 +112,8 @@ class Config:
         # even if the model sees the same sample more than once, it will not overfit
         # because the dataset keeps changing
 
-        self.STEPS_PER_EVAL_CKPT = 1000
-        self.TOTAL_STEPS = 20000
+        self.STEPS_PER_EVAL_CKPT = 2000
+        self.TOTAL_STEPS = 30000
 
         lr_boundaries = [3000, 8000]    # idea from paper, numbers changed
         lr_values = [0.002, 0.0002, 0.00002]

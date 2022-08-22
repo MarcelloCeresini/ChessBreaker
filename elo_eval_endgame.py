@@ -10,7 +10,7 @@ conf = utils.Config()
 
 chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
 # chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
-chosen_steps = [0, 6000, 10000, 14000]
+chosen_steps = [0, 4000, 8000, 12000, 16000, 20000]
 
 weights_list = [chekpoint_path.format(steps) for steps in chosen_steps]
 
@@ -83,12 +83,13 @@ for first_path in tqdm(weights_list):
             game.headers["Result"] = result
             game.headers["Reason"] = str(board.outcome(claim_draw=True))
 
-            if result:
+            if result == "1-0":
                 wins[game.headers["White"]] += 1
                 print(game.headers["White"])
-            elif result:
+            elif result == "0-1":
                 wins[game.headers["Black"]] += 1
                 print(game.headers["Black"])
+                
 
             with open(pgn_path, "a") as f:
                 print(game, file=f, end="\n\n")

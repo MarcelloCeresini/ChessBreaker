@@ -14,7 +14,7 @@ tf.get_logger().setLevel(0)
 warnings.filterwarnings('ignore')
 np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)  
 
-import chess
+import chess, chess.pgn
 from anytree import Node
 import datetime
 from time import time
@@ -27,7 +27,7 @@ from numpy.random import default_rng
 rng = default_rng()
 
 import utils
-from utils import plane_dict, Config, x_y_from_position
+from utils import mask_moves_flatten, plane_dict, Config, x_y_from_position
 from model import create_model
 
 conf = Config()
@@ -277,15 +277,31 @@ def complete_game(model,
             NO_MCTS_flag = True
         
         if NO_MCTS_flag:
-            move = utils.select_best_move(model, root_node.planes, root_node.board, root_node.board_history, probabilistic=False)
+            move, _ = utils.select_best_move(model, root_node.planes, root_node.board, root_node.board_history, probabilistic=False)
+            flag_no_move_found = True
             for node in root_node.children:
                 if chess.Move.from_uci(node.name) == move:
                     root_node = node
+                    root_node.parent = None
+                    flag_no_move_found = False
                     break
-            root_node.parent = None
+            if flag_no_move_found: # restart the tree becaue it' the first move
+                board.push(move)
+                board_history.append(board.fen()[:-6])
+                root_node = MyNode(
+                    move.uci(),                                                     # no name needed for initial position
+                    board = board,
+                    board_history = board_history,
+                    planes = utils.update_planes(root_node.planes, board, board_history),    # start from empty planes and fill them (usually you need previous planes to fill them)
+                    action_value=0,
+                    visit_count=0,
+                    is_finish_position = False
+                )
+            # print("NN", root_node.name)
         else:
             root_node = MTCS(model, root_node, max_depth = max_depth, num_restarts=num_restarts)                            # though the root node you can access all the tree
             root_node = choose_move(root_node, num_move=move_counter)       
+            # print("MCTS", root_node.name)
 
         match_policy.append(utils.mask_moves_flatten([chess.Move.from_uci(root_node.name)])[0])                                         # appends JUST AN INDEX
 
@@ -462,6 +478,89 @@ def train_loop( model_creation_fn,
                 utils.save_checkpoint(model, exp_buffer, steps)
 
 
+def MCTS_vs_NN_eval(steps, half_num_matches=50):
+    chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
+    model = create_model()
+    model.load_weights(chekpoint_path.format(steps))
+
+    current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    pgn_path = "results/endgame/MCTS_NN_{}.pgn".format(current_time)
+
+    with open(pgn_path, "w") as f: # to generate the file in case it does not exist
+        pass
+
+    eval_dataset = tf.data.TextLineDataset(conf.PATH_ENDGAME_EVAL_DATASET)
+    starting_positions = list(eval_dataset.take(half_num_matches))
+
+    wins = {
+        "MCTS_{}".format(steps): 0,
+        "NN_{}".format(steps): 0
+    }
+
+    for MCTS_color in [True, False]:
+        for position in (pbar := tqdm(starting_positions)):
+            pbar.set_description("Playing games")
+
+            game = chess.pgn.Game()
+            board = chess.Board()
+            board.set_fen(position.numpy().decode("utf8"))
+            game.setup(board)
+
+            _, moves, _ = complete_game(
+                    model, 
+                    starting_fen=position.numpy().decode("utf8"),
+                    white_MCTS = MCTS_color,
+                    black_MCTS = not MCTS_color
+                )
+
+            game.headers["White"] = "MCTS_{}".format(steps) if MCTS_color  else "NN_{}".format(steps)
+            game.headers["Black"] = "NN_{}".format(steps) if MCTS_color  else "MCTS_{}".format(steps)
+
+            i = 0
+            for move_idx in moves:
+                move = None
+                legal_moves = list(board.legal_moves)
+                idxs = mask_moves_flatten(legal_moves)
+
+                for idx, uci_move in zip(idxs, legal_moves):
+                    if idx == move_idx:
+                        move = uci_move
+                        break
+                if move == None: 
+                    print("WRONG")
+                    break
+                else:
+                    if i==0:
+                        node = game.add_variation(move)
+                    else:
+                        node = node.add_variation(move)
+                    
+                    board.push(move)
+                    i+=1
+
+            if board.outcome(claim_draw=True) == None:
+                print("ERROR")
+                print(board.outcome(claim_draw=True))
+                print(board)
+                result = "*"
+            else:
+                result = board.outcome(claim_draw=True).result()
+            game.headers["Result"] = result
+            game.headers["Reason"] = str(board.outcome(claim_draw=True))
+
+            if result == "1-0":
+                wins[game.headers["White"]] += 1
+                print(game.headers["White"])
+            elif result == "0-1":
+                wins[game.headers["Black"]] += 1
+                print(game.headers["Black"])
+            
+            with open(pgn_path, "a") as f:
+                print(game, file=f, end="\n\n")
+
+    print(wins)
+
+
 if __name__ == "__main__":
 
     train_loop(
@@ -472,7 +571,7 @@ if __name__ == "__main__":
         consec_train_steps=conf.NUM_TRAINING_STEPS,
         steps_per_checkpoint=conf.STEPS_PER_EVAL_CKPT,
         batch_size=conf.SELF_PLAY_BATCH,
-        restart_from=14000)
+        restart_from=20000)
         # restart_from=0)
 
     # train_loop(
@@ -502,3 +601,6 @@ if __name__ == "__main__":
     # board.set_piece_at(19, chess.Piece(chess.ROOK, chess.WHITE))
     # board.push(chess.Move.null())
     # complete_game(model, board.fen())
+
+    # remember to comment complete game remote before use
+    # MCTS_vs_NN_eval(steps=20000)

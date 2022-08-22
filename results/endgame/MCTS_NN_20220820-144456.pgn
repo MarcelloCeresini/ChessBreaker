@@ -1,0 +1,1300 @@
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/3K1k2/8/8/6r1/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kc4 Ke4 2. Kc5 Ke3 3. Kb6 Kf2 4. Kb7 Kf3 5. Ka6 Ke2 6. Kb6 Ke3 7. Ka5 Kf2 8. Kb5 Kf1 9. Kc4 Ke2 10. Kc5 Ke3 11. Kb6 Kf2 12. Ka7 Kf3 13. Kb8 Ke2 14. Kb7 Ke3 15. Kc7 Kf2 16. Kb7 Kf1 17. Kc7 Ke2 18. Kd8 Ke3 19. Ke8 Kf2 20. Ke7 Kf3 21. Kd8 Ke2 22. Ke7 Ke3 23. Kf8 Kf2 24. Kf7 Kf3 25. Ke8 Ke2 26. Kd8 Ke3 27. Ke8 Kf2 28. Kd8 Kf1 29. Kd7 Ke2 30. Kc6 Ke3 31. Kd6 Kf2 32. Ke7 Kf1 33. Kf8 Ke2 34. Ke8 Ke3 35. Ke7 Kf2 36. Kd8 Kf1 37. Kc8 Ke2 38. Kd7 Ke3 39. Ke6 Kf2 40. Kf6 Kf3 41. Kf7 Ke4 42. Ke6 Kd4 43. Kf6 Rg3 44. Kf5 Kd3 45. Ke5 Ke2 46. Kd4 Kf2 47. Ke5 Kf3 48. Kd4 Kg2 49. Ke4 Kh2 50. Ke5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "5k2/1R6/8/8/1K6/2Q5/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. Qc8# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/R7/8/3K1r2/P7/8/8/4k3 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. Ke4 Kf2 2. Rd7 Kf1 3. Kxf5 Ke2 4. Ke4 Ke1 5. Kf4 Kf2 6. Ke4 Kf1 7. Kd5 Ke2 8. Ke4 Ke1 9. Rb7 Kf2 10. Rb8 Kf1 11. Kf4 Ke2 12. Rb7 Ke1 13. Rb2 Kd1 14. Kg4 Ke1 15. Kf4 Kd1 16. Rb5 Kc1 17. Rb8 Kc2 18. Rb7 Kc1 19. Rb5 Kc2 20. Kf5 Kc1 21. Ke6 Kc2 22. Kf6 Kc1 23. Kg6 Kc2 24. Kf6 Kc1 25. Rd5 Kc2 26. Kg6 Kc1 27. Kg7 Kc2 28. Kf8 Kc1 29. Kg8 Kc2 30. Kf8 Kc1 31. Rd8 Kc2 32. Rd5 Kc1 33. Kg8 Kc2 34. Kg7 Kc1 35. Kf8 Kc2 36. Ke8 Kc1 37. Kd8 Kc2 38. Kc8 Kc1 39. Kb7 Kc2 40. Kc7 Kc1 41. a5 Kc2 42. a6 Kc1 43. Kd8 Kc2 44. Rd7 Kc1 45. Kc8 Kc2 46. Rd6 Kc1 47. Re6 Kc2 48. a7 Kc1 49. Kd7 Kc2 50. Ke7 Kc1 51. Kd8 Kc2 52. Ke8 Kc1 53. Ra6 Kc2 54. Rc6+ Kb3 55. Rb6+ Kc2 56. Kd8 Kc1 57. Rb7 Kc2 58. Rc7+ Kb3 59. Rc8 Kb2 60. a8=Q Kb1 61. Rc3 Kb2 62. Qa6 Kb1 63. Qh6 Ka2 64. Qh5 Ka1 65. Qg4 Ka2 66. Qh3 Ka1 67. Qc8 Ka2 68. Kd7 Ka1 69. Rc1+ Ka2 70. Rc4 Ka1 71. Rc5 Ka2 72. Rc4 Ka1 73. Qf8 Ka2 74. Qc8 Ka1 75. Qe8 Ka2 76. Qh8 Kb1 77. Qb8+ Ka2 78. Ra4# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "4K3/8/2N5/2k1p3/8/6q1/8/6R1 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kd8 Qh2 2. Kc8 Qh3+ 3. Kc7 Qg4 4. Nb4 Qf4 5. Kb8 Qe4 6. Nc2 Qd4 7. Rg8 Qd3 8. Rg7 Qd2 9. Kc8 Qd3 10. Kc7 Qd2 11. Nd4 Qd3 12. Kb8 Qd2 13. Kc7 Kc4 14. Nb3 Kc3 15. Nd4 Kc4 16. Kc8 exd4 17. Kb8 Qd3 18. Kc7 Qd2 19. Kc6 Qd1 20. Kd7 Qf3 21. Kc7 Qg2 22. Kc8 Qg3 23. Kd8 Qh2 24. Rg4 Qh3 25. Rg5 Qg4 26. Re5 Qf4 27. Rf5 Qe4 28. Rd5 Qe3 29. Kc8 Qf2 30. Rg5 Qf3 31. Kd7 Qg2 32. Ke6 Qg3 33. Kf6 Qh2 34. Kf7 Qh3 35. Kg8 Qg4 36. Kg7 Qf4 37. Kg6 Qe4+ 38. Kg7 Qe3 39. Kh6 Qf2 40. Re5 Qf3 41. Kh7 Qg2 42. Rd5 Qg3 43. Rd8 Qh2+ 44. Kg8 Qh3 45. Kg7 Qg4+ 46. Kf6 Qf4+ 47. Kg6 Qe4+ 48. Kh6 Qg6+ 49. Kxg6 d3 50. Rb8 d2 51. Kg7 Kc3 52. Kf8 d1=Q 53. Ke8 Kc2 54. Ra8 Qd2 55. Ra7 Qd1 56. Ra8 Qd2 57. Kf8 Qd1 58. Rd8 Qd2 59. Kf7 Qd1 60. Rh8 Qd2 61. Ke8 Qd1 62. Kf8 Qd2 63. Ke8 Qd1 64. Rh7 Qd2 65. Kf8 Qd1 66. Kg8 Qd2 67. Rd7 Qd1 68. Kf8 Qd2 69. Kg8 Qd3 70. Kh8 Qd2 71. Kg8 Qd1 72. Kf8 Qd2 73. Rb7 Qd3 74. Kf7 Qd2 75. Re7 Qd1 76. Ke6 Qd2 77. Ke5 Qd1 78. Kf4 Qd2+ 79. Ke4 Qd1 80. Ke5 Qd2 81. Kf5 Qd3+ 82. Kg4 Qd2 83. Re2 Qxe2+ 84. Kg3 Qe3+ 85. Kh2 Qd4 86. Kh3 Qf6 87. Kg4 Qf7 88. Kg5 Qe8 89. Kf6 Qf8+ 90. Kg6 Qg8+ 91. Kh6 Qh8+ 92. Kg6 Qg8+ 93. Kf6 Qh8+ 94. Ke6 Qg8+ 95. Kd6 Qh8 96. Ke7 Qg8 97. Kf6 Qh8+ 98. Kf5 Qg8 99. Ke4 Qh8 100. Kf5 Qg8 101. Ke4 Qh8 102. Kf5 Qg8 103. Ke4 Qh8 104. Kf4 Qg8 105. Kf5 Qh8 106. Kg6 Qg8+ 107. Kh6 Qh8+ 108. Kg6 Qg8+ 109. Kh6 Qh8+ 110. Kg6 Qg8+ 111. Kh6 Qh8+ 112. Kg6 Qg8+ 113. Kh6 Qh8+ 114. Kg6 Qg8+ 115. Kh6 Qh8+ 116. Kg6 Qg8+ 117. Kh6 Qh8+ 118. Kg6 Qg8+ 119. Kh6 Qb8 120. Kh5 Qa8 121. Kg6 Qb8 122. Kg7 Qa8 123. Kh6 Qb8 124. Kh7 Qa8 125. Kg7 Qb8 126. Kg6 Qa8 127. Kg5 Qb8 128. Kh4 Qa8 129. Kg4 Qb8 130. Kg5 Qa8 131. Kf6 Qb8 132. Ke6 Qa8 133. Kd6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/8/2R2p2/7k/3p4/8/2Q5/1b3K2 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. Ra6 Kg4 2. Qb2 Kf4 3. Qb3 Ke4 4. Qb4 Ke3 5. Qa3+ Kf4 6. Qb3 Ke4 7. Rxf6 Ke5 8. Qe6# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/8/6K1/5R2/k7/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kb2 2. Kf4 Kb1 3. Kg4 Kb2 4. Kg5 Kb1 5. Kh6 Kb2 6. Kh5 Ka2 7. Rh3 Kb2 8. Rh4 Ka2 9. Kg4 Kb2 10. Rh3 Ka2 11. Kf4 Kb2 12. Ke4 Ka2 13. Kd3 Ka1 14. Kd4 Ka2 15. Kc5 Kb2 16. Kd5 Ka2 17. Ke5 Ka1 18. Kf5 Ka2 19. Kg6 Ka1 20. Kf6 Ka2 21. Kf7 Ka1 22. Ke8 Ka2 23. Kf8 Ka1 24. Kf7 Ka2 25. Rf3 Ka1 26. Rb3 Ka2 27. Kg6 Ka1 28. Rh3 Ka2 29. Kg7 Ka1 30. Kf6 Ka2 31. Re3 Ka1 32. Kf5 Ka2 33. Kg6 Ka1 34. Kh6 Ka2 35. Re2+ Ka1 36. Kh7 Kb1 37. Rc2 Ka1 38. Rc3 Ka2 39. Rc4 Ka1 40. Rd4 Ka2 41. Rd7 Ka1 42. Kg8 Ka2 43. Kf8 Ka1 44. Ra7+ Kb1 45. Ke8 Kb2 46. Ke7 Kb1 47. Ra1+ Kb2 48. Ra3 Kxa3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "4k3/8/1q6/8/7K/8/8/1q6 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIVEFOLD_REPETITION: 5>, winner=None)"]
+[SetUp "1"]
+
+1... Kf8 2. Kg4 Kg8 3. Kg3 Kh8 4. Kh2 Kg8 5. Kh3 Kh8 6. Kg4 Kg8 7. Kg3 Kh8 8. Kh2 Kg8 9. Kh3 Kh8 10. Kg4 Kg8 11. Kg3 Kh8 12. Kh2 Kg8 13. Kh3 Kh8 14. Kg4 Kg8 15. Kg3 Kh8 16. Kh2 Kg8 17. Kh3 Kh8 18. Kg4 Kg8 19. Kh4 Kh8 20. Kh3 Kg8 21. Kg4 Kh8 22. Kg5 Kg8 23. Kf4 Kh8 24. Kg4 Kg8 25. Kg3 Kh8 26. Kh2 Kg8 27. Kh3 Kh8 28. Kg4 Kg8 29. Kf4 Kh8 30. Kg4 Kg8 31. Kf4 Kh8 32. Kg4 Kg8 33. Kh5 Kh8 34. Kg4 Kg8 35. Kf4 Kf8 36. Kg4 Kg8 37. Kf4 Kf8 38. Kg4 Kg8 39. Kg5 Kh8 40. Kf4 Kg8 41. Kg4 Kh8 42. Kg5 Kg8 43. Kf4 Kh8 44. Kf3 Kg8 45. Kg2 Kh8 46. Kh2 Kg8 47. Kg3 Kh8 48. Kh2 Kg8 49. Kh3 Kh8 50. Kh2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/3q4/1K6/8/4p3/7b/1k6/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Bg4 2. Ka6 Qc8+ 3. Ka7 Qd8 4. Kb7 Qe8 5. Ka6 Qf8 6. Kb6 Qg8 7. Kc7 Qh8 8. Kb7 Qg8 9. Ka6 Qh8 10. Kb5 Qg8 11. Ka6 Qh8 12. Ka5 Qg8 13. Ka4 Qh8 14. Kb5 Qg8 15. Ka5 Qh8 16. Ka4 Qg8 17. Ka5 Qh8 18. Ka4 Qg8 19. Kb4 Qh8 20. Kb5 Qg8 21. Kc6 Qh8 22. Kc5 Qg8 23. Kb6 Qh8 24. Ka7 Qg8 25. Kb7 Qh8 26. Ka7 Qg8 27. Ka6 Qh8 28. Kb7 Qg8 29. Ka6 Qh8 30. Kb7 Qg8 31. Kc7 Qh8 32. Kd6 Qg8 33. Kc6 Qh8 34. Kb6 Qg8 35. Kc6 Qh8 36. Kc7 Qg8 37. Kc6 Qh8 38. Kc5 Qg8 39. Kb6 Qh8 40. Kc6 Qg8 41. Kc7 Qh8 42. Kb7 Qg8 43. Kb6 Qh8 44. Ka6 Qg8 45. Kb6 Qh8 46. Ka5 Qg8 47. Ka6 Qh8 48. Ka5 Qg8 49. Ka6 Qh8 50. Kb5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/7K/3R3Q/3k4/7R/2P5/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1... Ke5 2. Qf6# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "3K4/5B2/r7/7B/1k3Qq1/8/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1... Ka5 2. Qh6 Qf4 3. Be6 Qe4 4. Bb3 Qd4+ 5. Qd6 Qd3 6. Bbd1 Qd2 7. Qd5+ Kb6 8. Kc8 Qd3 9. Qd4+ Ka5 10. Be8 Qd2 11. Qc5# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "7K/4k3/8/8/8/4p3/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kg8 Kd8 2. Kh8 Ke8 3. Kg8 Kd8 4. Kg7 Ke8 5. Kf6 Kf8 6. Kf5 Kg8 7. Ke6 Kh8 8. Kf6 Kg8 9. Ke6 Kh8 10. Kf6 Kg8 11. Ke6 Kh8 12. Kf6 Kg8 13. Ke6 Kh8 14. Kf6 Kg8 15. Kg6 Kh8 16. Kf6 Kg8 17. Kf5 Kh8 18. Ke4 Kg8 19. Kxe3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/k2K4/7n/8/6P1/8/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Ke6 Ka6 2. Ke7 Kb6 3. Kd8 Ka6 4. Ke8 Kb6 5. Ke7 Ka6 6. Kd8 Kb6 7. Kd7 Ka6 8. Kc8 Kb6 9. g5 Ka6 10. Kd8 Kb6 11. Ke8 Ka7 12. Ke7 Ka6 13. Kd8 Kb6 14. Kd7 Ka6 15. Kc8 Kb6 16. Kd7 Ka6 17. Kc8 Ka5 18. Kb8 Ka4 19. Kb7 Ka3 20. Kc6 Kb3 21. Kc5 Ka3 22. Kb5 Kb3 23. Ka5 Kc3 24. Ka4 Kc4 25. Ka5 Kc5 26. Ka6 Kc4 27. Ka5 Kc5 28. Ka6 Kc4 29. Ka5 Kc5 30. Ka4 Kc4 31. Ka5 Kb3 32. Kb6 Ka3 33. Kb7 Ka4 34. Kc7 Ka3 35. Kd6 Kb3 36. Ke7 Ka3 37. Kf6 Kb3 38. Kg6 Ka3 39. Kg7 Kb3 40. Kf8 Ka3 41. Kg7 Kb3 42. Kf8 Ka3 43. Ke8 Kb3 44. Kf8 Ka3 45. Ke8 Ng8 46. Kf8 Ne7 47. Kxe7 Kb3 48. Kf6 Ka3 49. Kf5 Kb3 50. Ke6 Ka3 51. Kf6 Kb3 52. Kf7 Ka3 53. Kg6 Kb3 54. Kh6 Ka3 55. Kh5 Kb3 56. Kg4 Ka3 57. Kh5 Kb3 58. Kg4 Ka3 59. Kf4 Kb3 60. Ke4 Ka3 61. Ke5 Kb3 62. Kd4 Ka3 63. Ke4 Kb3 64. Ke5 Ka3 65. Kf5 Kb3 66. Ke6 Ka3 67. Kf6 Kb3 68. Kf5 Ka3 69. Ke4 Kb3 70. Ke5 Ka3 71. Kd6 Kb3 72. Kd7 Ka3 73. Ke6 Kb3 74. Kf6 Ka3 75. Kf5 Kb3 76. Kg4 Ka3 77. Kh4 Kb3 78. Kg4 Ka3 79. Kf4 Ka2 80. Kf5 Ka1 81. Kg4 Ka2 82. Kg3 Ka1 83. Kf4 Ka2 84. Kf3 Ka1 85. Kg4 Ka2 86. Kf4 Ka1 87. Ke4 Ka2 88. Ke5 Ka1 89. Kf6 Ka2 90. Ke6 Ka1 91. Ke7 Ka2 92. Kf6 Ka1 93. Kf5 Ka2 94. Ke4 Ka1 95. Ke5 Ka2 96. Kd6 Ka1 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "4q3/8/8/4K3/8/8/2Pk4/7r w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kf6 Qf8+ 2. Kg6 Qg8+ 3. Kf6 Qh8+ 4. Kf5 Qg8 5. c3 Qh8 6. c4 Qg8 7. Ke4 Qh8 8. c5 Qg8 9. Ke5 Qh8+ 10. Kd5 Qg8+ 11. Kc6 Qh8 12. Kb5 Qg8 13. Ka4 Qh8 14. Kb3 Qg8+ 15. Ka3 Qh8 16. Ka4 Qg8 17. Ka5 Qh8 18. c6 Qg8 19. Ka6 Qh8 20. Kb5 Qg8 21. Ka5 Qh8 22. Ka6 Qg8 23. Ka5 Qh8 24. Ka4 Qg8 25. Ka3 Qh8 26. Kb3 Qg8+ 27. Ka4 Qh8 28. Ka3 Qg8 29. c7 Qh8 30. Ka4 Qg8 31. c8=Q Qh8 32. Qc4 Qg8 33. Kb3 Qh8 34. Qc6 Qg8+ 35. Kb4 Qh8 36. Ka3 Qg8 37. Qa6 Qh8 38. Qc4 Qg8 39. Kb4 Qh8 40. Ka4 Qg8 41. Qe2+ Kxe2 42. Kb4 Qh8 43. Kb5 Qg8 44. Kb6 Qh8 45. Ka5 Qg8 46. Kb6 Qh8 47. Kb7 Qg8 48. Kb6 Qh8 49. Ka5 Qg8 50. Ka4 Qh8 51. Kb5 Qg8 52. Kb6 Qh8 53. Kc5 Qg8 54. Kb5 Qh8 55. Kc4 Qg8+ 56. Kb4 Qh8 57. Kc4 Qg8+ 58. Kb4 Qh8 59. Kb5 Qg8 60. Kc5 Qh8 61. Kb5 Qg8 62. Ka5 Qh8 63. Ka4 Qg8 64. Ka5 Qh8 65. Ka6 Qg8 66. Ka7 Qh8 67. Ka6 Qg8 68. Kb6 Qh8 69. Ka6 Qg8 70. Kb7 Qh8 71. Kb6 Qg8 72. Ka6 Qh8 73. Ka7 Qg8 74. Ka6 Qh8 75. Ka7 Qg8 76. Kb6 Qh8 77. Kc6 Qg8 78. Kb5 Qh8 79. Ka5 Qg8 80. Ka6 Qh8 81. Ka7 Qg8 82. Kb6 Qh8 83. Kc6 Qg8 84. Kd7 Qh8 85. Ke6 Qg8+ 86. Ke5 Qh8+ 87. Kd5 Qg8+ 88. Kd4 Qh8+ 89. Ke4 Qg8 90. Kf4 Qh8 91. Kf5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/1R6/k7/8/5r2/8/1bK3B1/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kd1 Re4 2. Rb4 Rd4+ 3. Ke2 Rd3 4. Rd4 Kb6 5. Bf1 Ka6 6. Rb4 Ka7 7. Rb5 Ka8 8. Rc5 Kb8 9. Rc6 Ka8 10. Bh3 Kb8 11. Rd6 Ka8 12. Rd7 Kb8 13. Rf7 Rd2+ 14. Ke3 Ka8 15. Ke4 Kb8 16. Be6 Ka8 17. Kf5 Kb8 18. Kg4 Ka8 19. Rf1 Kb8 20. Kf4 Ka8 21. Kf5 Kb8 22. Kg4 Ka8 23. Kg3 Kb8 24. Rc1 Rd1 25. Kf4 Ka8 26. Kf5 Kb8 27. Kg6 Ka8 28. Rxd1 Kb8 29. Rd3 Ka7 30. Kg5 Ka8 31. Bf5 Kb8 32. Kh6 Ka7 33. Kh7 Ka6 34. Bg6 Ka7 35. Rd8 Ka6 36. Re8 Ka7 37. Re4 Ka6 38. Rf4 Kb6 39. Rf8 Ka6 40. Rf6+ Ka5 41. Kg8 Ka4 42. Rb6 Ka3 43. Rxb2 Ka4 44. Rh2 Ka3 45. Rh1 Ka2 46. Kh8 Kb2 47. Kg8 Ka2 48. Kg7 Kb2 49. Kf8 Ka2 50. Kg8 Kb2 51. Kf7 Ka2 52. Ke6 Kb2 53. Kd6 Ka3 54. Kd5 Kb3 55. Ke5 Kb2 56. Kd6 Ka2 57. Kd5 Kb2 58. Kc6 Ka3 59. Kd6 Kb3 60. Ke5 Ka3 61. Kf6 Kb3 62. Kf7 Ka3 63. Ke8 Kb3 64. Kf8 Ka3 65. Kg8 Kb3 66. Kh8 Ka3 67. Kh7 Kb3 68. Kg8 Ka3 69. Kf8 Kb3 70. Rf1 Ka3 71. Rh1 Kb3 72. Ke8 Ka3 73. Ke7 Kb3 74. Kf6 Ka3 75. Kf7 Kb3 76. Ke8 Ka3 77. Kd8 Kb3 78. Kc8 Ka3 79. Kd7 Kb3 80. Ke8 Ka3 81. Ke7 Kb3 82. Kd6 Kb2 83. Kd5 Ka2 84. Ke4 Kb2 85. Kf5 Ka2 86. Ke5 Kb2 87. Kd5 Ka2 88. Ke6 Kb2 89. Kd6 Ka2 90. Ke6 Kb2 91. Kd6 Ka2 92. Kd5 Kb2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "1N6/8/6pR/8/8/6N1/1K1k4/1q6 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Ka3 g5 2. Nd7 Kd1 3. Rc6 Kd2 4. Rc3 Qc2 5. Rc4 Qc3+ 6. Ka4 Qc2+ 7. Ka3 Qc1+ 8. Ka2 Qb2+ 9. Kxb2 Kd3 10. Rd4+ Kxd4 11. Nf1 Kd3 12. Nc5+ Kc4 13. Ne4 Kb5 14. Nfd2 Kb4 15. Nf3 Kb5 16. Kc2 Ka4 17. Ne1 Kb4 18. Kc1 Ka3 19. Nxg5 Kb4 20. Ngf3 Ka4 21. Nc2 Ka5 22. Ng1 Ka4 23. Kd2 Ka5 24. Kd1 Ka4 25. Ke2 Ka5 26. Kd3 Ka4 27. Kd4 Ka5 28. Ne3 Kb5 29. Kd5 Ka5 30. Ke6 Kb5 31. Nd1 Ka5 32. Ke7 Kb5 33. Ne2 Ka5 34. Kd6 Kb5 35. Kd5 Ka5 36. Nc1 Kb5 37. Nb2 Ka5 38. Kc6 Ka6 39. Kc5 Ka7 40. Ncd3 Ka6 41. Na4 Ka7 42. Ne5 Ka6 43. Nc3 Ka5 44. Nd5 Ka6 45. Nb4+ Ka7 46. Ng4 Ka8 47. Nc2 Kb7 48. Nd4 Kb8 49. Ne5 Ka7 50. Ndf3 Ka6 51. Nd4 Ka7 52. Nd3 Ka6 53. Nf4 Ka5 54. Kd6 Ka6 55. Kd7 Kb6 56. Ke8 Kb7 57. Kd8 Ka7 58. Nde6 Ka6 59. Nc5+ Ka7 60. Nh5 Kb8 61. Nf6 Ka7 62. Ng8 Kb8 63. Kd7 Ka7 64. Ke8 Ka8 65. Nh6 Kb8 66. Ke7 Ka8 67. Ng8 Kb8 68. Kf6 Ka7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/5P2/5K2/8/8/k7/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kb2 2. Kg4 Ka2 3. Kg5 Kb2 4. Kf4 Ka2 5. Ke5 Kb2 6. Kf4 Ka2 7. Ke4 Kb2 8. Ke3 Ka2 9. Kf4 Kb2 10. f7 Ka2 11. Ke4 Kb2 12. Ke5 Ka2 13. Kf6 Kb2 14. Kg6 Ka2 15. f8=N 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/2k3R1/K7/8/8/5N2/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1... Kb8 2. Nd4 Kc8 3. Ka5 Kb8 4. Nb3 Ka8 5. Ka4 Kb8 6. Rd7 Ka8 7. Na5 Kb8 8. Ra7 Kc8 9. Rb7 Kd8 10. Nc6+ Ke8 11. Nd8 Kxd8 12. Kb3 Ke8 13. Rb6 Kf8 14. Kc4 Ke8 15. Kb5 Kf8 16. Rg6 Ke8 17. Rc6 Kf8 18. Rc2 Ke8 19. Rc5 Kf8 20. Rc1 Ke8 21. Ka5 Kd8 22. Kb6 Ke8 23. Kc7 Kf8 24. Kd7 Kg8 25. Kc8 Kf8 26. Rc6 Kg8 27. Kb7 Kf8 28. Rc1 Ke8 29. Rc3 Kd8 30. Kc6 Ke8 31. Re3+ Kd8 32. Rc3 Ke8 33. Rd3 Kf8 34. Ra3 Ke8 35. Rf3 Kd8 36. Rf4 Kc8 37. Rf8# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "1Kb5/8/8/6r1/p7/8/8/3k4 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kc1 2. Kxc8 Kc2 3. Kb8 a3 4. Kb7 Kb2 5. Kb6 Kb3 6. Ka6 Kb4 7. Kb7 Ka4 8. Ka6 Kb4 9. Kb6 Ka4 10. Ka7 Kb4 11. Kb6 Ka4 12. Kc6 Kb4 13. Kc7 Ka4 14. Kb7 Kb4 15. Kc6 Ka4 16. Kd6 Kb4 17. Kc7 Ka4 18. Kc6 Kb4 19. Kb7 Ka4 20. Ka8 Kb4 21. Kb8 Ka4 22. Ka7 Kb4 23. Ka6 Ka4 24. Kb7 Kb4 25. Kb6 Ka4 26. Ka7 Kb4 27. Ka6 Ka4 28. Kb6 Kb4 29. Ka7 Ka4 30. Kb8 Kb4 31. Kc8 Ka4 32. Kb8 Kb4 33. Kc7 Ka4 34. Kd6 Kb4 35. Kd7 Ka4 36. Ke6 Kb4 37. Ke7 Ka4 38. Kf6 Kb4 39. Ke6 Ka4 40. Ke7 Kb4 41. Kd8 Ka4 42. Ke8 Kb4 43. Kf8 Ka4 44. Ke8 Kb4 45. Kd8 Ka4 46. Ke8 Kb4 47. Ke7 Ka4 48. Kf6 Kb4 49. Kf7 Ka4 50. Ke6 Kb4 51. Ke7 Ka4 52. Kf6 Kb4 53. Kf7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/3q4/1N6/4b3/4K3/7n/k7 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Qd7 2. Kf2 Qc8 3. Ke2 Qd8 4. Nd4 Qe8 5. Nb3+ Kb1 6. Kf2 Qf8+ 7. Ke2 Qg8 8. Ke1 Qh8 9. Kf2 Qg8 10. Na5 Qh8 11. Nb7 Qg8 12. Nd6 Qh8 13. Nxe4 Qg8 14. Nc3+ Ka1 15. Na4 Qh8 16. Nc5 Qg8 17. Nd7 Qh8 18. Nf6 Qg8 19. Ng4 Qh8 20. Nxh2 Qg8 21. Kf1 Qh8 22. Ng4 Qg8 23. Ne3 Qh8 24. Kg2 Qg8+ 25. Kh2 Qh8+ 26. Kg2 Qg8+ 27. Kf2 Qh8 28. Kf1 Qg8 29. Nc4 Qh8 30. Nd6 Qg8 31. Ke2 Qh8 32. Nb5 Qg8 33. Kf3 Qh8 34. Ke4 Qg8 35. Ke3 Qh8 36. Kf4 Qg8 37. Kf3 Qh8 38. Ke4 Qg8 39. Na3 Qh8 40. Kf4 Qg8 41. Ke4 Qh8 42. Kf4 Qg8 43. Kf3 Qh8 44. Kg2 Qg8+ 45. Kf2 Qh8 46. Ke2 Qg8 47. Nc2+ Ka2 48. Ne3 Qh8 49. Kf2 Qg8 50. Ng4 Qh8 51. Kf3 Qg8 52. Ke4 Qh8 53. Ke3 Qg8 54. Kd3 Qh8 55. Nf2 Qg8 56. Kd4 Qh8+ 57. Kc4 Qg8+ 58. Kc5 Qh8 59. Ng4 Qg8 60. Kd4 Qh8+ 61. Kc4 Qg8+ 62. Kb5 Qh8 63. Ka5 Qg8 64. Nf6 Qh8 65. Kb5 Qg8 66. Kb6 Qh8 67. Ng4 Qg8 68. Nh2 Qh8 69. Ka5 Qg8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "5r2/6k1/8/2B1b1q1/8/7K/7B/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Qf4 2. Be3 Bd4 3. Bf2 Qe4 4. Bf4 Qe3+ 5. Kg4 Qxf2 6. Bd2 Qf3+ 7. Kh4 Qg2 8. Bc1 Qg3+ 9. Kh5 Qh2+ 10. Kg4 Qh3+ 11. Kg5 Qg4+ 12. Kxg4 Rg8 13. Kh5 Kf8 14. Bd2 Ke8 15. Bb4 Kd8 16. Be7+ Ke8 17. Bd6 Kd8 18. Bb4 Ke8 19. Bd2 Kf8 20. Bc1 Ke8 21. Be3 Kf8 22. Bf2 Ke8 23. Bh4 Kf8 24. Be7+ Ke8 25. Bh4 Kf8 26. Be7+ Ke8 27. Bf6 Kf8 28. Bxd4 Kf7 29. Bh8 Ke8 30. Bg7 Kd8 31. Be5 Kc8 32. Bf4 Kd8 33. Bh2 Ke8 34. Bf4 Kd8 35. Bc7+ Ke8 36. Bb6 Kf8 37. Bc5+ Kf7 38. Bd6 Ke8 39. Bb4 Kd8 40. Bf8 Ke8 41. Bh6 Kd8 42. Kh4 Ke8 43. Kh5 Kd8 44. Kh4 Ke8 45. Kh5 Kd8 46. Kh4 Ke8 47. Kh3 Kd8 48. Kh2 Ke8 49. Kh3 Kd8 50. Kh2 Ke8 51. Kh3 Kd8 52. Kh2 Ke8 53. Kh1 Kd8 54. Be3 Kc8 55. Bc5 Kd8 56. Bf2 Ke8 57. Bh4 Kf8 58. Be7+ Ke8 59. Bh4 Kf8 60. Bf6 Rh8+ 61. Bxh8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "*"]
+[FEN "8/K7/1q6/8/1k6/8/8/8 w - - 0 1"]
+[Reason "None"]
+[SetUp "1"]
+
+1. Ka8 Qc6+ *
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "2q5/8/K1r5/3k4/8/8/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Ka7 Qd8 2. Kb7 Qe8 3. Ka7 Qf8 4. Kb7 Qg8 5. Ka7 Qh8 6. Kb7 Qg8 7. Ka7 Qh8 8. Kb7 Qg8 9. Ka7 Qh8 10. Kb7 Qg8 11. Ka7 Qh8 12. Kb7 Qg8 13. Ka7 Qh8 14. Kb7 Qg8 15. Ka7 Qh8 16. Kb7 Qg8 17. Ka7 Qh8 18. Kb7 Qg8 19. Ka7 Qh8 20. Kb7 Qg8 21. Ka7 Qb8+ 22. Kxb8 Kd4 23. Kb7 Kd3 24. Kxc6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/2kq1K2/8/8/8/8/3B3R w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kf5 Qd7+ 2. Ke4 Qc8 3. Ke3 Kd6 4. Bf3 Kd7 5. Kd4 Ke8 6. Bg4 Kf8 7. Ke4 Ke8 8. Kd4 Kf8 9. Kd5 Ke8 10. Kd4 Kf8 11. Ke5 Ke8 12. Bf3 Kf8 13. Bd5 Ke8 14. Bg2 Kf8 15. Kf4 Ke8 16. Ke4 Kf8 17. Kf3 Ke8 18. Ke4 Kf8 19. Kd4 Ke8 20. Ke4 Kf8 21. Kd4 Ke8 22. Ke4 Kf8 23. Ke3 Ke8 24. Rh4 Kf8 25. Kf2 Ke8 26. Rg4 Kf8 27. Ke2 Ke8 28. Rg7 Kd8 29. Be4 Ke8 30. Rg4 Kf8 31. Bf3 Ke8 32. Bb7 Kf8 33. Bxc8 Ke8 34. Bd7+ Kd8 35. Rg2 Kxd7 36. Rf2 Kc8 37. Rf1 Kd8 38. Kf2 Kc8 39. Kg2 Kd8 40. Kg3 Kc8 41. Kf2 Kd8 42. Kf3 Kc8 43. Ke4 Kd8 44. Rf8+ Kd7 45. Rg8 Ke6 46. Re8+ Kd6 47. Kf4 Kd7 48. Rc8 Kxc8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "1Q1B4/3R4/8/7n/2k5/8/8/6K1 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. Qh2 Kc5 2. Bg5 Kc4 3. Qh3 Kc5 4. Kf2 Kc4 5. Kg2 Kc5 6. Kg1 Kc4 7. Kf2 Kb4 8. Rb7+ Ka4 9. Kg2 Ka5 10. Qa3# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "1q6/p7/8/2P2KP1/8/3k3p/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kg6 Ke2 2. Kg7 Ke3 3. c6 Kf2 4. Kf6 Kf3 5. Kf7 Kg2 6. c7 Kg3 7. Ke6 Kh2 8. Ke5 Kh1 9. Kd4 Kg2 10. c8=Q Kg3 11. Kd3 Kh2 12. Kd4 Kh1 13. Kc4 Kg2 14. Qd7 Kg1 15. Qd6 Kf2 16. Kd5 Kg2 17. Qf6 Kg1 18. Qb6+ Kh2 19. Qd6+ Kh1 20. Qd7 Kg2 21. Qe6 Kg1 22. Qe7 Kf2 23. Qf8+ Kg2 24. Qxb8 Kg1 25. Qb7 Kf2 26. Kc4 Kf1 27. Qa6 Kg2 28. Qb7+ Kg1 29. Kb3 Kf2 30. Kb2 Kf1 31. Qa6+ Kg2 32. Kb1 Kg1 33. Kc2 Kf2 34. Qb6+ Kg2 35. Qh6 Kg1 36. Qg6 Kf2 37. Qh6 Kg2 38. Qh5 Kg1 39. Qg4+ Kf2 40. Qf4+ Kg2 41. Qe4+ Kg1 42. Qd4+ Kh2 43. Kc3 Kh1 44. Qf2 a6 45. Qf1+ Kh2 46. Kd4 a5 47. Qb5 Kh1 48. Qb8 Kg2 49. Qa7 Kh2 50. Qa6 Kh1 51. Qe2 a4 52. Qa6 Kg2 53. Kc3 Kg1 54. Kd4 Kf2 55. Kc5 Kg2 56. Qb5 Kg1 57. Qb4 Kf2 58. Qb6 Kg2 59. Kc4 Kh2 60. Qc7+ Kh1 61. Qb6 Kg2 62. Qb7+ Kg1 63. Qa8 Kf2 64. Kd4 Kf1 65. Ke5 a3 66. Kd4 a2 67. Qh1+ Ke2 68. Kd5 Ke3 69. Qf1 Kd2 70. Ke5 Kc2 71. Qf3 Kb2 72. Qb7+ Kc2 73. Qb2+ Kxb2 74. Kf4 Ka3 75. Ke4 Kb3 76. Ke5 Kb2 77. Kf6 Kb3 78. Kf5 Ka3 79. Ke6 Kb3 80. Kf6 Kb2 81. Kf5 Kb3 82. Ke6 Kb2 83. Ke5 Kb3 84. Kf4 Kb2 85. Kf5 Kb3 86. Ke4 Kb2 87. Kf4 Kb3 88. Ke4 Kb2 89. Ke5 Kb3 90. Kd5 Kb2 91. Ke5 Kb3 92. Kd4 Kb2 93. Ke4 Kb3 94. Ke3 Ka3 95. Kd3 Kb3 96. Kd4 Ka3 97. Ke5 Kb3 98. Kf6 Kb2 99. Ke6 Kb3 100. Ke5 Kb2 101. Kf6 Kb1 102. Ke6 Kb2 103. Ke5 Kb3 104. Kf6 Ka3 105. Ke6 Kb3 106. Kd6 Ka3 107. Kd5 Kb3 108. Kc6 Ka3 109. Kc5 Kb3 110. Kc6 Ka3 111. Kd7 Kb3 112. Kc8 Ka3 113. Kd8 Kb3 114. Ke7 Ka3 115. Kf6 Kb3 116. Ke6 Ka3 117. Ke5 Kb3 118. Kf6 Ka3 119. Kf7 Kb3 120. Ke8 Ka3 121. Kf8 Kb3 122. Kg8 Ka3 123. Kf8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/4k3/8/8/8/4K3/2R5/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kd8 2. Rc3 Kd7 3. Kf2 Ke8 4. Kf1 Kd8 5. Rc4 Kd7 6. Rg4 Kc8 7. Re4 Kb8 8. Re6 Kb7 9. Re5 Kb8 10. Rc5 Ka7 11. Rc6 Ka8 12. Kg2 Kb8 13. Kg1 Ka7 14. Kf2 Ka8 15. Kg2 Kb8 16. Kg1 Ka7 17. Kf2 Ka8 18. Rc8+ Kb7 19. Kf1 Ka7 20. Rc1 Kb8 21. Ra1 Kc8 22. Kg2 Kd8 23. Rf1 Kc8 24. Kg1 Kd8 25. Kh1 Ke8 26. Kg1 Kd8 27. Kh2 Ke8 28. Rd1 Kf8 29. Kh1 Kg8 30. Re1 Kh8 31. Kg2 Kg8 32. Kh1 Kh8 33. Re4 Kg8 34. Rd4 Kf8 35. Kg2 Ke8 36. Kg1 Kf8 37. Kh1 Ke8 38. Rd1 Kf8 39. Rd8+ Kf7 40. Kg2 Kg6 41. Rd4 Kg5 42. Rd2 Kh6 43. Rd5 Kh7 44. Rb5 Kg8 45. Kg1 Kf8 46. Rb2 Ke8 47. Kf2 Kd8 48. Kf1 Kc8 49. Kg2 Kd8 50. Kf2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "5B2/8/8/P5K1/8/5k2/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kg2 2. Kf4 Kh2 3. Kf3 Kh3 4. Kf4 Kg2 5. Ke4 Kh2 6. Kf4 Kh3 7. Ke4 Kg4 8. a6 Kh4 9. Kd4 Kg4 10. Ke3 Kh4 11. Kf2 Kg4 12. Kf1 Kf4 13. Ke2 Ke4 14. Ke1 Kd4 15. Kd2 Kd5 16. a7 Kc4 17. a8=Q Kb5 18. Kc2 Kc4 19. Qc6+ Kd4 20. Qh1 Ke5 21. Qb7 Kd4 22. Qb6+ Ke4 23. Kb3 Kf4 24. Qd4+ Kf3 25. Ka3 Ke2 26. Qd5 Kf2 27. Qf7+ Kg2 28. Qb3 Kh2 29. Qf7 Kh3 30. Qh5+ Kg2 31. Qh8 Kg1 32. Qg8+ Kf2 33. Qh8 Kf1 34. Qh5 Kg2 35. Qg6+ Kh2 36. Qe6 Kh1 37. Kb2 Kg2 38. Kc3 Kh2 39. Qd6+ Kh3 40. Qa6 Kg4 41. Qb7 Kh4 42. Qd7 Kh5 43. Qg4+ Kxg4 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "2r5/8/8/R7/8/8/3K4/1k5n b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kb2 2. Kd3 Kb1 3. Ra3 Kb2 4. Ke4 Kxa3 5. Ke5 Kb3 6. Kd6 Ka3 7. Ke6 Rd8 8. Kf6 Re8 9. Kf7 Rf8+ 10. Kxf8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "7K/8/1p6/2q4B/8/3R3k/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kg2 2. Bd1 Kh2 3. Rf3 Qc4 4. Rg3 Qc3+ 5. Rg7 Kh3 6. Bf3 Qc2 7. Bd1 Qc1 8. Bh5 b5 9. Bf3 b4 10. Bg4+ Kg2 11. Kg8 Kg3 12. Re7 Kh2 13. Kh8 Kh1 14. Bc8 Kg2 15. Rd7 Kg3 16. Re7 Kh2 17. Re2+ Kh1 18. Re7 Kg2 19. Re4 Kg3 20. Re5 Kh2 21. Bd7 Kh1 22. Bg4 Kg2 23. Re2+ Kg1 24. Kg8 b3 25. Kh8 b2 26. Rf2 Qc2 27. Bd1 Kxf2 28. Be2 Kxe2 29. Kg8 Ke3 30. Kg7 Kf2 31. Kh8 Kf3 32. Kg8 Kg2 33. Kh8 Kg3 34. Kg8 Kh2 35. Kf8 Kh3 36. Ke8 Kg4 37. Kd8 Kf4 38. Kd7 Ke4 39. Ke8 Kd4 40. Ke7 Qc1 41. Kd8 Qc2 42. Ke8 Qc1 43. Kf8 Qc2 44. Kg8 Qc1 45. Kh8 Qc2 46. Kg8 Qc1 47. Kg7 Qc2 48. Kf6 Qc1 49. Kg6 Qc2+ 50. Kg7 Qc1 51. Kf8 Qc2 52. Kf7 Qc1 53. Ke6 Qc2 54. Kf6 Qc1 55. Kf5 Qc2+ 56. Kg4 Qc1 57. Kh4 Qc2 58. Kg4 Qc1 59. Kh4 Qc2 60. Kg4 Qc1 61. Kh4 Qd2 62. Kg4 Qd1+ 63. Kg5 Qf3 64. Kh4 Qg2 65. Kh5 Qg3 66. Kh6 Qh2+ 67. Kg6 Qh3 68. Kg7 Qg4+ 69. Kh6 Qf4+ 70. Kh7 Qe4+ 71. Kg8 Qe5 72. Kf8 Qg7+ 73. Ke8 Qf8+ 74. Kxf8 Kc4 75. Ke8 Kb4 76. Ke7 Ka4 77. Kd8 Ka3 78. Kc8 Kb3 79. Kd8 Ka3 80. Kd7 Kb3 81. Kc8 b1=Q 82. Kc7 Ka3 83. Kd6 Ka2 84. Ke6 Qb2 85. Ke7 Ka1 86. Kf8 Qb1 87. Kf7 Qb2 88. Kg8 Qb1 89. Kf8 Qb2 90. Kg8 Qb1 91. Kg7 Qb2+ 92. Kf8 Qb1 93. Kf7 Qb2 94. Kg6 Qb1+ 95. Kh6 Qb2 96. Kh5 Qb1 97. Kg4 Qb2 98. Kh3 Qb1 99. Kg4 Qb2 100. Kg3 Qb1 101. Kf3 Qb2 102. Ke4 Qb1+ 103. Kd4 Qb2+ 104. Ke3 Qb1 105. Kf2 Qb2+ 106. Kf1 Qb1+ 107. Kg2 Qb2+ 108. Kg1 Qb1+ 109. Kf2 Qb2+ 110. Kf1 Qb1+ 111. Ke2 Qb2+ 112. Kd3 Qb1+ 113. Ke3 Qb2 114. Kd3 Qb1+ 115. Kc3 Qb2+ 116. Kc4 Qb1 117. Kc5 Qb2 118. Kd6 Qb1 119. Kc6 Qb2 120. Kd6 Qb1 121. Kc5 Qb2 122. Kd6 Qb1 123. Ke5 Qb2+ 124. Kf4 Qb1 125. Kg4 Qb2 126. Kf4 Qb1 127. Kf3 Qb2 128. Ke4 Qb1+ 129. Ke3 Qb2 130. Kf3 Qb1 131. Kg2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/8/3p4/B4r2/5Q2/4Kp2/1k6/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1... d5 2. Kd4 Ka3 3. Be1 Kb3 4. Qe4 Kb2 5. Bf2 Ka2 6. Qe5 Kb2 7. Qh8 Kb1 8. Qh1+ Kb2 9. Ke3 Ka2 10. Kd4 Kb2 11. Qg2 Ka2 12. Be3+ Ka1 13. Bd2 Ka2 14. Bc1+ Ka1 15. Qb2# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "5K2/8/8/8/2k5/5P2/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Ke8 Kc5 2. Kd8 Kc4 3. Ke8 Kb4 4. Kd8 Ka4 5. Ke8 Kb4 6. Kf8 Ka4 7. Kg8 Kb4 8. Kf8 Ka4 9. Ke8 Kb4 10. Kf8 Ka4 11. Kg8 Kb4 12. Kh8 Ka4 13. f4 Kb4 14. f5 Ka4 15. Kg7 Kb4 16. Kh6 Ka4 17. Kh5 Kb4 18. Kg4 Ka4 19. Kh4 Kb4 20. Kg4 Ka4 21. Kg5 Kb4 22. Kf4 Ka4 23. Kg4 Kb4 24. Kg5 Ka4 25. Kg6 Kb4 26. Kh5 Ka4 27. Kg5 Kb4 28. Kf4 Ka4 29. Kf3 Kb4 30. Kg2 Ka4 31. Kf2 Kb4 32. Kf3 Ka4 33. Kg2 Kb4 34. Kg3 Ka4 35. Kh2 Kb4 36. Kh3 Ka4 37. Kg3 Kb4 38. Kf3 Ka4 39. Kf2 Kb4 40. Kf3 Ka4 41. Ke2 Ka3 42. Kf2 Ka4 43. Kg2 Ka3 44. Kg1 Ka4 45. Kh2 Ka3 46. Kh1 Ka4 47. Kg2 Ka3 48. Kh2 Ka4 49. Kh1 Ka3 50. Kg2 Ka4 51. Kf2 Ka3 52. Kf3 Ka2 53. Kg2 Ka3 54. Kg1 Kb3 55. Kf2 Ka3 56. Kf1 Kb3 57. Kg2 Ka3 58. Kg1 Kb3 59. Kh2 Ka3 60. Kh1 Kb3 61. Kg2 Ka3 62. Kh2 Kb3 63. Kh1 Ka3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "1RK5/8/8/2P5/8/8/8/3k4 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kd7 Ke1 2. Kc8 Kd2 3. Kd8 Kd1 4. c6 Kd2 5. Kc8 Kd1 6. Kd8 Kd2 7. Rb2+ Kd3 8. Rb7 Kd2 9. Rb2+ Ke3 10. Rb1 Kd2 11. Rc1 Kxc1 12. Kc8 Kc2 13. Kc7 Kc1 14. Kb8 Kc2 15. Kc7 Kb2 16. Kd7 Ka3 17. Ke6 Kb3 18. Kf6 Ka3 19. Kg6 Kb3 20. Kg5 Ka3 21. Kf5 Kb3 22. Kg4 Ka3 23. Kf4 Kb3 24. Kf3 Ka3 25. Ke2 Kb3 26. Kd2 Ka3 27. Ke3 Kb3 28. Kf2 Ka3 29. c7 Kb3 30. c8=B 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/8/2pb1k2/1K6/8/7R w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Ka2 Ke4 2. Ka3 Ke3 3. Ka2 Kd2 4. Ka3 Kd3 5. Ka2 Ke2 6. Ka3 Ke3 7. Ka2 Kd2 8. Ka3 Kd3 9. Ka2 Ke2 10. Kb1 Ke3 11. Kc2 Kf2 12. Kd1 Kg2 13. Kd2 Kg3 14. Kc2 Kf4 15. Kb1 Ke4 16. Ka2 Ke5 17. Ka3 Kf6 18. Kb4 Kf7 19. Ka5 Kg6 20. Kb5 Kg7 21. Ka5 Kf8 22. Ka4 Kg8 23. Kb4 Kf8 24. Kb5 Kg8 25. Ka6 Kf8 26. Kb7 Kg8 27. Kb8 Kf8 28. Ka8 Kg8 29. Kb7 Kf8 30. Kc7 Kg8 31. Kc8 Kf8 32. Kc7 Kg8 33. Kc8 Kf8 34. Kb8 Kg8 35. Kb7 Kf8 36. Kc8 Kg8 37. Kb8 Kf8 38. Kb7 Kg8 39. Ka8 Kf8 40. Rf1+ Kg8 41. Rc1 Kh8 42. Rd1 Kg8 43. Kb7 Kh8 44. Rh1+ Kg8 45. Kc8 Kf8 46. Kb7 Kg8 47. Rh7 Kf8 48. Rh4 Kg8 49. Rf4 Kh8 50. Rf3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/2P5/6N1/2K5/8/8/8/N4B1k w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. c8=Q Kg1 2. Qf8 Kh2 3. Qg8 Kh1 4. Qc8 Kg1 5. Qb7 Kh2 6. Qg2# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "3n3k/1r1Q4/4R2K/8/4p3/8/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. Re8# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/3k4/8/4K3/8/8/8/5r2 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kc8 2. Kd6 Kb8 3. Kd7 Ka8 4. Kc8 Ka7 5. Kc7 Ka6 6. Kc8 Ka5 7. Kb8 Kb5 8. Kc8 Ka5 9. Kb8 Kb5 10. Kc7 Ka5 11. Kb7 Kb5 12. Kb8 Ka5 13. Ka8 Kb5 14. Kb8 Ka5 15. Kc8 Kb5 16. Kd7 Ka5 17. Kc8 Kb5 18. Kc7 Ka5 19. Kd6 Kb5 20. Kd5 Ka5 21. Ke6 Kb5 22. Ke7 Ka5 23. Kd6 Kb5 24. Kd7 Ka5 25. Kc6 Ka4 26. Kc7 Kb4 27. Kb6 Ka4 28. Ka7 Kb4 29. Kb7 Ka4 30. Kc7 Kb4 31. Kd8 Ka4 32. Kc7 Kb4 33. Kb8 Ka4 34. Kc8 Kb4 35. Kb7 Ka4 36. Ka6 Ka3 37. Kb6 Ka2 38. Kc7 Ka3 39. Kb8 Kb3 40. Kb7 Ka3 41. Kb6 Kb3 42. Ka7 Ka3 43. Ka8 Kb3 44. Ka7 Ka3 45. Ka8 Kb3 46. Kb7 Ka3 47. Ka8 Kb3 48. Kb7 Ka3 49. Kc6 Kb3 50. Kb6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/7q/8/8/q7/8/1K2k3/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.STALEMATE: 2>, winner=None)"]
+[SetUp "1"]
+
+1... Qg8 2. Kc1 Qh8 3. Kb1 Qg8 4. Kc1 Qh8 5. Kb1 Qg8 6. Kc1 Qh8 7. Kb1 Qg8 8. Kb2 Qh8+ 9. Kc1 Qg8 10. Kb1 Qh8 11. Kc1 Qg8 12. Kb2 Qh8+ 13. Kb1 Qg8 14. Kc1 Qh8 15. Kb1 Qg8 16. Kc1 Qh8 17. Kb1 Qg8 18. Kb2 Qh8+ 19. Kb1 Qg8 20. Kb2 Qh8+ 21. Kc1 Qg8 22. Kb1 Qh8 23. Kc1 Qg8 24. Kb1 Qh8 25. Kc1 Qg8 26. Kb2 Qh8+ 27. Kb1 Qg8 28. Kc1 Qh8 29. Kb1 Qg8 30. Kc1 Qh8 31. Kb1 Qg8 32. Kc1 Qb8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/1b6/8/8/3k1Q1R/8/8/1K6 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1... Kd3 2. Qf5+ Ke2 3. Kb2 Ke1 4. Rh5 Kd2 5. Qe4 Kd1 6. Ka3 Kc1 7. Qh1+ Kc2 8. Ka4 Kb2 9. Ka5 Ka2 10. Qe4 Kb2 11. Qe3 Ka2 12. Qa7 Kb2 13. Qd4+ Ka3 14. Qa7 Ka2 15. Qe3 Kb2 16. Qc1+ Ka2 17. Qh1 Kb2 18. Qf1 Ka2 19. Kb4 Kb2 20. Qd1 Ka2 21. Qh1 Kb2 22. Qxb7 Kc2 23. Qg2+ Kc1 24. Rh1# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "N4K2/3r4/8/8/8/8/2B2B2/k7 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Ka2 2. Kg8 Kb2 3. Kf8 Ka2 4. Ke8 Ka1 5. Bd3 Ka2 6. Bg6 Ka1 7. Kf8 Ka2 8. Kg8 Ka1 9. Kf8 Ka2 10. Nc7 Ka1 11. Kg8 Ka2 12. Na8 Ka1 13. Bd3 Ka2 14. Bh7 Ka1 15. Nc7 Ka2 16. Ne8 Ka1 17. Nc7 Ka2 18. Na6 Ka1 19. Bg6 Ka2 20. Kf8 Ka1 21. Kg8 Ka2 22. Kh8 Ka1 23. Kg8 Ka2 24. Bh5 Ka1 25. Kf8 Ka2 26. Kg8 Ka1 27. Nb4 Kb1 28. Kf8 Kb2 29. Kg8 Kb1 30. Na2 Kxa2 31. Bb6 Kb2 32. Kf8 Ka2 33. Bc7 Ka1 34. Ke8 Ka2 35. Bf7+ Ka1 36. Bd5 Kb1 37. Bh1 Kb2 38. Bg2 Ka2 39. Bb6 Kb2 40. Bc7 Ka2 41. Bd5+ Kb2 42. Kf8 Kb1 43. Bh1 Kb2 44. Be4 Ka2 45. Ke8 Kb2 46. Bf5 Ka3 47. Be4 Kb3 48. Bd5+ Kb2 49. Bf7 Kb1 50. Bd6 Kb2 51. Bh2 Kb1 52. Kf8 Kb2 53. Kg8 Ka3 54. Kf8 Ka4 55. Kg7 Ka3 56. Kh8 Ka4 57. Kg8 Ka3 58. Kg7 Ka4 59. Kh6 Ka3 60. Kh7 Ka4 61. Kg8 Ka3 62. Kg7 Ka4 63. Kh6 Ka3 64. Be6 Ka4 65. Kh5 Ka3 66. Kg6 Ka4 67. Kh6 Ka3 68. Kh5 Ka4 69. Kg4 Ka3 70. Kh5 Ka4 71. Kg4 Ka3 72. Kg3 Ka4 73. Kf4 Ka3 74. Kf5 Ka4 75. Kg4 Ka3 76. Kf4 Ka4 77. Kf5 Ka3 78. Kg6 Ka4 79. Kh6 Ka3 80. Kh5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/2p5/2p1r3/p1K4k/8/8/4Q3 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kg4 2. Qa5 Kf4 3. Qb5 Kg4 4. Qb3 Kf4 5. Qd3 Kg4 6. Qh7 Kf4 7. Qf7+ Kg4 8. Qe6+ Kf4 9. Qe7 Kg4 10. Qf6 Kg3 11. Qf4+ Kxf4 12. Kd3 Kg4 13. Kc2 Kf4 14. Kb1 Ke4 15. Ka2 Kf4 16. Ka3 Kg4 17. Kxa4 Kf4 18. Ka5 Kg4 19. Ka6 Kf4 20. Ka5 Kg4 21. Ka6 Kf4 22. Kb7 Ke4 23. Ka7 Kf4 24. Kb7 Ke4 25. Ka7 Kf4 26. Kb6 Ke4 27. Kxc6 Kf4 28. Kd6 Ke4 29. Kc6 Kf4 30. Kd6 Ke4 31. Kd7 Kf4 32. Kc6 Ke4 33. Kb7 Kf4 34. Kb8 Ke4 35. Kb7 Kf4 36. Ka6 Ke4 37. Ka5 Kf4 38. Ka4 Ke4 39. Ka3 Kf4 40. Kb2 Ke4 41. Kb3 Kf4 42. Ka3 Ke4 43. Kb2 Kf4 44. Kc3 Kg4 45. Kc2 Kf4 46. Kb3 Ke4 47. Ka2 Kf4 48. Kb2 Ke4 49. Ka1 Kf4 50. Kb2 Ke4 51. Ka3 Kd4 52. Ka2 Kd3 53. Ka1 Kd2 54. Kb1 Kd3 55. Ka2 Kd2 56. Kb3 Kd3 57. Kb2 Kc4 58. Ka1 Kb3 59. Kb1 Ka4 60. Kc1 Kb4 61. Kc2 Ka4 62. Kd2 Kb4 63. Kc1 Kb3 64. Kb1 Rd5 65. Ka1 Rd4 66. Kb1 Kb4 67. Ka1 Kb5 68. Ka2 Kb6 69. Kb1 c4 70. Kc1 Rd3 71. Kb1 Rd2 72. Ka1 c3 73. Kb1 Rd3 74. Ka2 Rd2+ 75. Ka1 Rd3 76. Kb1 Rd2 77. Kc1 Ka6 78. Kb1 Rd3 79. Ka2 Rd2+ 80. Ka1 Rd3 81. Kb1 Rd2 82. Kc1 Kb6 83. Kb1 Rd3 84. Ka2 Rd2+ 85. Ka1 Rd3 86. Kb1 Rd2 87. Ka1 Rd3 88. Kb1 Rd2 89. Kc1 Rd1+ 90. Kc2 Ka6 91. Kxc3 Kb6 92. Kb2 Ka6 93. Kc3 Kb6 94. Kb4 Ka7 95. Ka4 Ka6 96. Kb4 Kb6 97. Kc3 Ka6 98. Kb4 Kb6 99. Kc4 Ka6 100. Kc3 Kb6 101. Kb2 Ka6 102. Kc3 Kb6 103. Kb3 Ka6 104. Ka2 Kb6 105. Ka3 Ka6 106. Kb3 Kb6 107. Ka3 Ka6 108. Ka2 Ka5 109. Kb3 Ka6 110. Ka4 Kb6 111. Kb3 Ka6 112. Kc2 Kb6 113. Kxd1 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/2K5/8/8/5k2/7q w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kc4 Kg2 2. Kb4 Kg3 3. Ka5 Kh2 4. Ka4 Kh3 5. Kb3 Kg4 6. Kb4 Qg2 7. Kc4 Kf4 8. Kc5 Ke4 9. Kc6 Qg3 10. Kd7 Qh2 11. Kc6 Qh3 12. Kd6 Qg4 13. Kc6 Qf4 14. Kb6 Qf5 15. Ka7 Qh7+ 16. Ka8 Qg8+ 17. Kb7 Kd4 18. Kc6 Qh8 19. Kc7 Qg8 20. Kb7 Qh8 21. Ka6 Qg8 22. Kb5 Qh8 23. Kb4 Qg8 24. Ka3 Qh8 25. Ka4 Qg8 26. Ka3 Qh8 27. Ka4 Qg8 28. Kb4 Qh8 29. Ka4 Qg8 30. Kb4 Qh8 31. Kb3 Qg8+ 32. Ka3 Qh8 33. Ka2 Qg8+ 34. Kb2 Qh8 35. Kb3 Qg8+ 36. Kb4 Qh8 37. Ka5 Qg8 38. Kb4 Qh8 39. Ka5 Qg8 40. Kb5 Qh8 41. Ka5 Qg8 42. Kb4 Qh8 43. Ka4 Qg8 44. Kb5 Qh8 45. Ka5 Qg8 46. Kb5 Qh8 47. Ka4 Qg8 48. Ka5 Qh8 49. Kb5 Qg8 50. Ka5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "k7/1b6/8/6K1/8/8/8/1Q6 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kf6 Bc8 2. Qb6 Bd7 3. Qb8+ Kxb8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "2K2r2/2q5/6p1/8/8/8/1k6/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kxc7 Rg8 2. Kb6 g5 3. Kb5 Rh8 4. Kc6 Rg8 5. Kc5 Rh8 6. Kd6 Rg8 7. Kd7 Rh8 8. Kd6 Rg8 9. Kd5 Rh8 10. Kc4 Rg8 11. Kb4 Rh8 12. Kb5 Rg8 13. Kc6 Rh8 14. Kc5 Rg8 15. Kb5 Rh8 16. Ka6 Rg8 17. Kb7 Rh8 18. Kb6 Rg8 19. Kb5 Rh8 20. Kb6 Rg8 21. Kc5 Rh8 22. Kd6 Rg8 23. Kd5 Rh8 24. Ke5 Rg8 25. Kf6 Rh8 26. Kf7 Rg8 27. Ke6 Rh8 28. Ke7 Rg8 29. Kf6 Rh8 30. Kf7 Rg8 31. Ke6 Rh8 32. Ke5 Rg8 33. Kf6 Rh8 34. Kg6 Rg8+ 35. Kh6 Rh8+ 36. Kg6 Rg8+ 37. Kh6 Rh8+ 38. Kg6 Rg8+ 39. Kf6 Rh8 40. Ke6 Rg8 41. Kf6 Rh8 42. Kf7 Rg8 43. Kf6 Rh8 44. Kf7 Rg8 45. Kxg8 Ka3 46. Kg7 Kb3 47. Kh6 Ka3 48. Kxg5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "8/7k/5n2/8/8/3q4/KR6/2R5 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. Rb6 Kg8 2. Re1 Kh8 3. Re5 Qd2+ 4. Kb1 Kg8 5. Rc6 Qd1+ 6. Kb2 Qe2+ 7. Ka1 Qe1+ 8. Rc1 Qf2 9. Rd1 Kh8 10. Rf1 Kg8 11. Rh1 Qf1+ 12. Ka2 Qe2+ 13. Ka3 Qe1 14. Kb2 Qf2+ 15. Kc1 Kf8 16. Kd1 Kg8 17. Rf1 Kh8 18. Re2 Kg8 19. Kc1 Kf8 20. Re3 Kg8 21. Re8+ Kg7 22. Rf8 Kh6 23. Rg8 Kh7 24. Re8 Qf3 25. Re2 Kg8 26. Kb2 Kh8 27. Rc2 Kg8 28. Rxf3 Kf8 29. Ka2 Kg8 30. Rfc3 Kf8 31. Rc1 Kg8 32. Rc7 Kf8 33. R7c4 Kg8 34. Ka1 Kf8 35. Rg1 Ke8 36. Rcc1 Kf8 37. Rc6 Ke8 38. Rc3 Kf8 39. Ra3 Ke8 40. Rd3 Kf8 41. Rf3 Ke8 42. Ka2 Kf8 43. Ka3 Ke8 44. Kb2 Kf8 45. Rxf6+ Ke8 46. Re1+ Kd8 47. Kc2 Kc8 48. Kd1 Kc7 49. Kc1 Kc8 50. Ree6 Kc7 51. Rd6 Kc8 52. Rd8+ Kxd8 53. Re6 Kc8 54. Kc2 Kc7 55. Rf6 Kc8 56. Kb3 Kd8 57. Rf5 Kc8 58. Kc3 Kb7 59. Kc4 Kb8 60. Kb4 Kc8 61. Kb5 Kb8 62. Kb6 Kc8 63. Ka6 Kd7 64. Ka7 Kc8 65. Kb6 Kb8 66. Rf8# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "2n5/8/1Q2p3/5k2/8/7K/3p4/B7 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1. Qa7 Ke4 2. Bb2 Kf4 3. Bd4 d1=Q 4. Bg7 Ke4 5. Qa3 Kf4 6. Qa6 Ke4 7. Be5 Ke3 8. Qa1 Qc2 9. Kg4 Kf2 10. Bc3 Qxc3 11. Qd1 e5 12. Kh4 Kg2 13. Qe1 Kh2 14. Qc1 Qc2 15. Qe1 Qc3 16. Qd2+ Kh1 17. Qc1+ Kg2 18. Qf4 Kg1 19. Kg4 Qc2 20. Kg3 Qc1 21. Qxc1# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/K7/5Q2/8/8/8/4k3/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Ke3 2. Qe6+ Kd2 3. Qe7 Kd1 4. Qd8+ Ke1 5. Qd5 Kf2 6. Kb8 Kf1 7. Ka7 Ke2 8. Qc6 Ke1 9. Qd7 Kf2 10. Qe6 Kf1 11. Qe5 Kg2 12. Qg7+ Kh2 13. Qh6+ Kg2 14. Qh7 Kg3 15. Qg8+ Kh2 16. Qb8+ Kh3 17. Qb5 Kg4 18. Qb4+ Kg3 19. Qb2 Kf4 20. Qd2+ Kg4 21. Qd5 Kh4 22. Ka6 Kg4 23. Qh5+ Kf4 24. Qg4+ Kxg4 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/3q4/8/8/8/4R3/8/1k4K1 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Qc8 2. Rc3 Qb7 3. Rc5 Kb2 4. Rg5 Qb6+ 5. Kh2 Qa6 6. Kh3 Ka2 7. Kg4 Kb2 8. Kf4 Ka2 9. Ke4 Kb2 10. Kd4 Ka2 11. Kc3 Ka1 12. Rg2 Qa5+ 13. Kc4 Qa4+ 14. Kc5 Kb1 15. Ra2 Qa3+ 16. Rxa3 Kc1 17. Ra4 Kb1 18. Kd5 Kc1 19. Kc4 Kb1 20. Ra7 Kc1 21. Re7 Kd1 22. Kb5 Kd2 23. Ka5 Kd1 24. Kb5 Kc1 25. Ka6 Kc2 26. Ka5 Kc1 27. Rb7 Kc2 28. Re7 Kc1 29. Kb5 Kc2 30. Kc6 Kc1 31. Kc7 Kc2 32. Kc8 Kc3 33. Re4 Kc2 34. Re1 Kc3 35. Kc7 Kc4 36. Re7 Kb5 37. Rg7 Ka5 38. Re7 Ka4 39. Re1 Kb4 40. Kc6 Ka4 41. Rb1 Ka3 42. Kb5 Ka2 43. Rb4 Ka1 44. Rb2 Kxb2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/8/3K4/1r6/4r2k/2q5 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kh3 2. Kd5 Kg4 3. Kd6 Kf4 4. Kd7 Ke4 5. Ke6 Kd4+ 6. Kf6 Kd3 7. Kg6 Re1 8. Kf6 Kd2 9. Kf7 Kd3 10. Kg6 Kd2 11. Kf6 Kd3 12. Kg6 Kd2 13. Kh6 Kd3+ 14. Kh5 Qb1 15. Kg4 Qc1 16. Kh4 Kd2 17. Kg4 Kd3 18. Kh4 Kd2 19. Kg4 Kd3 20. Kh4 Kd2 21. Kh5 Kd3 22. Kg4 Qb1 23. Kf4 Kd2 24. Kg4 Kd3 25. Kh4 Kc4 26. Kg4 Qb2 27. Kf4 Qb1 28. Kg4 Qb2 29. Kf4 Qb1 30. Kg4 Qb2 31. Kh4 Qb1 32. Kh5 Qb2 33. Kg5 Qb1 34. Kf4 Qb2 35. Kf5 Qb1+ 36. Kg4 Qb2 37. Kg5 Qb1 38. Kh6 Qb2 39. Kh5 Qb1 40. Kg4 Qb2 41. Kf4 Qb1 42. Kg4 Qb2 43. Kf4 Qb1 44. Kg5 Qb2 45. Kf4 Qb1 46. Kg4 Kc3 47. Kg3 Qb2 48. Kf4 Qb1 49. Kg4 Qb2 50. Kh4 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1/2-1/2"]
+[FEN "4B1q1/8/2P5/8/7B/K7/3k4/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kc2 2. Bf7 Kb1 3. Kb4 Kb2 4. Be6 Qh8 5. Bb3 Qg8 6. Bd1 Qh8 7. Ka4 Qg8 8. Kb5 Qh8 9. Ka4 Qg8 10. c7 Qh8 11. Be2 Qg8 12. Ka5 Qh8 13. Kb5 Qg8 14. c8=N Qh8 15. Ka6 Qg8 16. Bc4 Qh8 17. Bf1 Qg8 18. Kb7 Qh8 19. Nd6 Qg8 20. Bh3 Qh8 21. Kc6 Qg8 22. Bg4 Qh8 23. Nb7 Qg8 24. Kd7 Qh8 25. Na5 Qg8 26. Bh3 Qh8 27. Nc6 Qg8 28. Ne7 Qh8 29. Ke6 Qg8+ 30. Ke5 Qh8+ 31. Kf4 Qg8 32. Bg3 Qh8 33. Nd5 Qg8 34. Nb6 Qh8 35. Nc4+ Kb1 36. Kf3 Kc2 37. Bd6 Qg8 38. Bf1 Qh8 39. Bb8 Qg8 40. Na3+ Kb2 41. Bh3 Qh8 42. Ke4 Qg8 43. Be6 Qh8 44. Ba7 Qg8 45. Ke3 Qh8 46. Kf4 Qg8 47. Nc4+ Kb1 48. Bb6 Kc1 49. Kf5 Kd1 50. Ke4 Qh8 51. Bc7 Qg8 52. Ke3 Qh8 53. Kf2 Qg8 54. Nb2+ Kc1 55. Bh3 Qh8 56. Bb8 Qg8 57. Nd1 Qh8 58. Nc3 Qg8 59. Na4 Qh8 60. Bg3 Qg8 61. Bh2 Qh8 62. Nb2 Qg8 63. Kf3 Qh8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "MCTS_20000"]
+[Black "NN_20000"]
+[Result "1-0"]
+[FEN "2Q5/8/2P5/3pk3/8/1N3BK1/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=True)"]
+[SetUp "1"]
+
+1... Kf6 2. Qf8+ Ke6 3. Qf6+ Kxf6 4. c7 Kf7 5. Nd2 Ke8 6. c8=Q+ Ke7 7. Nc4 Kf6 8. Qb8 Kf5 9. Bg2 Kg6 10. Qa8 Kg5 11. Nb2 Kh6 12. Kf4 Kh5 13. Qa3 d4 14. Qa2 d3 15. Qd5+ Kg6 16. Qe4+ Kh6 17. Qd4 Kh5 18. Qd8 d2 19. Qg5# 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/3K1k2/8/8/6r1/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kc4 Kg6 2. Kc5 Kh6 3. Kb5 Kh5 4. Kb6 Kg4 5. Kb7 Kf4 6. Kb6 Kf5 7. Kb7 Rg3 8. Kb6 Kg6 9. Kb7 Kg7 10. Kb6 Kh8 11. Kb7 Kg8 12. Kb6 Kh8 13. Kb7 Kg8 14. Kb6 Kh8 15. Kb7 Kg8 16. Kb6 Kg7 17. Kb7 Kf6 18. Kb6 Kf7 19. Kb7 Kg6 20. Kb6 Kf6 21. Kb7 Ke6 22. Kb6 Ke7 23. Ka7 Kd8 24. Ka6 Kd7 25. Ka5 Kc8 26. Ka6 Kd8 27. Ka7 Ke8 28. Ka6 Kf7 29. Ka7 Ke6 30. Ka6 Kf6 31. Ka7 Kf7 32. Ka6 Kg6 33. Ka7 Kh6 34. Ka6 Kh7 35. Ka7 Kg8 36. Ka6 Kh8 37. Ka7 Kh7 38. Ka6 Kg8 39. Ka7 Kh8 40. Ka6 Kg8 41. Ka7 Kh8 42. Ka6 Kg8 43. Ka7 Kf8 44. Ka6 Kg8 45. Ka7 Kh8 46. Ka6 Kg8 47. Ka7 Kf7 48. Ka6 Ke8 49. Ka7 Kf8 50. Ka6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "5k2/1R6/8/8/1K6/2Q5/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Qd2 Ke8 2. Qf4 Kd8 3. Qe4 Kc8 4. Qd4 Kxb7 5. Qe5 Kb6 6. Qg7 Ka6 7. Qf8 Kb6 8. Qa8 Kc7 9. Qh1 Kb8 10. Qb7+ Kxb7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/R7/8/3K1r2/P7/8/8/4k3 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kc4 Kd2 2. Kb4 Kd1 3. Ra8 Kc1 4. Ra7 Kb2 5. Ra8 Ka1 6. Ra7 Kb1 7. Ra8 Ka1 8. Ra7 Ka2 9. Ra8 Kb1 10. Ra7 Kc1 11. Ra8 Kc2 12. Ra7 Kd3 13. Ra8 Ke4 14. Ra7 Kd4 15. Ra8 Kd5 16. Kb5 Ke6+ 17. Kb4 Kf6 18. Ra7 Kg6 19. Ra8 Kg7 20. Ra7+ Kf8 21. Ra8+ Kf7 22. Ra7+ Kg6 23. Ra8 Kg7 24. Ra7+ Kf8 25. Ra8+ Kf7 26. Ra7+ Ke8 27. Ra8+ Ke7 28. Ra7+ Kd6 29. Ra8 Kd5 30. Rf8 Kc6 31. Rg8 Kd6 32. Ra8 Kd5 33. Rf8 Ke6 34. Rg8 Ke5 35. Ra8 Kd4 36. Ra7 Kd3 37. Ra8 Kc2 38. Ra7 Kd2 39. Ra8 Kc2 40. Ra7 Kd2 41. Ra8 Kd3 42. Ra7 Kc2 43. Ra8 Kd1 44. Ra7 Kc1 45. Ra8 Kb1 46. Ra7 Kc1 47. Ra8 Kb1 48. Ra7 Kc2 49. Ra8 Kd1 50. Ra7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "4K3/8/2N5/2k1p3/8/6q1/8/6R1 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kd8 Qh2 2. Kc8 Qh3+ 3. Kb7 Qg4 4. Nd4 Qf4 5. Nb3+ Kc4 6. Nc1 Kc5 7. Ne2 Kb5 8. Nd4+ Ka4 9. Nb3 Qg4 10. Nd4 Qf4 11. Nb3 Kb4 12. Nc1 Qe4+ 13. Kb6 Qf4 14. Ne2 Qf5 15. Nd4 Qh7 16. Nf5 Qg8 17. Ne3 Qb8+ 18. Ka6 Kc3 19. Nc4 Kd4 20. Ka5 Qa7+ 21. Kb5 Qf7 22. Kb4 Qg6 23. Kb5 Qg7 24. Kb6 Qf6+ 25. Kb7 Qf7+ 26. Kb6 Qe8 27. Na5 Qf8 28. Kb7 Qf7+ 29. Kb6 Qg8 30. Kb7 Qb8+ 31. Ka6 Kd5 32. Nc4 Qc7 33. Nb2 e4 34. Kb5 Qb8+ 35. Ka5 Kd4 36. Ka6 Qb5+ 37. Ka7 Ke3 38. Ka8 Kf2 39. Ka7 Kf3 40. Ka8 Ke2 41. Nd3 Ke3 42. Ka7 Kd2 43. Ka8 Kc2 44. Nc1 Qc5 45. Kb8 Kc3 46. Kb7 Qa7+ 47. Kc8 e3 48. Kd8 Kd2 49. Ke8 Qd7+ 50. Kf8 Qe8+ 51. Kxe8 Kc2 52. Kf8 Kb2 53. Ke8 Ka1 54. Kd8 Kb2 55. Ke8 Kb1 56. Kd8 e2 57. Kc8 Ka1 58. Kc7 Kb1 59. Kc6 Kb2 60. Nxe2 Kc2 61. Kc7 Kd3 62. Nd4 Kc4 63. Nf5 Kb4 64. Ne3 Ka5 65. Nc4+ Kb4 66. Nb2 Ka5 67. Kc6 Kb4 68. Kc7 Kc3 69. Kc6 Kb3 70. Nd3 Kc4 71. Nb4 Kc3 72. Na2+ Kd2 73. Nc3 Kc2 74. Ne4 Kb3 75. Nc3 Kxc3 76. Kc7 Kd4 77. Kc6 Kd3 78. Kc7 Kc3 79. Kc6 Kb3 80. Kc7 Kc3 81. Kc6 Kd3 82. Kc7 Kc2 83. Kc6 Kc3 84. Kc7 Kc2 85. Kc6 Kc3 86. Kc7 Kc2 87. Kc6 Kd3 88. Kc7 Kc2 89. Kc6 Kb3 90. Kc7 Ka3 91. Kc6 Kb2 92. Kc7 Kc3 93. Kc6 Kb4 94. Kc7 Ka3 95. Kc6 Kb3 96. Kc7 Ka4 97. Kc6 Ka3 98. Kc5 Ka4 99. Kc6 Ka3 100. Kc5 Ka4 101. Kc6 Ka3 102. Kc5 Ka2 103. Kc4 Ka3 104. Kc5 Kb3 105. Kc6 Ka3 106. Kc5 Kb3 107. Kc6 Kc3 108. Kc7 Kd3 109. Kc6 Kc4 110. Kc7 Kd5 111. Kb7 Ke6 112. Kb6 Ke7 113. Ka7 Kd8 114. Ka6 Kc8 115. Ka5 Kd7 116. Ka6 Kc6 117. Ka5 Kc7 118. Ka6 Kc6 119. Ka5 Kb7 120. Ka4 Ka8 121. Ka5 Kb8 122. Ka4 Kc7 123. Ka3 Kc6 124. Ka4 Kc5 125. Ka3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/2R2p2/7k/3p4/8/2Q5/1b3K2 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kg2 Kg4 2. Kg1 Kg3 3. Qc3+ Kf4 4. Kh2 Kg5 5. Kh1 Kh4 6. Kg2 f5 7. Kg1 Kg4 8. Kh2 Kf4 9. Kh1 Kg4 10. Kg2 Kf4 11. Kg1 Ke4 12. Kh2 Kf4 13. Kh1 Ke4 14. Kg2 Kf4 15. Kg1 Ke4 16. Kh2 Kf4 17. Kh1 Ke4 18. Kg2 Kf4 19. Kg1 Kg4 20. Kh2 Kh4 21. Kh1 Kg4 22. Kg2 Kf4 23. Kg1 Kg4 24. Kh2 Kh4 25. Kh1 Kg4 26. Kg2 Kh4 27. Kg1 Ba2 28. Kh2 Kg4 29. Kh1 Kg5 30. Kg2 Kf4 31. Kg1 Ke4 32. Kh2 Kf4 33. Kh1 Ke4 34. Kg2 Ke5 35. Kg1 Kf4 36. Kh2 Ke4 37. Kh1 Kf4 38. Kg2 Kg4 39. Kg1 Kg5 40. Kh2 Kf4 41. Kh1 Ke4 42. Kg2 Ke5 43. Kg1 Kf4 44. Kh2 Ke4 45. Kh1 Kf4 46. Kg2 Ke4 47. Kg1 Ke5 48. Kh2 Kf4 49. Kh1 Kg4 50. Kg2 Kh4 51. Kg1 Kg4 52. Kh2 Kh4 53. Kh1 Kg4 54. Kg2 Kh4 55. Kg1 Kg4 56. Kh2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/8/6K1/5R2/k7/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kb2 2. Kf4 Kc2 3. Ke4 Kb1 4. Kd4 Kc2 5. Kd5 Kb2 6. Ke6 Ka1 7. Ke5 Ka2 8. Kd4 Ka1 9. Kd5 Ka2 10. Ke6 Kb1 11. Ke5 Ka1 12. Kd4 Kb1 13. Kd5 Ka1 14. Ke6 Ka2 15. Ke5 Kb2 16. Kd4 Kc1 17. Kd5 Kd2 18. Ke6 Ke1 19. Ke5 Kd2 20. Kd4 Kd1 21. Ke5 Ke2 22. Kd4 Kxf3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "4k3/8/1q6/8/7K/8/8/1q6 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1... Kd8 2. Kg4 Qe3 3. Kh4 Qf4+ 4. Kh5 Qbf5# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/3q4/1K6/8/4p3/7b/1k6/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kc2 2. Ka6 Bg4 3. Ka5 Qc8 4. Ka4 Qb8 5. Ka5 Kd1 6. Ka6 Qa8+ 7. Kb5 Qa7 8. Kb4 Qa8 9. Kb5 Qa7 10. Kb4 Qa5+ 11. Kb3 Qa2+ 12. Kxa2 e3 13. Ka3 Kc1 14. Ka4 Kb1 15. Ka5 Kc1 16. Ka6 Kc2 17. Ka7 Kc1 18. Ka6 Kc2 19. Ka7 Kb3 20. Ka6 Ka3 21. Ka7 Kb2 22. Ka6 Ka3 23. Ka7 Ka2 24. Ka6 Ka3 25. Ka7 Kb2 26. Ka6 Kc1 27. Ka7 Kb2 28. Ka6 Ka2 29. Ka7 Ka1 30. Ka6 Ka2 31. Ka7 Ka1 32. Ka6 Kb2 33. Ka7 Ka2 34. Ka6 Kb3 35. Ka7 Ka3 36. Ka6 Ka4 37. Ka7 Ka5 38. Kb7 Ka4 39. Kb6 Kb4 40. Kb7 Kc5 41. Kb8 Kd6 42. Ka7 Kd5 43. Ka6 Kc6 44. Ka5 Kd5 45. Ka6 Ke4 46. Ka7 Kd4 47. Ka6 Kd5 48. Ka7 Ke6 49. Ka6 Kd6 50. Ka7 Kd5 51. Ka6 Ke6 52. Ka7 Ke5 53. Ka6 Kf6 54. Ka7 Kf7 55. Ka6 Ke8 56. Ka7 Kf8 57. Ka6 Kg8 58. Ka7 Kh8 59. Ka6 Kg8 60. Ka7 Kg7 61. Ka6 Kg6 62. Ka7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/7K/3R3Q/3k4/7R/2P5/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Ke5 2. Rg4 Kf5 3. Kg8 Kxg4 4. Kf8 Kg3 5. Ke8 Kf3 6. Kd8 Ke4 7. Kc8 Ke5 8. Qh5+ Kxd6 9. Qg4 Kd5 10. Qf4 Ke6 11. Qe4+ Kf6 12. Qd4+ Kf5 13. Kb8 Kg6 14. Kb7 Kg5 15. Kb6 Kh6 16. Ka5 Kh5 17. Ka6 Kg5 18. Kb7 Kh6 19. Ka7 Kh5 20. Ka6 Kg6 21. Kb7 Kg5 22. Kb8 Kh6 23. Kb7 Kh7 24. Ka7 Kg6 25. Ka6 Kg5 26. Kb7 Kh6 27. Ka7 Kh5 28. Ka6 Kg5 29. Ka7 Kh6 30. Ka6 Kh7 31. Kb7 Kg8 32. Ka7 Kf8 33. Ka6 Kf7 34. Kb7 Ke7 35. Kb6 Kf8 36. Kb7 Ke8 37. Ka7 Ke7 38. Ka6 Kf8 39. Kb7 Kf7 40. Ka8 Ke8 41. Ka7 Kf8 42. Ka6 Kf7 43. Ka7 Kg6 44. Ka6 Kg5 45. Ka7 Kh6 46. Ka6 Kh5 47. Ka7 Kg6 48. Ka6 Kh6 49. Kb7 Kh7 50. Kb8 Kg8 51. Ka7 Kf8 52. Ka6 Kf7 53. Ka7 Ke6 54. Ka6 Ke7 55. Ka7 Kf8 56. Kb8 Kf7 57. Kc8 Ke6 58. Kb8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "3K4/5B2/r7/7B/1k3Qq1/8/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Ka5 2. Bxg4 Kb5 3. Qe4 Kc5 4. Qd4+ Kb5 5. Kc8 Ka5 6. Be8 Ra7 7. Kb8 Ka6 8. Kc8 Ka5 9. Kb8 Ka6 10. Kc8 Ka5 11. Kb8 Ka6 12. Qf6+ Ka5 13. Qf5+ Ka6 14. Qh7 Kb6 15. Qg8 Kc5 16. Qh8 Kc4 17. Qg8+ Kb4 18. Qh8 Ra1 19. Qg8 Ka5 20. Qh8 Ra3 21. Qg8 Kb4 22. Qh8 Ka5 23. Qg8 Kb6 24. Qh8 Rg3 25. Qg8 Ka6 26. Qh8 Ka5 27. Qg8 Kb4 28. Qh8 Ka3 29. Qg8 Kb2 30. Qh8+ Kc1 31. Qg8 Kd2 32. Qh8 Kc2 33. Qg8 Kb2 34. Qh8+ Kb3 35. Qg8+ Kb2 36. Qh8+ Ka2 37. Qg8+ Ka3 38. Qh8 Kb3 39. Qg8+ Kb4 40. Qh8 Kb3 41. Qg8+ Ka3 42. Qh8 Ka2 43. Qg8+ Ka3 44. Qh8 Kb4 45. Qg8 Ka3 46. Qh8 Kb4 47. Qg8 Ka3 48. Qh8 Kb4 49. Qg8 Ka5 50. Qh8 Kb4 51. Qg8 Ka5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "7K/4k3/8/8/8/4p3/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kg8 Kf6 2. Kf8 Kf5 3. Ke8 Kg4 4. Kd8 Kf4 5. Ke8 Kg4 6. Kd8 Kf4 7. Ke8 Kg4 8. Kd8 Kh4 9. Kc8 Kg4 10. Kc7 Kh4 11. Kc6 Kg4 12. Kc7 Kf4 13. Kc6 Kg4 14. Kc7 Kg5 15. Kc6 Kf4 16. Kc7 Kg4 17. Kc6 Kg3 18. Kc7 Kh2 19. Kc6 Kh3 20. Kc7 Kg4 21. Kc6 Kf4 22. Kc7 Kg4 23. Kc6 Kf4 24. Kc7 Kf5 25. Kc6 Kg6 26. Kc7 Kg7 27. Kc6 Kh6 28. Kc7 Kh5 29. Kc6 Kg4 30. Kc7 Kg5 31. Kc6 Kf6 32. Kc7 Kg6 33. Kc6 Kg5 34. Kc7 Kf4 35. Kc6 Kg4 36. Kc7 Kg5 37. Kc6 Kf4 38. Kc7 Kf5 39. Kc6 Kg6 40. Kc7 Kf6 41. Kb8 Kg6 42. Ka7 Kg5 43. Ka6 Kf6 44. Ka7 Ke6 45. Ka6 Kd6 46. Ka7 Ke6 47. Ka6 Kf6 48. Ka7 Kf7 49. Ka6 Kg6 50. Ka7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/k2K4/7n/8/6P1/8/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kc8 Nxg4 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "4q3/8/8/4K3/8/8/2Pk4/7r w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kd4 Qf8 2. c3 Qf7 3. c4 Qe8 4. Kc5 Qe7+ 5. Kc6 Qd8 6. c5 Qe8+ 7. Kc7 Qf8 8. c6 Qg8 9. Kb7 Qb8+ 10. Kxb8 Kc2 11. c7 Kd1 12. c8=Q Kd2 13. Qd8+ Kc1 14. Qd7 Kc2 15. Qc8+ Kb1 16. Ka7 Ka1 17. Qb8 Ka2 18. Ka6 Ka1 19. Qa7 Kb1 20. Qa8 Kc2 21. Ka7 Kb2 22. Qb8+ Kc2 23. Qc8+ Kb1 24. Qb8+ Ka2 25. Qc8 Kb3 26. Qb8+ Ka3 27. Qa8 Kb3 28. Qb8+ Kc2 29. Qc8+ Kb2 30. Qb8+ Ka1 31. Qc8 Ka2 32. Qb8 Ka1 33. Qc8 Rh6 34. Qb8 Rh7+ 35. Qb7 Ka2 36. Qc7 Ka1 37. Kb8 Kb1 38. Ka7 Ka1 39. Qd7 Ka2 40. Kb8 Kb1 41. Qc8 Ka1 42. Ka8 Kb2 43. Qc7 Ka3 44. Qb8 Ka4 45. Qa7+ Kb3 46. Qb8+ Ka3 47. Qa7+ Kb4 48. Qb8+ Kc3 49. Qa7 Kd2 50. Qb8 Kd1 51. Qa7 Kd2 52. Qb8 Kd1 53. Qa7 Kc1 54. Qb8 Kd1 55. Qa7 Kd2 56. Qb8 Kd1 57. Qa7 Ke2 58. Qb8 Ke1 59. Qa7 Kd2 60. Qb8 Kd3 61. Qa7 Ke2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/1R6/k7/8/5r2/8/1bK3B1/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kb1 Re4 2. Rb6+ Kxb6 3. Kxb2 Ka6 4. Kc1 Ka7 5. Kd2 Re3 6. Kc2 Kb6 7. Kb2 Kc7 8. Kc1 Kb8 9. Kd2 Kc8 10. Kc1 Kd8 11. Kd2 Ke8 12. Kc1 Kf8 13. Kd2 Ke8 14. Kxe3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "1N6/8/6pR/8/8/6N1/1K1k4/1q6 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1. Ka3 Kd3 2. Ka4 Kd4 3. Ka5 Kd5 4. Ka4 Kc4 5. Ka3 Qa1# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/5P2/5K2/8/8/k7/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kb2 2. Ke4 Kb1 3. Kd4 Kc1 4. Kd5 Kb1 5. Kc4 Ka2 6. Kc5 Kb1 7. f7 Ka1 8. Kc4 Kb2 9. Kc5 Ka3 10. Kc6 Kb4 11. Kc7 Kc5 12. Kd7 Kc4 13. Kc8 Kd3 14. Kc7 Ke2 15. Kb7 Ke3 16. Kb6 Ke2 17. Ka6 Kf1 18. Ka5 Ke2 19. Ka6 Ke3 20. Ka7 Kf4 21. Ka6 Ke4 22. Ka7 Ke3 23. Ka6 Kf2 24. Ka7 Kf3 25. Ka6 Kg2 26. Ka7 Kf2 27. Ka6 Kf3 28. Ka7 Kg2 29. Ka6 Kh2 30. Ka7 Kh3 31. Ka6 Kg4 32. Ka7 Kf4 33. Ka6 Kf3 34. Ka7 Ke4 35. Ka6 Ke5 36. Ka7 Kd4 37. Ka6 Kc3 38. Ka7 Kb3 39. Ka6 Kc4 40. Ka7 Kb5 41. Ka8 Ka5 42. Ka7 Kb5 43. Ka8 Ka6 44. Kb8 Ka5 45. Ka7 Kb5 46. Ka8 Ka5 47. Ka7 Ka4 48. Ka6 Ka3 49. Ka7 Kb2 50. Ka6 Ka2 51. Ka7 Ka1 52. Ka6 Ka2 53. Ka7 Ka3 54. Ka6 Ka2 55. Ka7 Ka1 56. Ka6 Kb1 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/2k3R1/K7/8/8/5N2/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kc6 2. Nd4+ Kc5 3. Kb7 Kc4 4. Kb6 Kc3 5. Nb3 Kc2 6. Nd4+ Kb2 7. Ka6 Ka3 8. Kb7 Ka2 9. Nb3 Kb2 10. Nc1 Kc2 11. Kb6 Kxc1 12. Ka6 Kc2 13. Ka7 Kd1 14. Ka6 Kd2 15. Ka7 Kd3 16. Ka6 Kd4 17. Ka7 Kc5 18. Ka6 Kd5 19. Ka7 Kc4 20. Ka6 Kd4 21. Ka7 Kd5 22. Ka6 Ke4 23. Ka7 Ke3 24. Ka6 Kf2 25. Ka7 Ke2 26. Ka6 Ke3 27. Ka7 Kf2 28. Ka6 Ke2 29. Ka7 Ke1 30. Ka6 Kf2 31. Ka7 Kf1 32. Ka6 Ke2 33. Ka7 Ke3 34. Ka6 Kf4 35. Ka7 Ke4 36. Ka6 Kd4 37. Ka7 Kc5 38. Ka6 Kb4 39. Ka7 Ka3 40. Ka6 Ka4 41. Ka7 Ka5 42. Kb7 Kb5 43. Ka7 Ka5 44. Kb7 Kb5 45. Ka7 Kb4 46. Ka6 Kc4 47. Ka7 Kd3 48. Ka6 Kc4 49. Ka7 Kb4 50. Ka6 Ka3 51. Ka7 Kb3 52. Ka6 Kc3 53. Ka7 Kd4 54. Ka6 Kd3 55. Ka7 Ke4 56. Ka6 Kf4 57. Ka7 Kf3 58. Ka6 Ke4 59. Ka7 Ke5 60. Ka6 Kf4 61. Ka7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "1Kb5/8/8/6r1/p7/8/8/3k4 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... a3 2. Ka7 Ba6 3. Kb8 a2 4. Ka7 Bf1 5. Kb7 Kc2 6. Kb6 Bh3 7. Kb7 Bg4 8. Kb6 Kc1 9. Kb7 Kb1 10. Kb6 Kc2 11. Kb7 Kd3 12. Kb6 a1=Q 13. Kb7 Qa2 14. Kb6 Qa1 15. Kb7 Kd4 16. Kb6 Kc4 17. Kb7 Kd4 18. Kb6 Kc4 19. Kb7 Qa8+ 20. Kb6 Kc3 21. Kc7 Kb2 22. Kd6 Qa7 23. Kc6 Qc7+ 24. Kxc7 Ka1 25. Kc6 Kb2 26. Kc7 Ka2 27. Kc6 Kb3 28. Kc7 Ka3 29. Kc6 Ka4 30. Kc7 Ka3 31. Kc6 Kb4 32. Kc7 Ka4 33. Kc6 Ka3 34. Kc7 Ka4 35. Kc6 Ka5 36. Kc7 Ka6 37. Kc6 Ka7 38. Kc7 Ka6 39. Kc6 Ka7 40. Kc7 Ka8 41. Kc6 Kb8 42. Kb6 Ka8 43. Ka6 Kb8 44. Kb6 Kc8 45. Ka6 Kd8 46. Ka7 Kc8 47. Ka6 Kd8 48. Ka7 Ke8 49. Ka6 Kd8 50. Ka7 Ke8 51. Ka6 Kd8 52. Ka7 Ke8 53. Ka6 Kf8 54. Ka7 Ke8 55. Ka6 Kd8 56. Ka7 Kd7 57. Ka6 Kc6 58. Ka7 Kc7 59. Ka6 Kd8 60. Ka7 Kc8 61. Ka6 Kd8 62. Ka7 Kc8 63. Ka6 Kd7 64. Ka7 Ke6 65. Ka6 Kd6 66. Ka7 Kd5 67. Ka6 Ke6 68. Ka7 Ke5 69. Ka6 Kd4 70. Ka7 Kd5 71. Ka6 Ke4 72. Ka7 Kd4 73. Ka6 Kc4 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/3q4/1N6/4b3/4K3/7n/k7 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kb1 2. Na3+ Kb2 3. Kf2 Qd5 4. Nb1 Qc4 5. Nd2 Qd4+ 6. Ke2 Qd3+ 7. Ke1 Qxd2+ 8. Kxd2 Ka3 9. Kd1 Kb3 10. Ke2 Ng4 11. Ke1 Kb4 12. Kd2 Nf6 13. Kd1 Ka5 14. Kd2 Ka4 15. Kc1 Kb5 16. Kd1 Ka6 17. Kd2 Ka7 18. Kd1 Ka8 19. Ke2 Ka7 20. Ke1 Ka6 21. Kf2 Ka7 22. Kf1 Kb8 23. Ke2 Kb7 24. Ke1 Kc6 25. Kf2 Kb6 26. Kf1 Ka6 27. Ke2 Kb7 28. Ke1 Kc6 29. Kf2 Kb6 30. Kf1 Kb7 31. Ke2 Ka7 32. Ke1 Kb8 33. Kf2 Kc7 34. Kf1 Nh5 35. Ke2 Kb8 36. Ke1 Ka7 37. Kf2 Ka8 38. Kf1 Kb7 39. Ke2 Kc8 40. Ke1 Kc7 41. Kf2 Kc6 42. Kf1 Kd5 43. Ke2 Kc4 44. Ke1 Kb4 45. Kf2 Ka4 46. Kf1 Kb4 47. Ke2 Kc4 48. Ke1 Kb4 49. Kf2 Ka5 50. Kf1 Ka6 51. Ke2 Kb7 52. Ke1 Ka6 53. Kf2 Ka7 54. Kf1 Ng3+ 55. Kg1 Nf1 56. Kf2 Kb7 57. Kxf1 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "5r2/6k1/8/2B1b1q1/8/7K/7B/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1... Rh8# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/K7/1q6/8/1k6/8/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kxb6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "2q5/8/K1r5/3k4/8/8/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1. Ka5 Rc7 2. Ka4 Kc6 3. Ka5 Qb8 4. Ka4 Qc8 5. Ka3 Qd8 6. Ka4 Qe8 7. Ka5 Qf8 8. Ka4 Rb7 9. Ka5 Qa8# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/2kq1K2/8/8/8/8/3B3R w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kf5 Qd7+ 2. Ke4 Qe8+ 3. Kd4 Qf8 4. Kd3 Qf7 5. Ke2 Qe8+ 6. Kf2 Qe7 7. Kf1 Kc7 8. Kg2 Kd8 9. Kg1 Qf8 10. Kh2 Qf7 11. Kh3 Qg6 12. Be2 Qf6 13. Kg4 Qe6+ 14. Kf4 Qe7 15. Kg4 Qf6 16. Kg3 Qf7 17. Kh2 Qe8 18. Kh3 Qf8 19. Kg4 Kd7 20. Kh4 Ke8 21. Kg4 Qf7 22. Kh4 Qg8 23. Bd3 Kf8 24. Be4 Kf7 25. Kh3 Qh8+ 26. Kg4 Kg8 27. Kf4 Kg7 28. Kg4 Kf8 29. Kf4 Ke8 30. Kg4 Kd8 31. Kf4 Qg8 32. Kf5 Qh8 33. Ke6 Qg8+ 34. Ke5 Kd7 35. Kd4 Kd6 36. Bg6 Kd7 37. Ke3 Kc6 38. Kd4 Kc7 39. Kd3 Kb7 40. Kd4 Qh8+ 41. Kd5 Qg8+ 42. Ke4 Qc8 43. Kd4 Qd8+ 44. Ke3 Qe8+ 45. Kd4 Qe2 46. Kd5 Qe1 47. Kc4 Qf2 48. Kd3 Qf1+ 49. Kd4 Qh3 50. Kd5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "1Q1B4/3R4/8/7n/2k5/8/8/6K1 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kh2 Kc3 2. Kh1 Kc2 3. Kg2 Kc3 4. Kg1 Kc4 5. Kh2 Kc5 6. Kh1 Kc4 7. Kg2 Kc3 8. Kg1 Kc4 9. Kh2 Kc3 10. Kh1 Kc2 11. Kg2 Kc3 12. Kg1 Kc2 13. Kh2 Kc1 14. Kh1 Kc2 15. Kg2 Kc1 16. Kg1 Kc2 17. Kh2 Kc1 18. Kh1 Kc2 19. Kg2 Kc3 20. Kg1 Kc2 21. Kh2 Kc3 22. Kh1 Kc4 23. Kg2 Kc3 24. Kg1 Kc4 25. Kh2 Kc5 26. Kh1 Kc4 27. Kg2 Kc3 28. Kg1 Kc2 29. Kh2 Kc1 30. Kh1 Kc2 31. Kg2 Kc3 32. Kg1 Kc2 33. Kh2 Kc3 34. Kh1 Kc4 35. Kg2 Kc3 36. Kg1 Kc4 37. Qa7 Kc3 38. Kf2 Kb2 39. Kf1 Kc1 40. Kg2 Kc2 41. Kg1 Kb2 42. Kh2 Kb1 43. Kh1 Kc2 44. Kg2 Kb2 45. Kg1 Kc1 46. Kh2 Kb2 47. Kh1 Kb1 48. Kg2 Kb2 49. Kg1 Kc3 50. Kh2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "1q6/p7/8/2P2KP1/8/3k3p/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. c6 Kc2 2. Ke4 Qb5 3. Kd4 Qb4+ 4. Kd5 Qb2 5. Ke6 Qc1 6. Ke5 Kd2 7. Kd4 Kc2 8. Kd5 Qd1+ 9. Ke6 Qe2+ 10. Kd6 a6 11. Kd5 Qc4+ 12. Kxc4 Kd1 13. c7 Kd2 14. c8=Q Ke2 15. Qb8 Kd2 16. Qa7 Kc2 17. Qa8 Kd2 18. Qa7 Kc2 19. Qa8 Kc1 20. Qa7 Kb2 21. Qa8 a5 22. Qa7 Ka3 23. Qa8 Kb2 24. Qa7 Kc2 25. Qa8 Kb2 26. Qa7 a4 27. Qa8 Kb1 28. Qh1+ Kc2 29. Qb7 Kd2 30. Qa6 Kc1 31. Qb7 Kd2 32. Kc5 Ke1 33. Kc4 Kd1 34. Qa6 Ke2 35. Qb7 Kd2 36. Kc5 Kc3 37. Kc6 Kc4 38. Kc7 Kc3 39. Kc6 Kd2 40. Kc7 Ke3 41. Kc6 Kf2 42. Kc7 Kf1 43. Kc6 Kg2 44. Kc7+ Kg1 45. Kc6 Kf2 46. Kc7 a3 47. Kc6 Kg1 48. Kc7 Kh2 49. Kc6 Kh1 50. Kc7+ Kg1 51. Kc6 a2 52. Kc7 Kf2 53. Kc6 Kg2 54. Kc7+ Kg1 55. Kc6 Kh2 56. Kc7 a1=Q 57. Kc6 Qb1 58. Kc7 Qb2 59. Kc6 Qa3 60. Kc7 Qb4 61. Kc6 Kh1 62. Kc7+ Qxb7+ 63. Kd6 Kg2 64. Ke6 Qb6+ 65. Ke5 Kg3 66. Kd5 Kh2 67. Kc4 Kh1 68. Kd3 Kg2 69. Ke4 Kg3 70. Ke5 Kh2 71. Kf4 Kg2 72. Ke4 Kh2 73. Kf4 Kh1 74. Ke4 Kg2 75. Ke5 Kg1 76. Kf4 Kf2 77. Ke4 Kf1 78. Ke5 Kg2 79. Kf4 Kf2 80. Ke4 Kg2 81. Ke5 Kh2 82. Kf4 Kh1 83. Ke4 Kg2 84. Ke5 Kg3 85. Kd5 Kf4 86. Kc4 Ke4 87. Kc3 Ke3 88. Kc2 Kf2 89. Kc3 Kf3 90. Kc4 Ke4 91. Kc3 Ke5 92. Kc2 Qc7+ 93. Kb1 Kd4 94. Ka2 Kd5 95. Ka3 Qc6 96. Ka2 Qd7 97. Ka3 Qg4 98. Ka2 Qf4 99. Ka3 Ke6 100. Ka2 Ke5 101. Ka3 Qf3+ 102. Ka4 Qg2 103. Ka5 Kd4 104. Ka6 Kc4 105. Ka7 Qg1+ 106. Ka6 Qh2 107. Ka7 Qd2 108. Ka6 Qd3 109. Ka7 Kc3 110. Ka8 Qc4 111. Ka7 Qd5 112. Ka6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/4k3/8/8/8/4K3/2R5/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Kd8 2. Kd4 Kd7 3. Ke5 Kd8 4. Kd4 Ke8 5. Ke5 Kf8 6. Kd4 Kg8 7. Kc4 Kg7 8. Rc3 Kh8 9. Rc2 Kg8 10. Rc3 Kg7 11. Kc5 Kh6 12. Rc4 Kh7 13. Rc3 Kg8 14. Rc4 Kf8 15. Rc3 Kg8 16. Rc4 Kg7 17. Rc3 Kh8 18. Rc4 Kg8 19. Rc3 Kh8 20. Rc4 Kg8 21. Rc3 Kf8 22. Rc4 Kg8 23. Rc3 Kf8 24. Rc4 Kg7 25. Rc3 Kh8 26. Rc4 Kg8 27. Rc3 Kf8 28. Rc4 Ke8 29. Rc3 Kf8 30. Rc4 Kg8 31. Rc3 Kf8 32. Rc4 Kf7 33. Rd4 Kg8 34. Rd5 Kg7 35. Re5 Kh8 36. Kc6 Kh7 37. Kc5 Kg8 38. Kc6 Kf8 39. Kc5 Kf7 40. Kd4 Kg6 41. Kc4 Kf6 42. Kc5 Kxe5 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "5B2/8/8/P5K1/8/5k2/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Ke4 2. a6 Ke5 3. Kh6 Kf4 4. a7 Kf5 5. a8=Q Ke5 6. Qh1 Kd4 7. Qg2 Ke5 8. Qg1 Kf4 9. Qh2+ Kf5 10. Qh1 Ke6 11. Qg2 Kf6 12. Qg1 Ke6 13. Kh5 Ke5 14. Kg4 Kf6 15. Kf4 Kf7 16. Ke4 Ke8 17. Kd4 Kxf8 18. Kd5 Kf7 19. Kc4 Ke6 20. Qc5 Kf6 21. Kb4 Kf7 22. Qe7+ Kxe7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "2r5/8/8/R7/8/8/3K4/1k5n b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1... Rd8+ 2. Ke2 Kc2 3. Ke1 Kb2 4. Ra6 Kb1 5. Ra7 Kb2 6. Ra8 Kc1 7. Ra7 Kb1 8. Ra8 Kc1 9. Ra7 Re8+ 10. Re7 Kc2 11. Kf1 Kd3 12. Kg2 Kc2 13. Kg1 Kc1 14. Kh2 Kb1 15. Kxh1 Kc2 16. Kg2 Kb2 17. Kg1 Kc2 18. Kh2 Rf8 19. Kh1 Kd3 20. Kg2 Ra8 21. Kg1 Ra3 22. Kh2 Kd2 23. Kh1 Kc3 24. Kg2 Ra1 25. Kg3 Kd2 26. Kh2 Kd3 27. Kh3 Kd2 28. Kg4 Kd1 29. Kf4 Ra2 30. Ke4 Kd2 31. Kf4 Kc3 32. Ke4 Kc2 33. Kf4 Rb2 34. Kg4 Kc1 35. Kf4 Kc2 36. Kg4 Kd3 37. Kf4 Kd2 38. Kg4 Kd1 39. Kf4 Kc2 40. Ke4 Kc1 41. Kd4 Kc2 42. Kd5 Kd1 43. Kc4 Rb3 44. Kd5 Rb4 45. Ke6 Ke1 46. Ke5 Rb3 47. Kd4+ Kd1 48. Kd5 Kc2 49. Ke6 Kc3 50. Ke5 Kb2 51. Kd4 Kc2 52. Kd5 Kd3 53. Ke6 Kd4 54. Kd6 Kc4 55. Kd7 Kd5 56. Kc8 Kd4 57. Kc7 Kd5 58. Kd8 Kc6 59. Kc8 Kd6 60. Kd8 Rb8# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "7K/8/1p6/2q4B/8/3R3k/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kg2 2. Kg8 Kf2 3. Kh8 Qd5 4. Bg4 Qc4 5. Rd4 Kf1 6. Rd5 Qb4 7. Kg8 Qc3 8. Kf8 Qc2 9. Ke8 Qc3 10. Kd8 Kg2 11. Ke8 Kg3 12. Kd8 b5 13. Ke8 Kf4 14. Kd8 Qb2 15. Kc8 Kxg4 16. Kb8 Kf4 17. Ka7 Ke4 18. Kb8 Qc2 19. Ka7 Qd1 20. Kb8 Ke3 21. Ka7 Kf4 22. Kb8 b4 23. Ka7 Qc1 24. Kb8 Ke4 25. Ka7 Ke3 26. Kb8 Kf4 27. Ka7 Kf3 28. Kb8 Kg2 29. Ka7 b3 30. Kb8 Qb2 31. Ka7 Qc2 32. Kb8 Kg3 33. Ka7 Kh2 34. Kb8 Kh3 35. Ka7 Kg4 36. Kb8 Qb2 37. Ka7 Qa2+ 38. Kb8 Kf4 39. Kc8 Kg3 40. Kb8 Qa1 41. Kc8 Kf4 42. Kb8 Kf3 43. Kc8 Qa5 44. Kb8 Kg2 45. Kc8 Kg1 46. Kb7 Kf2 47. Kb8 Qa4 48. Kb7 Qa5 49. Kb8 Kf1 50. Kb7 Qb6+ 51. Kc8 Qa6+ 52. Kb8 Qa7+ 53. Kxa7 Ke2 54. Kb8 Ke3 55. Ka7 b2 56. Kb8 Kf4 57. Ka7 Ke4 58. Kb8 Kf4 59. Ka7 Kg4 60. Kb8 b1=Q+ 61. Ka7 Kg3 62. Ka6 Qa2+ 63. Kb7 Kh2 64. Kb8 Kh1 65. Kb7 Qb3+ 66. Ka6 Qc2 67. Kb7 Kg2 68. Kb8 Kg1 69. Ka7 Kf2 70. Kb8 Kg2 71. Ka7 Kf2 72. Kb8 Qb1+ 73. Ka7 Ke2 74. Ka8 Qb2 75. Ka7 Qb3 76. Ka8 Qb4 77. Ka7 Qb3 78. Ka8 Qb2 79. Ka7 Qa2+ 80. Kb8 Kf2 81. Kc8 Kf1 82. Kb8 Ke2 83. Kc8 Qa8+ 84. Kd7 Ke1 85. Ke6 Kf2 86. Ke5 Kf1 87. Kd4 Ke2 88. Kc4 Ke1 89. Re5+ Kd2 90. Kc5 Qa4 91. Kd5 Kd1 92. Ke6 Qa3 93. Kf6 Kd2 94. Kf7 Kd1 95. Ke8 Kc2 96. Kd8 Kd1 97. Kc8 Kc1 98. Kd8 Kc2 99. Kc8 Kb1 100. Kd8 Qg3 101. Kc8 Qh2 102. Kd8 Ka2 103. Kc8 Qh3+ 104. Kb8 Kb2 105. Kb7 Qg4 106. Kb8 Qa4 107. Kb7 Qc2 108. Kb8 Ka2 109. Kb7 Qb2+ 110. Ka7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/3p4/B4r2/5Q2/4Kp2/1k6/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kc2 2. Kd4 Kb3 3. Qe4 Ka3 4. Qe3+ Ka4 5. Qf2 Ka3 6. Qf1 Kb3 7. Qh3 Kb2 8. Qg4 Ka3 9. Qf4 Ka2 10. Qe4 Ka1 11. Qf4 Kb1 12. Qe4+ Ka1 13. Qe5 Kb2 14. Qg7 Ka3 15. Qf8 Ka2 16. Qa8 Kb1 17. Bb6 Kc1 18. Qa7 Kb2 19. Qa8 Kc1 20. Qa7 Kd2 21. Qa8 Kc2 22. Qa7 Kb3 23. Ke4 Kc2 24. Kd4 Kc1 25. Qa8 Kb1 26. Qa7 Kc1 27. Qa8 Kc2 28. Qa7 Kd2 29. Qa8 Kc2 30. Qa7 Kd1 31. Qa8 Ke2 32. Qa7 Kf2 33. Bc5 Ke2 34. Kc3 Ke1 35. Qa8 Kf1 36. Qa2 f2 37. Qe6 Kg2 38. Qe5 Kg1 39. Qg7+ Kh2 40. Qf8 Kh3 41. Qa8 Kg4 42. Qh1 Kg5 43. Qb7 Kh6 44. Qa6 Kh5 45. Bd4 Kg4 46. Bf6 Kg3 47. Kb3 Kh2 48. Kb2 Kh3 49. Kb3 Kg4 50. Kb4 Rxf6 51. Kb5 Kf4 52. Kc4 Kf5 53. Kd3 Kg6 54. Kd4 Kg7 55. Kd3 Kh6 56. Kd4 Kh7 57. Kc4 Kg8 58. Kd3 Kg7 59. Ke2 Kh6 60. Ke3 Kh7 61. Kd4 Kg8 62. Kc4 Kf8 63. Kd3 d5 64. Kd4 f1=Q 65. Kxd5 Kg8 66. Kd4 Kh8 67. Kc5 Qh1 68. Kc4 Rf7 69. Kd3 Kg8 70. Kd4 Kh8 71. Kc4 Kg8 72. Kd3 Kh8 73. Kd4 Qg2 74. Kd3 Kg8 75. Kd4 Kg7 76. Kd3 Qf2 77. Ke4 Qf3+ 78. Kd4 Qb7 79. Kd3 Kf8 80. Qa7 Kg8 81. Qa8+ Kg7 82. Qxb7 Kh6 83. Qa6+ Kh7 84. Qb7 Kg6 85. Qa6+ Kg7 86. Qb7 Kh6 87. Qa6+ Kh7 88. Qb7 Kg8 89. Qa6 Kf8 90. Qb7 Ke8 91. Qa6 Kf8 92. Qb7 Kg8 93. Qa6 Kf8 94. Qb7 Kg8 95. Qa6 Kh8 96. Qa5 Kg8 97. Kd4 Kf8 98. Kd3 Ke8 99. Kd4 Kf8 100. Kd3 Kg8 101. Kd4 Kg7 102. Kd3 Kf8 103. Kd4 Ke8 104. Kd3 Kf8 105. Kd4 Ke8 106. Kd3 Kf8 107. Kd4 Ke8 108. Kd5 Kf8 109. Kc4 Kg8 110. Kd3 Kg7 111. Kd4 Kh6 112. Kc4 Kh7 113. Kd3 Kg8 114. Kd4 Kg7 115. Kd3 Kf8 116. Kd4 Kg8 117. Kd3 Kg7 118. Kd4 Kh6 119. Kd5 Kh7 120. Kc4 Kg8 121. Kc5 Kh8 122. Kd4 Kg8 123. Kd5 Kh8 124. Ke6 Kg8 125. Ke5 Kh8 126. Kd4 Kg8 127. Kd5 Kh8 128. Ke6 Kg8 129. Ke5 Kf8 130. Kd4 Ke8 131. Kd5 Kf8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "5K2/8/8/8/2k5/5P2/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Ke8 Kb4 2. Kd8 Kc3 3. Ke8 Kb3 4. Kd8 Ka4 5. Ke8 Kb3 6. Kd8 Kc3 7. Ke8 Kd3 8. Kd8 Kc4 9. Ke8 Kb4 10. Kd8 Kc4 11. Ke8 Kd4 12. Kd8 Kc5 13. Ke8 Kb6 14. Kd8 Ka7 15. Kc8 Kb6 16. Kd8 Kc6 17. Ke8 Kc7 18. Kf8 Kc8 19. Ke8 Kb7 20. Kd8 Kb8 21. Ke8 Kc7 22. Kf8 Kb7 23. Ke8 Kb6 24. Kd8 Ka6 25. Kc8 Kb6 26. Kd8 Kc6 27. Kc8 Kb6 28. Kb8 Ka6 29. Kc8 Ka5 30. Kb8 Kb4 31. Kb7 Ka4 32. Kb6 Kb4 33. Kc6 Kc3 34. Kc7 Kb4 35. Kc6 Kb3 36. Kc7 Ka3 37. Kc6 Kb3 38. Kc7 Ka4 39. Kc6 Kb4 40. Kc7 Ka4 41. Kc6 Kb4 42. Kc7 Kb5 43. Kc8 Ka5 44. Kb8 Kb4 45. Kb7 Ka4 46. Kb6 Ka3 47. Kb7 Ka4 48. Kb6 Kb3 49. Kb7 Kc3 50. Kb6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "1RK5/8/8/2P5/8/8/8/3k4 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kb7 Kd2 2. c6 Ke2 3. c7 Ke1 4. c8=Q Kf2 5. Qd8 Kf1 6. Qe8 Kg2 7. Qd8 Kg1 8. Qc8 Kf2 9. Qd8 Kf3 10. Qc8 Kg2 11. Qd8 Kf2 12. Qc8 Kf3 13. Qd8 Kg2 14. Qc8 Kf2 15. Qc7 Kf1 16. Qd7 Kg2 17. Qc8 Kg3 18. Qd8 Kf4 19. Qe8 Kg4 20. Qd8 Kg3 21. Qc8 Kh2 22. Qc7+ Kh3 23. Qd7+ Kg2 24. Qc8 Kh2 25. Qd8 Kh1 26. Qe8 Kg2 27. Qd8 Kh2 28. Qc8 Kh1 29. Qd8 Kg2 30. Qe8 Kg1 31. Qd8 Kh2 32. Qc8 Kh1 33. Qd8 Kg2 34. Qe8 Kh2 35. Qd8 Kh3 36. Qc8+ Kg2 37. Qd8 Kf2 38. Qe8 Kf1 39. Qd8 Ke2 40. Qc8 Kd2 41. Qc7 Ke2 42. Qd7 Kf2 43. Qc8 Kf1 44. Qd8 Ke2 45. Qe8+ Kd2 46. Qd8+ Ke3 47. Qc8 Kf2 48. Qd8 Ke2 49. Qe8+ Kf2 50. Qd8 Kg2 51. Qc8 Kf2 52. Qd8 Ke2 53. Qe8+ Kd2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "8/8/8/8/2pb1k2/1K6/8/7R w - - 0 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1. Ka3 Ke4 2. Ka4 Ke3 3. Ka3 Kf2 4. Ka4 c3 5. Ka5 Ke2 6. Ka6 Be3 7. Ka5 Kd2 8. Ka6 Bg5 9. Ka7 Bh6 10. Ka6 Kd3 11. Ka7 Kd4 12. Ka6 Kd3 13. Ka7 Kd4 14. Ka6 Ke3 15. Ka7 Kd2 16. Ka6 Kc2 17. Ka7 Kb2 18. Ka6 Kc2 19. Ka7 Kb2 20. Ka6 Ka2 21. Ka7 Kb2 22. Ka6 Ka3 23. Ka7 c2 24. Ka6 Kb3 25. Ka7 Kb4 26. Ka6 Kc5 27. Kb7 Kd4 28. Kb6 Ke4 29. Kc6 c1=Q+ 30. Kb6 Kd4 31. Ka6 Qc6+ 32. Ka5 Kc4 33. Re1 Qb5# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/2P5/6N1/2K5/8/8/8/N4B1k w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Nh4 Kg1 2. Bh3 Kf2 3. c8=Q Ke2 4. Bg4+ Kd2 5. Qb8 Ke3 6. Qa7 Kd2 7. Qb8 Kd3 8. Qa7 Ke3 9. Qb8 Kd3 10. Qa7 Kd2 11. Qb8 Ke3 12. Qa7 Kf2 13. Qb8 Kf1 14. Qa7 Ke1 15. Qb8 Kd2 16. Qa7 Ke3 17. Qb8 Kd3 18. Qa7 Ke3 19. Qb8 Kf2 20. Qa7 Kg1 21. Qb8 Kf2 22. Qa7 Kf1 23. Qb8 Ke1 24. Qa7 Kf2 25. Qb8 Kg1 26. Qa7 Kh2 27. Qb8+ Kh1 28. Qa7 Kg1 29. Qb8 Kf2 30. Qa7 Kf1 31. Qb8 Ke1 32. Qa7 Kf2 33. Qb8 Kf1 34. Qa7 Ke1 35. Qb8 Kd2 36. Qa7 Ke1 37. Qb8 Kf2 38. Qa7 Kf1 39. Qa8 Ke1 40. Qh1+ Kf2 41. Qb7 Kf1 42. Qa6+ Kg1 43. Qc4 Kf2 44. Qd5 Kf1 45. Qf7+ Ke1 46. Qe8+ Kf1 47. Qd8 Ke1 48. Qc8 Kf2 49. Qb8 Kf1 50. Qa7 Ke1 51. Qb8 Kd2 52. Qa7 Kc1 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "3n3k/1r1Q4/4R2K/8/4p3/8/8/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kh5 Rb6 2. Re5 Kg8 3. Kg4 Rc6 4. Kf4 Rc5 5. Kxe4 Kf8 6. Kd4 Kg8 7. Qc8 Kf8 8. Qa8 Kf7 9. Qh1 Rc4+ 10. Ke3 Kg8 11. Kf2 Rc3 12. Kf1 Kf8 13. Qg2 Kf7 14. Qg1 Rc2 15. Qh2 Kg8 16. Qh1 Rg2 17. Qxg2+ Kf8 18. Qg1 Kf7 19. Qh2 Kg6 20. Qh1 Kf6 21. Qg2 Nb7 22. Qg1 Kf7 23. Qh2 Kg8 24. Qh1 Kf8 25. Qg2 Kf7 26. Qg1 Na5 27. Qh2 Kg8 28. Qh1 Kf8 29. Qg2 Kf7 30. Qg1 Nb7 31. Qh2 Kg6 32. Qh1 Kg7 33. Qg2+ Kh6 34. Qg1 Kh7 35. Qh2+ Kg8 36. Qh1 Kf8 37. Qg2 Kf7 38. Qg1 Nc5 39. Qh2 Kg8 40. Qh1 Kf8 41. Qg2 Ne4 42. Qg1 Kf7 43. Qh2 Kg6 44. Qh1 Kf6 45. Qg2 Kf7 46. Qg1 Kf6 47. Qh2 Kf7 48. Qh1 Kg6 49. Qg2+ Kh6 50. Qg1 Kh7 51. Qh2+ Kg8 52. Qh1 Kg7 53. Qg2+ Kf8 54. Qg1 Kf7 55. Qh2 Kg8 56. Qh1 Kf8 57. Qg2 Kf7 58. Qg1 Kf6 59. Qh2 Kf7 60. Qh1 Kg6 61. Qg2+ Kh6 62. Qg1 Kh7 63. Qh2+ Kg8 64. Qh1 Kf8 65. Qg2 Kf7 66. Qg1 Kf6 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/3k4/8/4K3/8/8/8/5r2 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kc8 2. Kd4 Kd8 3. Kd5 Ke8 4. Kc4 Kf8 5. Kc5 Kf7 6. Kc4 Ke8 7. Kc5 Ke7 8. Kc4 Kd6 9. Kb4 Kd7 10. Ka4 Kc8 11. Ka3 Kd8 12. Ka4 Kc8 13. Ka3 Kd8 14. Ka4 Kd7 15. Ka3 Kc6 16. Ka4 Kb7 17. Ka3 Kb8 18. Ka4 Kc8 19. Ka3 Kd8 20. Ka4 Kc8 21. Ka5 Kd8 22. Ka4 Kd7 23. Ka3 Kc6 24. Ka4 Kc7 25. Ka3 Kc8 26. Ka4 Kd8 27. Ka3 Kc8 28. Ka4 Kc7 29. Ka3 Kb6 30. Ka2 Ka6 31. Ka3 Kb5 32. Ka2 Ka5 33. Ka3 Kb6 34. Ka4 Ka6 35. Ka3 Ka7 36. Ka4 Kb7 37. Ka3 Ka8 38. Ka2 Ka7 39. Ka3 Ka6 40. Ka2 Ka7 41. Ka3 Kb7 42. Ka4 Kb6 43. Ka3 Ka5 44. Ka2 Rf8 45. Ka3 Re8 46. Ka2 Re3 47. Ka1 Ka4 48. Ka2 Kb4 49. Ka1 Kc4 50. Ka2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "8/7q/8/8/q7/8/1K2k3/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1... Qhc2# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/1b6/8/8/3k1Q1R/8/8/1K6 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kd3 2. Rg4 Ke2 3. Qe4+ Kd1 4. Qd4+ Ke2 5. Qc4+ Ke3 6. Qd5 Kf2 7. Qf7+ Ke3 8. Qe8+ Kd2 9. Qf8 Ke3 10. Qb8 Kd2 11. Qd8+ Ke2 12. Qe8+ Kd2 13. Qa8 Ke1 14. Qxb7 Kf2 15. Qa6 Kf3 16. Re4 Kg2 17. Rf4 Kg1 18. Rg4+ Kh2 19. Re4 Kh1 20. Rf4 Kg2 21. Rg4+ Kf2 22. Re4 Kg2 23. Rf4 Kh2 24. Rg4 Kh3 25. Rf4 Kg2 26. Rg4+ Kf2 27. Re4 Kf3 28. Rd4 Kg2 29. Re4 Kf2 30. Rf4+ Kg2 31. Rg4+ Kf2 32. Re4 Kg2 33. Rf4 Kh2 34. Rg4 Kh1 35. Kc1 Kh2 36. Re4 Kh3 37. Rf4 Kg2 38. Rg4+ Kf2 39. Re4 Kg2 40. Rf4 Kh2 41. Rg4 Kh3 42. Rf4 Kg2 43. Rg4+ Kf2 44. Re4 Kf3 45. Rf4+ Kg2 46. Rg4+ Kh2 47. Re4 Kh1 48. Rf4 Kg2 49. Rg4+ Kh2 50. Re4 Kh1 51. Rf4 Kg2 52. Rf5 Kg1 53. Kc2 Kh2 54. Kc3 Kh3 55. Kc4 Kg4 56. Kd3 Kg3 57. Kd4 Kh4 58. Kd5 Kg4 59. Ke6 Kh4 60. Ke5 Kg4 61. Kd4 Kh4 62. Kd5 Kg4 63. Ke6 Kg3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "N4K2/3r4/8/8/8/8/2B2B2/k7 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kb2 2. Kg8 Ka2 3. Kf8 Ka3 4. Ke8 Ka2 5. Kf8 Ka3 6. Ke8 Kb2 7. Kf8 Kc1 8. Ke8 Kxc2 9. Kf8 Kb3 10. Ke8 Ka4 11. Kf8 Ka5 12. Ke8 Ka6 13. Kf8 Ka5 14. Ke8 Kb5 15. Kf8 Kc4 16. Ke8 Kc3 17. Kf8 Kb3 18. Ke8 Ka3 19. Kf8 Kb3 20. Ke8 Ka3 21. Kf8 Kb2 22. Ke8 Ka2 23. Kf8 Ka1 24. Ke8 Ka2 25. Kf8 Ka3 26. Ke8 Ka4 27. Kf8 Kb4 28. Ke8 Ka3 29. Kf8 Ka4 30. Ke8 Ka5 31. Kf8 Kb4 32. Ke8 Ka3 33. Kf8 Kb3 34. Ke8 Kb2 35. Kf8 Ka2 36. Ke8 Kb1 37. Kf8 Kb2 38. Ke8 Ka2 39. Kf8 Kb3 40. Ke8 Ka3 41. Kf8 Ka2 42. Ke8 Kb2 43. Kf8 Kc3 44. Ke8 Kb3 45. Kf8 Kb2 46. Ke8 Rd4 47. Kf8 Ka3 48. Ke8 Kb2 49. Kf8 Kb1 50. Ke8 Rd3 51. Kf8 Rd6 52. Ke8 Re6+ 53. Kd8 Re7 54. Kc8 Ka1 55. Kd8 Ka2 56. Kc8 Kb1 57. Kd8 Ka1 58. Kc8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "8/8/2p5/2p1r3/p1K4k/8/8/4Q3 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1... Kg4 2. Qg3+ Kxg3 3. Kd3 Kh2 4. Kc3 Kh3 5. Kc2 Kg4 6. Kd3 Kf4 7. Kc4 Kg4 8. Kd3 Kf4 9. Kc2 Ke4 10. Kd1 Kf4 11. Kd2 Kg4 12. Kd3 Kf4 13. Kc4 Kg4 14. Kd3 Rd5+ 15. Kc2 Kf4 16. Kb2 Kf5 17. Kc1 Ke4 18. Kb2 Kf4 19. Ka2 Ke4 20. Ka3 Kd4 21. Kxa4 Ke4 22. Ka5 Kd4 23. Ka6 Ke4 24. Ka7 Kf4 25. Ka6 Rd8 26. Ka7 Ke4 27. Ka6 Kd4 28. Ka7 Rg8 29. Kb7 Re8 30. Kb6 Rh8 31. Kb7 Rg8 32. Kb6 Kd5 33. Kb7 Rg6 34. Kb6 Rg5 35. Kb7 Kd4 36. Kb6 Kd3 37. Kb7 Kc4 38. Kb6 Kb4 39. Kb7 Rd5 40. Kb6 Kb3 41. Ka7 Kb4 42. Ka6 Ka4 43. Ka7 Kb5 44. Ka8 Kc4 45. Ka7 Kb3 46. Ka6 Kb2 47. Ka7 Ka2 48. Ka6 Rd4 49. Ka7 Rd3 50. Ka6 Kb3 51. Ka7 c4 52. Ka6 Kb2 53. Ka7 c5 54. Ka6 Ka2 55. Ka7 Rb3 56. Ka6 Ka1 57. Ka7 Rb1 58. Ka6 Rc1 59. Ka7 Kb2 60. Ka6 Ka2 61. Ka7 Kb1 62. Ka6 Ka2 63. Ka7 Kb1 64. Ka6 Rc2 65. Ka7 Kc1 66. Ka6 Rc3 67. Ka7 Kc2 68. Ka6 Rb3 69. Ka7 Kc3 70. Ka6 Kd2 71. Ka7 Rb8 72. Ka6 Ra8+ 73. Kb7 Kd3 74. Kb6 Kd2 75. Kb7 Rc8 76. Kb6 c3 77. Kb5 Kd1 78. Kb6 Ke1 79. Kb5 Kf2 80. Kb6 Ke2 81. Kb7 Ke1 82. Kb6 Rc7 83. Ka6 c2 84. Ka5 c4 85. Ka6 c3 86. Ka5 c1=Q 87. Ka6 Qd2 88. Ka5 Qd1 89. Ka6 Qc2 90. Ka5 Rb7 91. Ka6 Qb1 92. Ka5 Qa2# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/2K5/8/8/5k2/7q w - - 0 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1. Kd4 Kf1 2. Kd3 Kg2 3. Kd4 Kg1 4. Ke5 Kf2 5. Kd4 Kg2 6. Kd5 Kg3+ 7. Kc4 Kf4 8. Kc5 Kf3 9. Kc4 Ke2 10. Kc5 Ke3 11. Kb5 Kf2 12. Kb6 Kf1 13. Ka6 Ke2 14. Ka7 Kf2 15. Ka6 Qg2 16. Ka7 Qh2 17. Ka6 Qh3 18. Ka7 Qg4 19. Ka6 Qg5 20. Ka7 Qf6 21. Kb8 Qf7 22. Kc8 Qe8+ 23. Kc7 Qc8+ 24. Kxc8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "k7/1b6/8/6K1/8/8/8/1Q6 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kf4 Bc8 2. Ke4 Bd7 3. Kd4 Be6 4. Kd3 Ka7 5. Kc3 Ka8 6. Kc2 Ka7 7. Kd1 Ka8 8. Ke2 Ka7 9. Ke1 Ka8 10. Kf2 Ka7 11. Kf1 Ka6 12. Kg2 Ka5 13. Kg1 Ka6 14. Kh2 Ka5 15. Kh1 Ka4 16. Kg2 Ka5 17. Kg1 Ka6 18. Kh2 Bg8 19. Kh1 Ka5 20. Kg2 Ka6 21. Kg1 Ka5 22. Kh2 Ka4 23. Kh1 Ka3 24. Kg2 Ka4 25. Kg1 Ka3 26. Kh2 Ka4 27. Kh1 Ka3 28. Kg2 Ka4 29. Kg1 Ka3 30. Kh2 Ka4 31. Kh1 Ka5 32. Kg2 Ka4 33. Kg1 Ka5 34. Kh2 Ka6 35. Kh1 Ka7 36. Kg2 Ka6 37. Kg1 Ka7 38. Kh2 Ka8 39. Kh1 Ka7 40. Kg2 Ka8 41. Kg1 Ka7 42. Kh2 Ka8 43. Kh1 Ka7 44. Kg2 Ka6 45. Kg1 Ka5 46. Kh2 Ka6 47. Kh1 Ka5 48. Kg2 Ka4 49. Kg1 Ka3 50. Kh2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "2K2r2/2q5/6p1/8/8/8/1k6/8 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Kxc7 Kc1 2. Kc6 Kc2 3. Kc7 Rg8 4. Kc6 Rf8 5. Kc7 Rg8 6. Kc6 Rh8 7. Kc7 Rg8 8. Kc6 Rd8 9. Kc7 g5 10. Kc6 Kd1 11. Kc7 Kc1 12. Kc6 Kc2 13. Kc7 Kc1 14. Kc6 Kd2 15. Kc7 Kc2 16. Kc6 Rc8+ 17. Kd6 Rc6+ 18. Kd7 Kb1 19. Ke8 Ka1 20. Kd8 Ka2 21. Ke8 Ka1 22. Kd8 Rf6 23. Kc8 Rf7 24. Kd8 Kb1 25. Kc8 Ka1 26. Kd8 Ka2 27. Kc8 Ka3 28. Kd8 Kb3 29. Kc8 Ka3 30. Kd8 Ka2 31. Kc8 Ka3 32. Kd8 Ka4 33. Kc8 Ka5 34. Kb8 Ka6 35. Kc8 Kb5 36. Kd8 Ka5 37. Ke8 Kb5 38. Kd8 Ka6 39. Ke8 Ka5 40. Kd8 Kb4 41. Ke8 Ka4 42. Kd8 Kb4 43. Kc8 Ka3 44. Kb8 Ka4 45. Kc8 Ka5 46. Kb8 Kb4 47. Kc8 Kb3 48. Kd8 Ka3 49. Kc8 Kb4 50. Kd8 Ka3 51. Kc8 Kb3 52. Kd8 Ka4 53. Kc8 Kb4 54. Kd8 Kc4 55. Kc8 Kc5 56. Kd8 Kd4 57. Kc8 Kc4 58. Kd8 Kb4 59. Kc8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/7k/5n2/8/8/3q4/KR6/2R5 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Rb3 Kg8 2. Rc2 Kf8 3. Rbc3 Ke8 4. Rc4 Kd8 5. Rc5 Qe2 6. Rc6 Kd7 7. Rc7+ Ke8 8. Rd7 Qe1 9. Rc3 Ng4 10. Rc4 Qd2+ 11. Kb3 Qd1+ 12. Kb4 Qc2 13. Rc5 Qc1 14. Rcd5 Qd2+ 15. Kb5 Qc1 16. Kb6 Qe3+ 17. Kb7 Qd2 18. Ka8 Qc2 19. Ka7 Kf8 20. Kb8 Kg8 21. Ka7 Qc1 22. Kb8 Qb1+ 23. Ka7 Qc2 24. Kb8 Kh8 25. Ka7 Qd1 26. Kb8 Qc2 27. Ka7 Qb1 28. Ka6 Qc2 29. Kb7 Kg8 30. Kb8 Qh2+ 31. Ka7 Qh1 32. Kb8 Kf8 33. Ka7 Nf6 34. Kb8 Qg2 35. Ka7 Ke8 36. Kb8 Qh2+ 37. Ka7 Qh3 38. Kb8 Qg4 39. Ka7 Qh4 40. Kb8 Qg4 41. Ka7 Kf8 42. Kb8 Qg5 43. Ka7 Kg8 44. Kb8 Kh8 45. Ka7 Kg8 46. Kb8 Kh8 47. Ka7 Qh6 48. Kb8 Qh5 49. Ka7 Kg8 50. Kb8 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "2n5/8/1Q2p3/5k2/8/7K/3p4/B7 w - - 0 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1. Qb5+ Ke4 2. Kg4 Ke3 3. Kh4 Kf2 4. Kg4 e5 5. Kg5 Kg2 6. Kh6 Kf2 7. Kh5 Kg2 8. Kg4 Kh2 9. Kg5 d1=Q 10. Kh6 Kh1 11. Kh7 Qc1 12. Kg8 Qc2 13. Kf8 Kg2 14. Ke8 Kf2 15. Kd8 Qd3+ 16. Kxc8 Kf3 17. Kb8 Qd4 18. Qd7 Qd3 19. Qc8 Qd4 20. Qd8 Qc3 21. Qd7 Qc2 22. Qc8 Ke2 23. Qd8 Ke3 24. Qd7 Kf2 25. Qc8 Qd3 26. Qd8 Qc3 27. Qd7 Kf3 28. Qc8 Kg2 29. Qd8 Kh2 30. Qd7 Qd3 31. Qc8 Qd6+ 32. Qc7 Kh1 33. Ka7 Qd7 34. Kb8 Kg2 35. Ka7 Kg1 36. Kb6 Kh2 37. Qc8 Kh3 38. Qb8 Kg4 39. Qa7 Kg3 40. Kc5 Kf4 41. Qa8 Qe6 42. Qh1 Qe7+ 43. Kc6 Kf5 44. Qg2 Qf6+ 45. Kc5 Qg6 46. Qg1 Ke4 47. Qh2 Ke3 48. Qh1 Kf4 49. Qg2 Qg7 50. Qg1 Kf3 51. Qh2 Qf8+ 52. Kc6 Qe8+ 53. Kc5 Ke4 54. Qh1+ Ke3 55. Qb7 Qe7+ 56. Kc6 Qf8 57. Qa6 Kd2 58. Kc7 Kc1 59. Kc6 Kc2 60. Kc7 Kd1 61. Kc6 Kd2 62. Kc7 Ke1 63. Kc6 Kf2 64. Kc7 Qg8 65. Kc6 Kf3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/K7/5Q2/8/8/8/4k3/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Ke3 2. Qf5 Kd4 3. Qh7 Ke3 4. Qg8 Kd4 5. Qa8 Kc3 6. Qb8 Kd4 7. Qc8 Ke3 8. Qb8 Kd4 9. Qc8 Ke4 10. Qb8 Kd4 11. Qc8 Kd5 12. Qb8 Ke4 13. Ka8 Kd4 14. Qa7+ Ke4 15. Qb8 Ke3 16. Qa7+ Kd2 17. Qb8 Kc3 18. Qa7 Kb2 19. Qb8+ Ka2 20. Qa7+ Kb2 21. Qb8+ Ka3 22. Qa7+ Kb2 23. Qb8+ Kc1 24. Qa7 Kd1 25. Qb8 Kc2 26. Qa7 Kb2 27. Qb8+ Ka3 28. Qa7+ Kb2 29. Qb8+ Ka2 30. Qa7+ Kb1 31. Qb8+ Kc1 32. Qa7 Kb2 33. Qb8+ Ka2 34. Qa7+ Kb2 35. Qb8+ Ka3 36. Qa7+ Kb3 37. Qb8+ Ka2 38. Qa7+ Kb2 39. Qb8+ Ka1 40. Qa7+ Kb2 41. Qb8+ Ka2 42. Qa7+ Kb2 43. Qb8+ Kc3 44. Qa7 Kd3 45. Qb8 Kd2 46. Qa7 Kd3 47. Qb8 Kd4 48. Qa7+ Kc4 49. Qb8 Kc3 50. Qa7 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "8/3q4/8/8/8/4R3/8/1k4K1 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.INSUFFICIENT_MATERIAL: 3>, winner=None)"]
+[SetUp "1"]
+
+1... Qe6 2. Kh2 Qe7 3. Kh1 Qd8 4. Kg2 Qd3 5. Kg1 Qd2 6. Rc3 Qd6 7. Rc4 Qd5 8. Rc5 Qxc5+ 9. Kh2 Qf2+ 10. Kh1 Qf3+ 11. Kg1 Qe4 12. Kh2 Qd4 13. Kh1 Qd3 14. Kg2 Qc3 15. Kg1 Kb2 16. Kh2 Qh3+ 17. Kxh3 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "0-1"]
+[FEN "8/8/8/8/3K4/1r6/4r2k/2q5 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.CHECKMATE: 1>, winner=False)"]
+[SetUp "1"]
+
+1... Rbb2 2. Kd5 Rbd2# 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "4B1q1/8/2P5/8/7B/K7/3k4/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Ke2 2. Ka4 Qg7 3. Ka3 Qf8+ 4. Ka4 Qxe8 5. Ka3 Kd2 6. Ka4 Kd1 7. Ka3 Qe7+ 8. Ka2 Qd8 9. Ka3 Qe8 10. Ka2 Qe1 11. Ka3 Qf2 12. Ka4 Qf1 13. Ka3 Ke2 14. Ka4 Qe1 15. Ka3 Qd2 16. Ka4 Qd1+ 17. Ka3 Qc2 18. Kb4 Qc3+ 19. Kxc3 Ke3 20. Kc2 Ke2 21. Kc3 Ke3 22. Kc2 Kf4 23. Kc3 Kg4 24. Kc2 Kf4 25. c7 Kf5 26. c8=Q+ Ke4 27. Qb7+ Ke5 28. Qa6 Kf4 29. Qb7 Kf5 30. Qa6 Ke4 31. Qb7+ Ke5 32. Qa6 Kd4 33. Qb7 Ke3 34. Qa6 Kf4 35. Qb7 Kg4 36. Qa6 Kxh4 37. Qb7 Kg4 38. Qa6 Kg5 39. Qb7 Kh6 40. Qa6+ Kh5 41. Qb7 Kg4 42. Qa6 Kg5 43. Qb7 Kh6 44. Qa6+ Kh7 45. Qb7+ Kg8 46. Qa6 Kf7 47. Qb7+ Kg6 48. Qa6+ Kg5 49. Kc3 Kf4 50. Kc2 Kg4 51. Kc3 Kf4 52. Kc2 Ke4 53. Kd1 Kd4 54. Ke2 Kd5 55. Ke1 Kd4 56. Kf2 Ke4 57. Kf1 Kd4 58. Kg2 Kd5 59. Kg1 Ke5 60. Kh2 Kd4 61. Kh1 Kd5 62. Kg2 Ke5 63. Kg1 Kd4 64. Kh2 Kc3 65. Kh1 Kd4 66. Kg2 Kd5 67. Kg1 Kd4 68. Kh2 Kc3 69. Kh1 Kc2 70. Kg2 Kd2 71. Kg1 Kc1 72. Kh2 Kd1 73. Kh1 Ke1 74. Kg2 Kd2 75. Kg1 Kc2 76. Kh2 Kc1 77. Kh1 Kd1 78. Kg2 Kd2 79. Kg1 Kc2 80. Kh2 Kb1 81. Kh1 Kb2 82. Kg2 Kb1 83. Kg1 Kc1 84. Kh2 Kd2 85. Kh1 Kc3 86. Kg2 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "NN_20000"]
+[Black "MCTS_20000"]
+[Result "1/2-1/2"]
+[FEN "2Q5/8/2P5/3pk3/8/1N3BK1/8/8 b - - 1 1"]
+[Reason "Outcome(termination=<Termination.FIFTY_MOVES: 6>, winner=None)"]
+[SetUp "1"]
+
+1... Kf6 2. Kh2 Kg6 3. Kh1 Kg7 4. Kg2 Kh6 5. Kg1 Kh7 6. Be4+ Kh6 7. Kh2 Kh5 8. Kh1 Kg5 9. Kg2 Kf6 10. Kg1 Kf7 11. Kh2 d4 12. Kh1 d3 13. Kg2 d2 14. Kg1 d1=Q+ 15. Kh2 Qd2+ 16. Kh1 Qd1+ 17. Kg2 Qc1 18. Kg3 Qb1 19. Kh2 Qc1 20. Kh3 Qb1 21. Kg4 Qa2 22. Kf4 Qb1 23. Kg4 Qa1 24. Kf4 Qb1 25. Kf3 Qa1 26. Kg2 Qa2+ 27. Kg1 Qb2 28. Qb7+ Ke8 29. c7 Qc2 30. Bf3 Qc3 31. Kh2 Qd3 32. Kh1 Qd2 33. Bg4 Qd1+ 34. Kg2 Qe1 35. Kh2 Qh4+ 36. Kg2 Ke7 37. Kg1 Kf6 38. Nd4 Kg6 39. Nb3 Qh3 40. Kf2 Kg5 41. Ke2 Qxg4+ 42. Ke1 Qg3+ 43. Kd2 Kf6 44. Kd1 Kf7 45. c8=Q+ Kg6 46. Qd8 Qh2 47. Qdc8 Qh1+ 48. Ke2 Qg2+ 49. Ke1 Qg3+ 50. Kd2 Qf4+ 51. Kd3 Qf5+ 52. Ke2 Kf6 53. Ke1 Kg6 54. Qd8 Qg4 55. Qdc8 Qh4+ 56. Kd2 Kf6 57. Kd3 Qh3+ 58. Ke2 Qg4+ 59. Ke1 Qh4+ 60. Kd2 Qg4 61. Kd3 Qh4 62. Qd8+ Kf5 63. Qdc8+ Kg6 64. Qd8 Kh6 65. Qdc8 Qh3+ 66. Ke2 Kh5 67. Ke1 Kg5 68. Kf2 Kh4 69. Ke2 Qg4+ 70. Ke1 Qf4 71. Qd8+ Kg4 72. Qdc8+ Kh4 73. Qd8+ Kg4 74. Qdc8+ Kg5 75. Qd8+ Kh6 76. Qdc8 Qg4 77. Qd8 Kh5 78. Qdc8 Kg5 79. Qd8+ Kh6 80. Qdc8 Qh4+ 81. Kd2 Qg4 82. Kd3 Kh5 83. Qd8 Qf4 84. Qdc8 Qg4 85. Qd8 Qg3+ 86. Kd4 Kg4 87. Qdc8+ Kh4 88. Qd8+ Kg4 89. Qdc8+ Kf4 90. Qd8 Kf5 91. Qdc8+ Kg6 92. Qd8 Qh2 93. Qdc8 Kh6 94. Kd5 Qh3 1/2-1/2
+
