@@ -9,11 +9,11 @@ from tqdm import tqdm
 conf = utils.Config()
 
 chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
-# chekpoint_path = "/home/marcello/github/ChessBreaker/model_checkpoint/step-{:05.0f}/model_weights.h5"
 chosen_steps = [0, 4000, 8000, 12000, 16000, 20000]
 
 weights_list = [chekpoint_path.format(steps) for steps in chosen_steps]
 
+# dataset of starting positions for evaluation
 eval_dataset = tf.data.TextLineDataset(conf.PATH_ENDGAME_EVAL_DATASET).prefetch(tf.data.AUTOTUNE)
 
 current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -22,6 +22,7 @@ pgn_path = "results/endgame/{}.pgn".format(current_time)
 with open(pgn_path, "w") as f: # to generate the file in case it does not exist
     pass
 
+# two models are created, so we don't have to swap weights every move
 model_1 = create_model()
 model_2 = create_model()
 
@@ -34,7 +35,9 @@ for first_path in tqdm(weights_list):
     model_1.load_weights(first_path)
     
     second_list = weights_list.copy()
+    # each model plays against all others
     second_list.remove(first_path)
+
     for second_path in second_list:
         model_2.load_weights(second_path)
         print("--------")
@@ -54,6 +57,7 @@ for first_path in tqdm(weights_list):
 
             board_history = [board.fen()[:-6]]
 
+            # first model always makes the first move, sometimes it's white's move, some others it's black's
             if board.turn == chess.WHITE:
                 game.headers["White"] = str(first_path)
                 game.headers["Black"] = str(second_path)
@@ -63,8 +67,9 @@ for first_path in tqdm(weights_list):
 
             i=0
             while not board.is_game_over(claim_draw=True):
-
-                if i%2 == 0: # the first model always moves first, somtetimes as white and sometimes as black
+                
+                # the first model always moves first, somtetimes as white and sometimes as black
+                if i%2 == 0: 
                     move, planes = utils.select_best_move(model_1, planes, board, board_history, probabilistic=False)
                 else:
                     move, planes = utils.select_best_move(model_2, planes, board, board_history, probabilistic=False)
@@ -85,11 +90,8 @@ for first_path in tqdm(weights_list):
 
             if result == "1-0":
                 wins[game.headers["White"]] += 1
-                print(game.headers["White"])
             elif result == "0-1":
-                wins[game.headers["Black"]] += 1
-                print(game.headers["Black"])
-                
+                wins[game.headers["Black"]] += 1                
 
             with open(pgn_path, "a") as f:
                 print(game, file=f, end="\n\n")
